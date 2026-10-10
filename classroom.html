@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Study Room & Campus Gist</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F4F6F8;
+      --card-bg: #FFFFFF;
+      --text-dark: #111827;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --danger: #EF4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #0F172A;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-gray);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 90px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.15rem;
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      padding: 4px;
+    }
+
+    .top-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.3px;
+    }
+
+    .user-avatar-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1.5px solid rgba(124, 58, 237, 0.25);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .content-body {
+      padding: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    /* SEARCH BAR */
+    .search-bar-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.25s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 17px;
+      height: 17px;
+      pointer-events: none;
+    }
+
+    /* FILTER PILLS */
+    .filter-slider {
+      display: flex;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+    }
+
+    .filter-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 7px 16px;
+      border-radius: 22px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-pill.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.3);
+    }
+
+    .action-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cram-counter-info {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .new-post-trigger-btn {
+      background: var(--primary);
+      color: #FFF;
+      border: none;
+      padding: 8px 15px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+    }
+
+    /* TIKTOK / REELS SNAP CONTAINER */
+    .cram-deck {
+      height: calc(100vh - 335px);
+      min-height: 440px;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
+    }
+
+    .cram-deck::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* CARD BACKGROUND THEMES & CONTRAST MODES */
+    .cram-card {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      min-height: 100%;
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: background 0.3s ease;
+    }
+
+    .cram-card.theme-purple { background: linear-gradient(145deg, #7C3AED 0%, #4C1D95 100%); color: #FFFFFF; }
+    .cram-card.theme-sunset { background: linear-gradient(145deg, #F97316 0%, #B45309 100%); color: #FFFFFF; }
+    .cram-card.theme-midnight { background: linear-gradient(145deg, #1E293B 0%, #0F172A 100%); color: #FFFFFF; }
+    .cram-card.theme-emerald { background: linear-gradient(145deg, #059669 0%, #065F46 100%); color: #FFFFFF; }
+    .cram-card.theme-blue { background: linear-gradient(145deg, #2563EB 0%, #1E40AF 100%); color: #FFFFFF; }
+    .cram-card.theme-rose { background: linear-gradient(145deg, #E11D48 0%, #9F1239 100%); color: #FFFFFF; }
+    .cram-card.theme-gold { background: linear-gradient(145deg, #D97706 0%, #78350F 100%); color: #FFFFFF; }
+    .cram-card.theme-pastel-pink { background: linear-gradient(145deg, #FFE4E6 0%, #FECDD3 100%); color: #881337; }
+    .cram-card.theme-pastel-mint { background: linear-gradient(145deg, #D1FAE5 0%, #A7F3D0 100%); color: #064E3B; }
+    .cram-card.theme-pastel-sky { background: linear-gradient(145deg, #E0F2FE 0%, #BAE6FD 100%); color: #034867; }
+    .cram-card.theme-pastel-lemon { background: linear-gradient(145deg, #FEF08A 0%, #FEF08A 100%); color: #713F12; }
+    .cram-card.theme-clean-white { background: #FFFFFF; color: #111827; border: 1px solid var(--border-color); }
+
+    .cram-card-bg-pattern {
+      position: absolute;
+      right: -35px;
+      bottom: -35px;
+      width: 160px;
+      height: 160px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .cram-card.theme-clean-white .cram-card-bg-pattern { background: rgba(124, 58, 237, 0.04); }
+
+    .cram-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 2;
+      padding-right: 0px;
+    }
+
+    .author-info-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .author-mini-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+    .cram-card.theme-clean-white .author-mini-avatar { background: var(--primary-light); color: var(--primary); border-color: rgba(124, 58, 237, 0.2); }
+
+    .author-name-time {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .post-time {
+      font-size: 0.65rem;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .header-right-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .cram-badge {
+      background: rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(6px);
+      padding: 5px 11px;
+      border-radius: 14px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .cram-card.theme-clean-white .cram-badge { background: var(--primary-light); color: var(--primary); border-color: rgba(124, 58, 237, 0.2); }
+
+    /* ABSOLUTE FAR RIGHT EDGE 3-DOTS MENU */
+    .menu-dropdown-wrapper {
+      position: relative;
+    }
+
+    .three-dots-btn {
+      background: rgba(255, 255, 255, 0.22);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .cram-card.theme-clean-white .three-dots-btn { background: var(--bg-gray); color: var(--text-dark); }
+
+    .dropdown-menu-box {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      background: #FFFFFF;
+      color: var(--text-dark);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      display: none;
+      flex-direction: column;
+      min-width: 120px;
+      z-index: 25;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .dropdown-menu-box.active {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-dark);
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-gray);
+    }
+
+    .dropdown-item.delete-item {
+      color: var(--danger);
+    }
+
+    .cram-body-content {
+      position: relative;
+      z-index: 2;
+      margin: auto 0;
+      max-height: 52%;
+      overflow-y: auto;
+      padding-right: 55px;
+      scrollbar-width: thin;
+    }
+
+    .cram-question-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.2px;
+      word-break: break-word;
+    }
+
+    .cram-answer-box {
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      border-left: 3.5px solid #FACC15;
+    }
+    .cram-card.theme-clean-white .cram-answer-box { background: var(--bg-gray); border-left-color: var(--primary); }
+
+    .cram-answer-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #FACC15;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .cram-card.theme-clean-white .cram-answer-label { color: var(--primary); }
+
+    .cram-answer-text {
+      font-size: 0.82rem;
+      line-height: 1.48;
+      opacity: 0.95;
+      font-weight: 400;
+      word-break: break-word;
+    }
+
+    /* TIKTOK STYLE FLOATING RIGHT SIDEBAR ACTIONS */
+    .tiktok-sidebar {
+      position: absolute;
+      right: 12px;
+      bottom: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      z-index: 5;
+    }
+
+    .tiktok-action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      gap: 4px;
+    }
+
+    .tiktok-icon-bubble {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .cram-card.theme-clean-white .tiktok-icon-bubble { background: #FFFFFF; border-color: var(--border-color); color: var(--text-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+    .tiktok-action-item:active .tiktok-icon-bubble {
+      transform: scale(0.85);
+    }
+
+    .tiktok-icon-bubble svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .tiktok-action-item.liked .tiktok-icon-bubble svg {
+      fill: #EF4444;
+      stroke: #EF4444;
+      animation: heartPop 0.4s ease;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    .tiktok-action-count {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .cram-card.theme-clean-white .tiktok-action-count { text-shadow: none; color: var(--text-dark); }
+
+    /* DOUBLE TAP FLOATING HEART ANIMATION */
+    .floating-heart-anim {
+      position: absolute;
+      font-size: 4rem;
+      pointer-events: none;
+      animation: floatUpHeart 0.85s ease-out forwards;
+      z-index: 20;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
+    }
+
+    @keyframes floatUpHeart {
+      0% { transform: scale(0.3) translateY(0) rotate(-15deg); opacity: 0; }
+      30% { transform: scale(1.3) translateY(-35px) rotate(10deg); opacity: 1; }
+      100% { transform: scale(1) translateY(-110px) rotate(0deg); opacity: 0; }
+    }
+
+    .cram-card-footer {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      padding-top: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      opacity: 0.85;
+      font-weight: 500;
+    }
+    .cram-card.theme-clean-white .cram-card-footer { border-top-color: var(--border-color); }
+
+    /* MODALS & BOTTOM SHEETS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      backdrop-filter: blur(5px);
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-sheet {
+      background: var(--card-bg);
+      width: 100%; max-width: 480px;
+      border-top-left-radius: 24px; border-top-right-radius: 24px;
+      padding: 1.35rem 1.35rem 2.5rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUpModal { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+    .close-modal-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-label { font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.4rem; display: block; }
+    .form-input, .form-textarea {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      font-size: 0.9rem; background: var(--bg-gray); color: var(--text-dark); outline: none;
+    }
+    .form-textarea { resize: vertical; min-height: 90px; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px var(--primary-light); }
+
+    /* THEME PICKER GRID */
+    .bg-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .bg-option-circle {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .bg-option-circle.selected {
+      border-color: var(--primary);
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0.6rem 0 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checkbox-row span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .custom-select-wrap { position: relative; }
+    .custom-select-trigger {
+      width: 100%; padding: 0.75rem 1rem; background: var(--bg-gray); border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; color: var(--text-dark); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .custom-dropdown-options {
+      position: absolute; top: 100%; left: 0; right: 0; background: #FFFFFF; border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); box-shadow: 0 10px 25px rgba(0,0,0,0.12); display: none; flex-direction: column; z-index: 10; margin-top: 4px; overflow: hidden;
+    }
+    .custom-dropdown-options.active { display: flex; }
+    .custom-option-item {
+      padding: 11px 15px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .custom-option-item:hover { background: var(--primary-light); color: var(--primary); }
+
+    .submit-post-btn {
+      width: 100%; background: var(--primary); color: #FFF; border: none; padding: 0.85rem;
+      border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 0.6rem;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+    }
+
+    /* MODERN TIKTOK STYLE COMMENTS SECTION */
+    .comments-list {
+      max-height: 280px; overflow-y: auto; margin-bottom: 0.9rem; display: flex; flex-direction: column; gap: 0.85rem;
+    }
+    .comment-card {
+      background: #FAFAFA; padding: 0.8rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .comment-header-row { display: flex; justify-content: space-between; align-items: center; }
+    .comment-author { font-weight: 700; color: var(--primary); font-size: 0.85rem; }
+    .comment-actions-inline { display: flex; gap: 10px; align-items: center; }
+    .comment-action-link { background: none; border: none; font-size: 0.72rem; cursor: pointer; color: var(--text-muted); font-weight: 600; }
+    .comment-action-link.delete { color: var(--danger); }
+    .comment-action-link.edit { color: var(--primary); }
+    .comment-text { color: var(--text-dark); word-break: break-word; line-height: 1.5; font-size: 0.88rem; }
+    .comment-footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 0.75rem; color: var(--text-muted); }
+    
+    .comment-tiktok-like {
+      background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.78rem; color: var(--text-muted);
+    }
+    .comment-tiktok-like svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .comment-tiktok-like.liked { color: var(--danger); }
+    .comment-tiktok-like.liked svg { fill: var(--danger); stroke: var(--danger); }
+
+    .reply-trigger-btn { background: none; border: none; cursor: pointer; color: var(--primary); font-weight: 700; font-size: 0.75rem; }
+
+    .replies-container {
+      margin-left: 1rem; border-left: 2px solid var(--primary-light); padding-left: 0.8rem; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .reply-item { background: #FFFFFF; padding: 0.65rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.82rem; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border-color); }
+    .replying-to-banner {
+      background: var(--primary-light); padding: 6px 10px; font-size: 0.75rem; color: var(--primary); display: flex; justify-content: space-between; align-items: center; border-radius: 6px; margin-bottom: 8px; font-weight: 600;
+    }
+    .cancel-reply-btn { background: none; border: none; font-weight: bold; cursor: pointer; color: var(--primary); }
+
+    /* HUMAN/MEME STICKER TIKTOK HUB */
+    .sticker-hub-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .sticker-hub-wrap.active { display: flex; }
+
+    .sticker-tabs-row {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 6px;
+      overflow-x: auto;
+    }
+    .sticker-tab-btn {
+      background: none; border: none; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+    }
+    .sticker-tab-btn.active { background: var(--primary-light); color: var(--primary); }
+
+    .sticker-grid-box {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .meme-sticker-item {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .meme-sticker-item:hover { transform: scale(1.06); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    .comment-input-box-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+    }
+
+    .comment-input-row { display: flex; gap: 0.5rem; align-items: center; }
+    .comment-input-row input { flex: 1; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 24px; font-size: 0.88rem; outline: none; background: var(--bg-gray); }
+    
+    .comment-icon-tool-btn {
+      background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; display: flex; align-items: center; justify-content: center;
+    }
+    .comment-icon-tool-btn:hover { color: var(--primary); }
+    .comment-icon-tool-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+    .comment-send-btn { background: var(--primary); color: #FFF; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 3px 10px rgba(124, 58, 237, 0.35); }
+    .comment-send-btn svg { width: 18px; height: 18px; stroke: #FFF; fill: none; stroke-width: 2.5; }
+
+    /* CUSTOM STYLED POPUP / ALERT MODAL */
+    .custom-alert-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.65); z-index: 500; display: none;
+      justify-content: center; align-items: center; backdrop-filter: blur(5px);
+    }
+    .custom-alert-overlay.active { display: flex; }
+    .custom-alert-box {
+      background: #FFFFFF; width: 90%; max-width: 340px; border-radius: var(--radius-lg);
+      padding: 1.5rem; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      animation: popInModal 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popInModal { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .custom-alert-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem; }
+    .custom-alert-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.4; }
+    .custom-alert-actions { display: flex; gap: 10px; }
+    .custom-alert-btn { flex: 1; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 700; cursor: pointer; border: none; }
+    .custom-alert-btn.cancel { background: var(--bg-gray); color: var(--text-dark); border: 1px solid var(--border-color); }
+    .custom-alert-btn.confirm { background: var(--primary); color: #FFFFFF; box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+    .custom-alert-btn.danger { background: var(--danger); color: #FFFFFF; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+
+    /* DRAWER & BOTTOM NAV */
+    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100; display: none; backdrop-filter: blur(3px); }
+    .drawer-overlay.active { display: block; }
+    .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: var(--card-bg); z-index: 101; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    .drawer.active { left: 0; }
+    .drawer-header { background: var(--primary-light); padding: 1.6rem 1.25rem 1.25rem; position: relative; }
+    .drawer-close-btn { position: absolute; top: 0.9rem; right: 0.9rem; background: none; border: none; font-size: 1.4rem; color: var(--primary); cursor: pointer; }
+    .drawer-avatar { width: 44px; height: 44px; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: var(--primary); font-weight: 700; }
+    .drawer-user-name { font-size: 1rem; font-weight: 700; color: var(--primary-hover); }
+    .drawer-edit-link { font-size: 0.78rem; color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 3px; }
+    .drawer-menu { padding: 0.75rem 0; flex: 1; overflow-y: auto; }
+    .drawer-item { display: flex; align-items: center; gap: 0.85rem; padding: 0.8rem 1.25rem; color: var(--text-dark); text-decoration: none; font-size: 0.88rem; font-weight: 500; }
+    .drawer-item svg { width: 19px; height: 19px; stroke: var(--primary); fill: none; stroke-width: 2; flex-shrink: 0; }
+    .drawer-item:hover { background: var(--bg-gray); }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px; background: var(--card-bg);
+      border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 0.45rem 0; z-index: 30;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); font-size: 0.7rem; gap: 2px; font-weight: 500; }
+    .nav-item.active { color: var(--primary); font-weight: 700; }
+    .nav-icon svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Open Drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="16" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <span class="top-title">Study Room & Campus Gist</span>
+
+      <a href="account.html" class="user-avatar-btn" id="top-user-initial" title="Account">U</a>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+
+      <!-- SEARCH BAR -->
+      <div class="search-bar-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="campus-search-input" class="search-input" placeholder="Search gists, student names, or course codes..." oninput="handleSearchInput()">
+      </div>
+
+      <!-- FILTER PILLS -->
+      <div class="filter-slider" id="filter-container">
+        <button class="filter-pill active" onclick="filterCards('all')">All Gists</button>
+        <button class="filter-pill" onclick="filterCards('GST')">GST & General</button>
+        <button class="filter-pill" onclick="filterCards('Science')">Science & Tech</button>
+        <button class="filter-pill" onclick="filterCards('Engineering')">Engineering</button>
+        <button class="filter-pill" onclick="filterCards('Business')">Business & Social</button>
+        <button class="filter-pill" onclick="filterCards('Arts')">Arts & Law</button>
+      </div>
+
+      <div class="action-row-header">
+        <span class="cram-counter-info" id="cram-counter-badge">Card 0 of 0</span>
+        <button class="new-post-trigger-btn" onclick="openNewPostModal()">
+          <span>+ Share Gist / Note</span>
+        </button>
+      </div>
+
+      <!-- SNAP SCROLL DECK -->
+      <div class="cram-deck" id="cram-deck">
+        <!-- Dynamic Cards Injected via JS -->
+      </div>
+
+    </main>
+
+    <!-- NEW / EDIT POST MODAL SHEET -->
+    <div id="new-post-modal" class="modal-overlay">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title" id="post-modal-title">Share Campus Gist or Cram Note</span>
+          <button class="close-modal-btn" onclick="closeNewPostModal()">&times;</button>
+        </div>
+        <form id="new-post-form" onsubmit="handleSavePost(event)">
+          <input type="hidden" id="edit-post-id" value="">
+          
+          <div class="form-group">
+            <label class="form-label">Department / Category</label>
+            <div class="custom-select-wrap">
+              <div class="custom-select-trigger" onclick="toggleCustomDropdown()">
+                <span id="selected-category-text">General Studies (GST)</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="custom-dropdown-options" id="custom-dropdown-box">
+                <div class="custom-option-item" onclick="selectCategory('GST', 'General Studies (GST)')">General Studies (GST)</div>
+                <div class="custom-option-item" onclick="selectCategory('Science', 'Science & Tech')">Science & Tech</div>
+                <div class="custom-option-item" onclick="selectCategory('Engineering', 'Engineering')">Engineering</div>
+                <div class="custom-option-item" onclick="selectCategory('Business', 'Business & Social Sciences')">Business & Social Sciences</div>
+                <div class="custom-option-item" onclick="selectCategory('Arts', 'Arts & Law')">Arts & Law</div>
+              </div>
+            </div>
+            <input type="hidden" id="post-category" value="GST">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Choose Card Background & Contrast Style</label>
+            <div class="bg-picker-grid">
+              <div class="bg-option-circle selected" style="background: linear-gradient(135deg, #7C3AED, #4C1D95);" onclick="selectTheme('theme-purple', this)" title="Neon Purple"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #F97316, #B45309);" onclick="selectTheme('theme-sunset', this)" title="Sunset Orange"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #1E293B, #0F172A);" onclick="selectTheme('theme-midnight', this)" title="Midnight Dark"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #059669, #065F46);" onclick="selectTheme('theme-emerald', this)" title="Emerald Green"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #2563EB, #1E40AF);" onclick="selectTheme('theme-blue', this)" title="Royal Blue"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #E11D48, #9F1239);" onclick="selectTheme('theme-rose', this)" title="Rose Pink"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #D97706, #78350F);" onclick="selectTheme('theme-gold', this)" title="Sunshine Gold"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #FFE4E6, #FECDD3);" onclick="selectTheme('theme-pastel-pink', this)" title="Pastel Pink"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #D1FAE5, #A7F3D0);" onclick="selectTheme('theme-pastel-mint', this)" title="Pastel Mint"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #E0F2FE, #BAE6FD);" onclick="selectTheme('theme-pastel-sky', this)" title="Pastel Sky"></div>
+              <div class="bg-option-circle" style="background: linear-gradient(135deg, #FEF08A, #FEF08A);" onclick="selectTheme('theme-pastel-lemon', this)" title="Pastel Lemon"></div>
+              <div class="bg-option-circle" style="background: #FFFFFF; border: 1px solid #CBD5E1;" onclick="selectTheme('theme-clean-white', this)" title="Clean White"></div>
+            </div>
+            <input type="hidden" id="post-theme" value="theme-purple">
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="post-anonymous">
+            <span>🥷 Post Anonymously (Ghost Mode)</span>
+          </label>
+
+          <div class="form-group">
+            <label class="form-label">Course Code & Title</label>
+            <input type="text" id="post-code" class="form-input" placeholder="e.g. GST111 • Use of English" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Main Question / Gist Topic</label>
+            <input type="text" id="post-title" class="form-input" placeholder="e.g. What's happening at school park today?" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content / Exam Concept Breakdown</label>
+            <textarea id="post-answer" class="form-textarea" placeholder="Provide detailed breakdown or student perspective..." required></textarea>
+          </div>
+          <button type="submit" class="submit-post-btn" id="post-submit-btn">Publish to Campus Wall</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- COMMENTS & HUMAN MEME STICKERS MODAL -->
+    <div id="comments-modal" class="modal-overlay">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">Discussion & Comments</span>
+          <button class="close-modal-btn" onclick="closeCommentsModal()">&times;</button>
+        </div>
+        <div class="comments-list" id="comments-list-container">
+          <!-- Dynamic Comments & Nested Replies -->
+        </div>
+        <div id="replying-banner-area"></div>
+        
+        <!-- HUMAN MEME STICKER HUB -->
+        <div class="sticker-hub-wrap" id="sticker-picker-popup">
+          <div class="sticker-tabs-row">
+            <button class="sticker-tab-btn active" onclick="switchStickerTab(event, 'reactions')">🔥 Human & Reactions</button>
+            <button class="sticker-tab-btn" onclick="switchStickerTab(event, 'memes')">😂 Memes & Cartoons</button>
+            <button class="sticker-tab-btn" onclick="switchStickerTab(event, 'animals')">🐶 Funny Animals</button>
+          </div>
+          <div class="sticker-grid-box" id="sticker-grid-content">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="comment-input-box-wrap">
+          <div class="comment-input-row">
+            <button class="comment-icon-tool-btn" onclick="toggleStickerPicker(event)" title="Human & Meme Stickers">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </button>
+            <input type="text" id="comment-input-text" placeholder="Add comment or sticker...">
+            <button class="comment-send-btn" onclick="submitCommentOrReply()">
+              <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM STYLED ALERT / CONFIRM MODAL -->
+    <div id="custom-alert-modal" class="custom-alert-overlay">
+      <div class="custom-alert-box">
+        <h3 class="custom-alert-title" id="custom-alert-title">Notice</h3>
+        <p class="custom-alert-desc" id="custom-alert-desc">Are you sure?</p>
+        <div class="custom-alert-actions" id="custom-alert-actions">
+          <button class="custom-alert-btn cancel" onclick="closeCustomAlert()">Cancel</button>
+          <button class="custom-alert-btn confirm" id="custom-alert-ok-btn">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE DRAWER BACKDROP -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+    <!-- SIDE NAVIGATION DRAWER -->
+    <aside id="drawer" class="drawer">
+      <div class="drawer-header">
+        <button class="drawer-close-btn" onclick="toggleDrawer(false)">&times;</button>
+        <div class="drawer-avatar" id="drawer-avatar-badge">U</div>
+        <div class="drawer-user-name" id="drawer-user-name">Student</div>
+        <a href="profile.html" class="drawer-edit-link">Edit Profile</a>
+      </div>
+
+      <nav class="drawer-menu">
+        <a href="dashboard.html" class="drawer-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+        <a href="classroom.html" class="drawer-item" style="color: var(--primary); background: var(--bg-gray); font-weight: 600;"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Study Room</a>
+        <a href="hard.html" class="drawer-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/></svg>My Hard Questions</a>
+        <a href="history.html" class="drawer-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Practice History</a>
+        <a href="analysis.html" class="drawer-item"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/></svg>Performance Analysis</a>
+        <a href="leaderboard.html" class="drawer-item"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Leaderboard</a>
+        <a href="activate.html" class="drawer-item"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Activation</a>
+        <a href="#" id="logout-btn" class="drawer-item" style="color: #EF4444;"><svg viewBox="0 0 24 24" style="stroke: #EF4444;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/></svg>Log out</a>
+      </nav>
+    </aside>
+
+    <!-- BOTTOM FIXED NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span>Home</span></a>
+      <a href="classroom.html" class="nav-item active"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Study Room</span></a>
+      <a href="exams.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>Exams</span></a>
+      <a href="activate.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>Activation</span></a>
+      <a href="account.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Account</span></a>
+    </nav>
+
+  </div>
+
+  <!-- FIREBASE & APP ENGINE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let currentUserName = "Student";
+    let isUserActivated = false;
+    let allPosts = [];
+    let activeFilter = 'all';
+    let searchQuery = '';
+    let activeCommentPostId = null;
+    let replyingToCommentId = null;
+    let lastTapTime = 0;
+
+    // Human & Meme sticker image links for the sticker hub
+    const memeStickers = {
+      reactions: [
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80"
+      ],
+      memes: [
+        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
+      ],
+      animals: [
+        "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1561948955-570b270e7c36?w=150&auto=format&fit=crop&q=80"
+      ]
+    };
+
+    // Custom Styled Alert / Confirm Popup Handler
+    window.showCustomAlert = function(title, desc, isConfirm = false, onConfirm = null) {
+      const modal = document.getElementById('custom-alert-modal');
+      document.getElementById('custom-alert-title').innerText = title;
+      document.getElementById('custom-alert-desc').innerText = desc;
+      const actions = document.getElementById('custom-alert-actions');
+      
+      if (isConfirm) {
+        actions.innerHTML = `
+          <button class="custom-alert-btn cancel" onclick="closeCustomAlert()">Cancel</button>
+          <button class="custom-alert-btn danger" id="alert-confirm-action-btn">Delete</button>
+        `;
+        document.getElementById('alert-confirm-action-btn').onclick = () => {
+          closeCustomAlert();
+          if (onConfirm) onConfirm();
+        };
+      } else {
+        actions.innerHTML = `
+          <button class="custom-alert-btn confirm" onclick="closeCustomAlert()">OK</button>
+        `;
+      }
+      modal.classList.add('active');
+    };
+
+    window.closeCustomAlert = function() {
+      document.getElementById('custom-alert-modal').classList.remove('active');
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        try {
+          const userDoc = await getDoc(doc(db, "Users", user.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            if (data.name) currentUserName = data.name;
+            else if (data.Firstname) currentUserName = `${data.Firstname} ${data.Lastname || ''}`.trim();
+            isUserActivated = !!data.isActivated;
+          }
+        } catch (e) {
+          currentUserName = user.email ? user.email.split('@')[0] : "Student";
+        }
+
+        document.getElementById('drawer-user-name').innerText = currentUserName;
+        document.getElementById('top-user-initial').innerText = currentUserName.charAt(0).toUpperCase();
+        document.getElementById('drawer-avatar-badge').innerText = currentUserName.charAt(0).toUpperCase();
+
+        loadPosts();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    async function loadPosts() {
+      try {
+        const q = query(collection(db, "CampusPosts"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        const now = new Date();
+        allPosts = [];
+
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          const createdAt = new Date(data.createdAt || 0);
+          const hoursPassed = (now - createdAt) / (1000 * 60 * 60);
+
+          if (hoursPassed > 24) {
+            await deleteDoc(doc(db, "CampusPosts", docSnap.id)).catch(() => {});
+            continue;
+          }
+
+          allPosts.push({ 
+            id: docSnap.id, 
+            ...data,
+            likes: data.likes || [],
+            comments: data.comments || [],
+            theme: data.theme || 'theme-purple',
+            isAnonymous: !!data.isAnonymous
+          });
+        }
+      } catch (err) {
+        console.warn("Firestore fetch error", err);
+        allPosts = [];
+      }
+      renderCards();
+    }
+
+    window.filterCards = function(cat) {
+      activeFilter = cat;
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.classList.remove('active');
+        if (pill.textContent.toLowerCase().includes(cat.toLowerCase()) || (cat === 'all' && pill.textContent.includes('All'))) {
+          pill.classList.add('active');
+        }
+      });
+      renderCards();
+    };
+
+    window.handleSearchInput = function() {
+      searchQuery = document.getElementById('campus-search-input').value.toLowerCase().trim();
+      renderCards();
+    };
+
+    function renderCards() {
+      const deckContainer = document.getElementById('cram-deck');
+      deckContainer.innerHTML = '';
+
+      let filtered = activeFilter === 'all' 
+        ? allPosts 
+        : allPosts.filter(p => p.category && p.category.toLowerCase() === activeFilter.toLowerCase());
+
+      if (searchQuery) {
+        filtered = filtered.filter(p => 
+          (p.title && p.title.toLowerCase().includes(searchQuery)) ||
+          (p.authorName && p.authorName.toLowerCase().includes(searchQuery)) ||
+          (p.code && p.code.toLowerCase().includes(searchQuery)) ||
+          (p.answer && p.answer.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      if (filtered.length === 0) {
+        deckContainer.innerHTML = `<div style="text-align:center; padding: 3rem; color: #94A3B8; font-size: 0.88rem;">No gists or flash notes found matching your criteria.</div>`;
+        document.getElementById('cram-counter-badge').innerText = `0 of 0`;
+        return;
+      }
+
+      filtered.forEach((post, index) => {
+        const isLiked = post.likes && currentUser && post.likes.includes(currentUser.uid);
+        const likeCount = post.likes ? post.likes.length : 0;
+        const commentCount = post.comments ? getTotalCommentsCount(post.comments) : 0;
+        
+        const isAuthor = currentUser && post.uid === currentUser.uid;
+        const displayAuthorName = post.isAnonymous ? "Ghost Student 🥷" : (post.authorName || 'Student');
+        const displayInitial = post.isAnonymous ? "🥷" : (post.authorName ? post.authorName.charAt(0).toUpperCase() : 'S');
+        const themeClass = post.theme || 'theme-purple';
+
+        const card = document.createElement('div');
+        card.className = `cram-card ${themeClass}`;
+        
+        card.addEventListener('touchend', (e) => {
+          const currentTime = new Date().getTime();
+          const tapLength = currentTime - lastTapTime;
+          if (tapLength < 300 && tapLength > 0) {
+            const rect = card.getBoundingClientRect();
+            const x = e.changedTouches[0].clientX - rect.left;
+            const y = e.changedTouches[0].clientY - rect.top;
+            showFloatingHeart(card, x, y);
+
+            if (!isLiked) toggleLike(post.id);
+            e.preventDefault();
+          }
+          lastTapTime = currentTime;
+        });
+
+        card.innerHTML = `
+          <div class="cram-card-bg-pattern"></div>
+          <div class="cram-card-header">
+            <div class="author-info-wrap">
+              <div class="author-mini-avatar">${displayInitial}</div>
+              <div class="author-name-time">
+                <span class="author-name">${displayAuthorName}</span>
+                <span class="post-time">${formatTime(post.createdAt)}</span>
+              </div>
+            </div>
+            
+            <div class="header-right-group">
+              <span class="cram-badge">${post.code || 'General'}</span>
+              ${isAuthor ? `
+                <div class="menu-dropdown-wrapper">
+                  <button class="three-dots-btn" onclick="toggleDropdownMenu(event, '${post.id}')">⋮</button>
+                  <div class="dropdown-menu-box" id="menu-box-${post.id}">
+                    <button class="dropdown-item" onclick="openEditPostModal('${post.id}')">✏️ Edit</button>
+                    <button class="dropdown-item delete-item" onclick="promptDeletePost('${post.id}')">🗑️ Delete</button>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="cram-body-content">
+            <h3 class="cram-question-title">${post.title}</h3>
+            <div class="cram-answer-box">
+              <div class="cram-answer-label">🔥 Gist / Study Breakdown</div>
+              <div class="cram-answer-text">${parseCommentText(post.answer)}</div>
+            </div>
+          </div>
+
+          <!-- TIKTOK SIDEBAR ACTIONS -->
+          <div class="tiktok-sidebar">
+            <button class="tiktok-action-item ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+              <div class="tiktok-icon-bubble">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <span class="tiktok-action-count">${likeCount}</span>
+            </button>
+
+            <button class="tiktok-action-item" onclick="openComments('${post.id}')">
+              <div class="tiktok-icon-bubble">
+                <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <span class="tiktok-action-count">${commentCount}</span>
+            </button>
+          </div>
+
+          <div class="cram-card-footer">
+            <span>Yan-Dli Campus Wall</span>
+            <span>Double-tap to love ❤️</span>
+          </div>
+        `;
+        deckContainer.appendChild(card);
+      });
+
+      document.getElementById('cram-counter-badge').innerText = `Card 1 of ${filtered.length}`;
+      deckContainer.onscroll = () => {
+        const h = deckContainer.clientHeight;
+        const top = deckContainer.scrollTop;
+        const curr = Math.min(filtered.length, Math.floor((top + h / 2) / h) + 1);
+        document.getElementById('cram-counter-badge').innerText = `Card ${curr} of ${filtered.length}`;
+      };
+    }
+
+    function showFloatingHeart(cardElement, x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart-anim';
+      heart.innerHTML = '💖';
+      heart.style.left = `${x - 22}px`;
+      heart.style.top = `${y - 35}px`;
+      cardElement.appendChild(heart);
+      setTimeout(() => heart.remove(), 850);
+    }
+
+    window.toggleDropdownMenu = function(e, postId) {
+      e.stopPropagation();
+      document.querySelectorAll('.dropdown-menu-box').forEach(box => {
+        if (box.id !== `menu-box-${postId}`) box.classList.remove('active');
+      });
+      const box = document.getElementById(`menu-box-${postId}`);
+      if (box) box.classList.toggle('active');
+    };
+
+    window.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown-menu-box').forEach(box => box.classList.remove('active'));
+      document.getElementById('custom-dropdown-box').classList.remove('active');
+      document.getElementById('sticker-picker-popup').classList.remove('active');
+    });
+
+    function getTotalCommentsCount(commentsArr) {
+      let count = commentsArr.length;
+      commentsArr.forEach(c => {
+        if (c.replies) count += c.replies.length;
+      });
+      return count;
+    }
+
+    function formatTime(isoStr) {
+      if (!isoStr) return "Just now";
+      const diff = Math.floor((new Date() - new Date(isoStr)) / 1000);
+      if (diff < 60) return "Just now";
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    window.selectTheme = function(themeClass, element) {
+      document.querySelectorAll('.bg-option-circle').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('post-theme').value = themeClass;
+    };
+
+    window.openNewPostModal = function() {
+      if (!isUserActivated) {
+        showCustomAlert("Access Restricted", "🔒 Posting Gists & Study Notes requires an active departmental scope. Please activate your pin first!");
+        setTimeout(() => { window.location.href = "activate.html"; }, 1500);
+        return;
+      }
+      document.getElementById('post-modal-title').innerText = "Share Campus Gist or Cram Note";
+      document.getElementById('post-submit-btn').innerText = "Publish to Campus Wall";
+      document.getElementById('edit-post-id').value = "";
+      document.getElementById('new-post-form').reset();
+      document.getElementById('post-anonymous').checked = false;
+      selectCategory('GST', 'General Studies (GST)');
+      document.getElementById('new-post-modal').classList.add('active');
+    };
+
+    window.openEditPostModal = function(postId) {
+      const post = allPosts.find(p => p.id === postId);
+      if (!post) return;
+      document.getElementById('post-modal-title').innerText = "Edit Campus Post";
+      document.getElementById('post-submit-btn').innerText = "Update Post";
+      document.getElementById('edit-post-id').value = post.id;
+      selectCategory(post.category || 'GST', getCategoryLabel(post.category || 'GST'));
+      document.getElementById('post-code').value = post.code || '';
+      document.getElementById('post-title').value = post.title || '';
+      document.getElementById('post-answer').value = post.answer || '';
+      document.getElementById('post-anonymous').checked = !!post.isAnonymous;
+      document.getElementById('new-post-modal').classList.add('active');
+    };
+
+    window.closeNewPostModal = function() {
+      document.getElementById('new-post-modal').classList.remove('active');
+    };
+
+    window.toggleCustomDropdown = function() {
+      event.stopPropagation();
+      document.getElementById('custom-dropdown-box').classList.toggle('active');
+    };
+
+    window.selectCategory = function(val, label) {
+      document.getElementById('post-category').value = val;
+      document.getElementById('selected-category-text').innerText = label;
+      document.getElementById('custom-dropdown-box').classList.remove('active');
+    };
+
+    function getCategoryLabel(val) {
+      const map = {
+        'GST': 'General Studies (GST)',
+        'Science': 'Science & Tech',
+        'Engineering': 'Engineering',
+        'Business': 'Business & Social Sciences',
+        'Arts': 'Arts & Law'
+      };
+      return map[val] || 'General Studies (GST)';
+    }
+
+    window.handleSavePost = async function(e) {
+      e.preventDefault();
+      if (!currentUser || !isUserActivated) return;
+
+      const editId = document.getElementById('edit-post-id').value;
+      const category = document.getElementById('post-category').value;
+      const code = document.getElementById('post-code').value;
+      const title = document.getElementById('post-title').value;
+      const answer = document.getElementById('post-answer').value;
+      const theme = document.getElementById('post-theme').value;
+      const isAnonymous = document.getElementById('post-anonymous').checked;
+
+      if (editId) {
+        const post = allPosts.find(p => p.id === editId);
+        if (post) {
+          post.category = category;
+          post.code = code;
+          post.title = title;
+          post.answer = answer;
+          post.theme = theme;
+          post.isAnonymous = isAnonymous;
+          renderCards();
+          closeNewPostModal();
+
+          try {
+            await updateDoc(doc(db, "CampusPosts", editId), { category, code, title, answer, theme, isAnonymous });
+          } catch (err) {
+            console.error("Error updating post", err);
+          }
+        }
+      } else {
+        const newPostData = {
+          uid: currentUser.uid,
+          authorName: currentUserName,
+          category,
+          code,
+          title,
+          answer,
+          theme,
+          isAnonymous,
+          likes: [],
+          comments: [],
+          createdAt: new Date().toISOString()
+        };
+
+        try {
+          const docRef = await addDoc(collection(db, "CampusPosts"), newPostData);
+          allPosts.unshift({ id: docRef.id, ...newPostData });
+          renderCards();
+          closeNewPostModal();
+          document.getElementById('new-post-form').reset();
+        } catch (err) {
+          console.error("Error posting gist:", err);
+          showCustomAlert("Error", "Failed to publish post online.");
+        }
+      }
+    };
+
+    window.toggleLike = async function(postId) {
+      if (!currentUser) return;
+      const post = allPosts.find(p => p.id === postId);
+      if (!post) return;
+
+      if (!post.likes) post.likes = [];
+      const likedIdx = post.likes.indexOf(currentUser.uid);
+      if (likedIdx > -1) {
+        post.likes.splice(likedIdx, 1);
+      } else {
+        post.likes.push(currentUser.uid);
+      }
+      renderCards();
+
+      try {
+        const ref = doc(db, "CampusPosts", postId);
+        await updateDoc(ref, { likes: post.likes });
+      } catch (e) {
+        console.error("Like sync error", e);
+      }
+    };
+
+    window.promptDeletePost = function(postId) {
+      showCustomAlert("Delete Post", "Are you sure you want to delete this post from the wall?", true, () => {
+        deletePost(postId);
+      });
+    };
+
+    async function deletePost(postId) {
+      allPosts = allPosts.filter(p => p.id !== postId);
+      renderCards();
+
+      try {
+        await deleteDoc(doc(db, "CampusPosts", postId));
+      } catch (e) {
+        console.error("Delete error", e);
+      }
+    }
+
+    // Comments & Human Meme Stickers
+    window.openComments = function(postId) {
+      activeCommentPostId = postId;
+      replyingToCommentId = null;
+      document.getElementById('replying-banner-area').innerHTML = '';
+      document.getElementById('comments-modal').classList.add('active');
+      renderCommentsList();
+      renderStickers('reactions');
+    };
+
+    window.closeCommentsModal = function() {
+      document.getElementById('comments-modal').classList.remove('active');
+      activeCommentPostId = null;
+      replyingToCommentId = null;
+      document.getElementById('sticker-picker-popup').classList.remove('active');
+    };
+
+    window.toggleStickerPicker = function(e) {
+      e.stopPropagation();
+      document.getElementById('sticker-picker-popup').classList.toggle('active');
+    };
+
+    window.switchStickerTab = function(e, categoryKey) {
+      e.stopPropagation();
+      document.querySelectorAll('.sticker-tab-btn').forEach(btn => btn.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      renderStickers(categoryKey);
+    };
+
+    function renderStickers(categoryKey) {
+      const grid = document.getElementById('sticker-grid-content');
+      grid.innerHTML = '';
+      const list = memeStickers[categoryKey] || memeStickers.reactions;
+      list.forEach(url => {
+        const img = document.createElement('img');
+        img.className = 'meme-sticker-item';
+        img.src = url;
+        img.onclick = (e) => {
+          e.stopPropagation();
+          insertSticker(`[sticker:${url}]`);
+        };
+        grid.appendChild(img);
+      });
+    }
+
+    window.insertSticker = function(tag) {
+      const input = document.getElementById('comment-input-text');
+      input.value += tag + " ";
+      input.focus();
+    };
+
+    function parseCommentText(text) {
+      if (!text) return "";
+      // If text contains sticker tag, render image
+      if (text.startsWith("[sticker:") && text.endsWith("]")) {
+        const url = text.replace("[sticker:", "").replace("]", "");
+        return `<img src="${url}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 4px;" />`;
+      }
+      return text;
+    }
+
+    function renderCommentsList() {
+      const container = document.getElementById('comments-list-container');
+      container.innerHTML = '';
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post || !post.comments || post.comments.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#94A3B8; font-size:0.85rem; padding: 2rem;">No comments yet. Start the conversation!</div>`;
+        return;
+      }
+
+      post.comments.forEach(com => {
+        const isCommentAuthor = currentUser && com.uid === currentUser.uid;
+        const isPostOwner = currentUser && post.uid === currentUser.uid;
+        const isLiked = com.likes && currentUser && com.likes.includes(currentUser.uid);
+        const likeCount = com.likes ? com.likes.length : 0;
+        const repliesCount = com.replies ? com.replies.length : 0;
+
+        const comCard = document.createElement('div');
+        comCard.className = 'comment-card';
+        comCard.innerHTML = `
+          <div class="comment-header-row">
+            <span class="comment-author">${com.authorName}</span>
+            <div class="comment-actions-inline">
+              ${isCommentAuthor ? `<button class="comment-action-link edit" onclick="startEditComment('${com.id}')">Edit</button>` : ''}
+              ${(isCommentAuthor || isPostOwner) ? `<button class="comment-action-link delete" onclick="promptDeleteComment('${com.id}')">Delete</button>` : ''}
+            </div>
+          </div>
+          <div class="comment-text" id="com-text-${com.id}">${parseCommentText(com.text)}</div>
+          
+          <div class="comment-footer-actions">
+            <button class="comment-tiktok-like ${isLiked ? 'liked' : ''}" onclick="toggleCommentLike('${com.id}')">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span>${likeCount > 0 ? likeCount : ''} Like</span>
+            </button>
+            <button class="reply-trigger-btn" onclick="setReplyingTo('${com.id}', '${com.authorName}')">Reply</button>
+          </div>
+
+          ${repliesCount > 0 ? `
+            <div class="replies-container">
+              ${com.replies.map(rep => {
+                const isRepAuthor = currentUser && rep.uid === currentUser.uid;
+                const repIsLiked = rep.likes && currentUser && rep.likes.includes(currentUser.uid);
+                const repLikeCount = rep.likes ? rep.likes.length : 0;
+                return `
+                  <div class="reply-item">
+                    <div class="comment-header-row">
+                      <span class="comment-author" style="font-size:0.78rem;">${rep.authorName}</span>
+                      <div class="comment-actions-inline">
+                        ${isRepAuthor ? `<button class="comment-action-link delete" onclick="deleteReply('${com.id}', '${rep.id}')">Delete</button>` : ''}
+                      </div>
+                    </div>
+                    <div class="comment-text" style="font-size:0.8rem;">${parseCommentText(rep.text)}</div>
+                    <div class="comment-footer-actions">
+                      <button class="comment-tiktok-like ${repIsLiked ? 'liked' : ''}" onclick="toggleReplyLike('${com.id}', '${rep.id}')" style="font-size:0.72rem;">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>${repLikeCount > 0 ? repLikeCount : ''} Like</span>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(comCard);
+      });
+    }
+
+    window.setReplyingTo = function(commentId, authorName) {
+      replyingToCommentId = commentId;
+      const banner = document.getElementById('replying-banner-area');
+      banner.innerHTML = `
+        <div class="replying-banner-area replying-to-banner">
+          <span>Replying to <b>${authorName}</b></span>
+          <button class="cancel-reply-btn" onclick="cancelReply()">&times;</button>
+        </div>
+      `;
+      document.getElementById('comment-input-text').focus();
+      document.getElementById('comment-input-text').placeholder = `Reply to ${authorName}...`;
+    };
+
+    window.cancelReply = function() {
+      replyingToCommentId = null;
+      document.getElementById('replying-banner-area').innerHTML = '';
+      document.getElementById('comment-input-text').placeholder = 'Add comment or sticker...';
+    };
+
+    window.submitCommentOrReply = async function() {
+      const input = document.getElementById('comment-input-text');
+      const text = input.value.trim();
+      if (!text || !activeCommentPostId || !currentUser) return;
+
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+
+      if (replyingToCommentId) {
+        const comment = post.comments.find(c => c.id === replyingToCommentId);
+        if (comment) {
+          if (!comment.replies) comment.replies = [];
+          comment.replies.push({
+            id: "rep_" + Date.now(),
+            uid: currentUser.uid,
+            authorName: currentUserName,
+            text: text,
+            likes: [],
+            createdAt: new Date().toISOString()
+          });
+        }
+        cancelReply();
+      } else {
+        if (!post.comments) post.comments = [];
+        post.comments.push({
+          id: "com_" + Date.now(),
+          uid: currentUser.uid,
+          authorName: currentUserName,
+          text: text,
+          likes: [],
+          replies: [],
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      input.value = '';
+      renderCommentsList();
+      renderCards();
+
+      try {
+        await updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments });
+      } catch (e) {
+        console.error("Comment/reply sync error", e);
+      }
+    };
+
+    window.toggleCommentLike = async function(comId) {
+      if (!currentUser) return;
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === comId);
+      if (!comment) return;
+
+      if (!comment.likes) comment.likes = [];
+      const idx = comment.likes.indexOf(currentUser.uid);
+      if (idx > -1) comment.likes.splice(idx, 1);
+      else comment.likes.push(currentUser.uid);
+
+      renderCommentsList();
+      try {
+        await updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments });
+      } catch (e) { console.error(e); }
+    };
+
+    window.toggleReplyLike = async function(comId, repId) {
+      if (!currentUser) return;
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === comId);
+      if (!comment || !comment.replies) return;
+      const reply = comment.replies.find(r => r.id === repId);
+      if (!reply) return;
+
+      if (!reply.likes) reply.likes = [];
+      const idx = reply.likes.indexOf(currentUser.uid);
+      if (idx > -1) reply.likes.splice(idx, 1);
+      else reply.likes.push(currentUser.uid);
+
+      renderCommentsList();
+      try {
+        await updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments });
+      } catch (e) { console.error(e); }
+    };
+
+    window.startEditComment = function(comId) {
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === comId);
+      if (!comment) return;
+
+      const newText = prompt("Edit your comment:", comment.text);
+      if (newText !== null && newText.trim() !== "") {
+        comment.text = newText.trim();
+        renderCommentsList();
+        updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments }).catch(console.error);
+      }
+    };
+
+    window.promptDeleteComment = function(comId) {
+      showCustomAlert("Delete Comment", "Are you sure you want to delete this comment?", true, () => {
+        deleteComment(comId);
+      });
+    };
+
+    async function deleteComment(comId) {
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+      post.comments = post.comments.filter(c => c.id !== comId);
+      renderCommentsList();
+      renderCards();
+
+      try {
+        await updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments });
+      } catch (e) { console.error(e); }
+    }
+
+    window.deleteReply = async function(comId, repId) {
+      const post = allPosts.find(p => p.id === activeCommentPostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === comId);
+      if (!comment || !comment.replies) return;
+
+      comment.replies = comment.replies.filter(r => r.id !== repId);
+      renderCommentsList();
+      renderCards();
+
+      try {
+        await updateDoc(doc(db, "CampusPosts", activeCommentPostId), { comments: post.comments });
+      } catch (e) { console.error(e); }
+    };
+
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => { window.location.href = "index.html"; });
+    });
+  </script>
+
+  <script>
+    function toggleDrawer(open) {
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      if (open) { drawer.classList.add('active'); overlay.classList.add('active'); }
+      else { drawer.classList.remove('active'); overlay.classList.remove('active'); }
+    }
+  </script>
+</body>
+</html>

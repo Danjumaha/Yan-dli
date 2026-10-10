@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Practice Setup</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8B5CF6;
+      --primary-dark: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-body: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --radius-app: 20px;
+      --radius-btn: 12px;
+      --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 930px;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
+
+    @media (min-width: 500px) {
+      .app-shell {
+        height: 92vh;
+        border-radius: 32px;
+        border: 6px solid #0F172A;
+      }
+    }
+
+    .app-header {
+      padding: 14px 16px 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .header-left-group { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+    }
+    .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 90px;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* BREADCRUMB CONTEXT CARD */
+    .context-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .context-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .context-badge {
+      padding: 3px 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .context-topic-tag {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      font-weight: 700;
+      max-width: 60%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .context-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    .context-meta {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+
+    /* MODE SELECTOR CARDS */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mode-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .mode-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 6px;
+    }
+
+    .mode-card.active .mode-icon {
+      background: var(--primary);
+    }
+
+    .mode-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--primary);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .mode-card.active .mode-icon svg {
+      stroke: white;
+    }
+
+    .mode-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .mode-desc {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    /* CONTROL CARDS */
+    .control-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .range-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+    }
+
+    /* START ACTION BUTTON */
+    .app-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .app-btn:active { transform: scale(0.98); }
+
+    /* RED / URGENT SELECT AGAIN BUTTON */
+    .app-btn-secondary {
+      width: 100%;
+      padding: 11px;
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1.5px solid var(--danger);
+      border-radius: var(--radius-btn);
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .app-btn-secondary:active { transform: scale(0.98); }
+
+    /* TOAST NOTIFICATION */
+    .toast-notification {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
+      padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+    }
+    .toast-notification.show { transform: translateX(-50%) translateY(0); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
+      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
+    }
+    .nav-tab {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
+    }
+    .nav-tab.active { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <!-- TOAST NOTIFICATION -->
+    <div id="app-toast" class="toast-notification">Notification message</div>
+
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="header-left-group">
+        <a href="dashboard.html" class="back-btn" id="dynamic-back-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <div>
+          <h1 class="app-header-title">Practice Setup</h1>
+          <p class="app-header-subtitle">Configure your session</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="app-content">
+      <!-- CONTEXT CARD -->
+      <div class="context-card">
+        <div class="context-badge-row">
+          <span class="context-badge" id="display-course-code">Loading...</span>
+          <span class="context-topic-tag" id="display-topic-name">Loading topic...</span>
+        </div>
+        <h1 class="context-title" id="display-course-title">Loading course...</h1>
+        <div class="context-meta">
+          <span id="display-dept-name">Loading department...</span>
+          <span>•</span>
+          <span id="display-level-name">Loading level...</span>
+        </div>
+      </div>
+
+      <!-- PRACTICE MODE SELECTION -->
+      <div>
+        <div class="section-label">Select Practice Mode</div>
+        <div class="mode-grid">
+          <div class="mode-card active" id="mode-practice" onclick="setMode('practice')">
+            <div class="mode-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            </div>
+            <div class="mode-title">Practice Mode</div>
+            <div class="mode-desc">Instant feedback & solutions</div>
+          </div>
+
+          <div class="mode-card" id="mode-exam" onclick="setMode('exam')">
+            <div class="mode-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="mode-title">Exam Mode</div>
+            <div class="mode-desc">Timed mock simulation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUESTION COUNT SLIDER -->
+      <div class="control-card">
+        <div class="slider-header">
+          <span class="section-label" style="margin-bottom:0;">Number of Questions</span>
+          <span class="slider-value" id="q-count-display">15</span>
+        </div>
+        <input type="range" min="5" max="50" step="5" value="15" class="range-input" id="q-count-slider" oninput="updateCountDisplay(this.value)">
+        <div id="free-tier-notice" style="font-size:0.68rem; color:var(--warning); font-weight:700; display:none;">🔒 Free Tier Scope Limit: Max 5 questions allowed for this department/level. Buy a pin for this specific scope to unlock up to 50.</div>
+      </div>
+
+      <!-- TIMER DURATION SLIDER -->
+      <div class="control-card">
+        <div class="slider-header">
+          <span class="section-label" style="margin-bottom:0;">Timer Duration</span>
+          <span class="slider-value" id="timer-display">20 mins</span>
+        </div>
+        <input type="range" min="5" max="120" step="5" value="20" class="range-input" id="timer-slider" oninput="updateTimerDisplay(this.value)">
+      </div>
+
+      <!-- START SESSION ACTION BUTTON -->
+      <button class="app-btn" onclick="startPracticeSession()">
+        <span id="start-btn-text">Start Practice Session</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- URGENT SELECT AGAIN BUTTON -->
+      <button class="app-btn-secondary" onclick="selectAgain()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Select Again / Change Subject</span>
+      </button>
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-tab active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- FIREBASE ENGINE & DIRECT DATABASE RESOLUTION -->
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const auth = getAuth();
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const deptId = urlParams.get('deptId');
+    const levelId = urlParams.get('levelId');
+    const courseId = urlParams.get('courseId');
+    const topicId = urlParams.get('topicId') || 'all';
+
+    window.resolvedData = {
+      deptName: 'Department',
+      levelName: 'Level',
+      courseCode: 'CODE',
+      courseTitle: 'Course Title',
+      topicName: 'Topic Name'
+    };
+
+    window.sessionConfig = {
+      mode: 'practice',
+      qCount: 15,
+      timerMinutes: 20
+    };
+
+    let isScopeUnlocked = false;
+
+    function showToast(message) {
+      const toast = document.getElementById('app-toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    // Fetch correct names directly from Firebase Firestore using IDs
+    async function fetchDatabaseContext() {
+      try {
+        if (deptId) {
+          const deptDoc = await getDoc(doc(db, "departments", deptId));
+          if (deptDoc.exists()) {
+            window.resolvedData.deptName = deptDoc.data().name || 'Department';
+          }
+        }
+
+        if (levelId) {
+          const levelDoc = await getDoc(doc(db, "levels", levelId));
+          if (levelDoc.exists()) {
+            window.resolvedData.levelName = levelDoc.data().name || 'Level';
+          }
+        }
+
+        if (courseId) {
+          const courseDoc = await getDoc(doc(db, "courses", courseId));
+          if (courseDoc.exists()) {
+            window.resolvedData.courseCode = courseDoc.data().code || 'CODE';
+            window.resolvedData.courseTitle = courseDoc.data().title || 'Course Title';
+          }
+        }
+
+        if (topicId === 'all') {
+          window.resolvedData.topicName = '🎯 Practice All Topics';
+        } else if (topicId) {
+          const topicDoc = await getDoc(doc(db, "topics", topicId));
+          if (topicDoc.exists()) {
+            window.resolvedData.topicName = topicDoc.data().name || 'Specific Topic';
+          }
+        }
+
+        document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
+        document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
+        document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
+        document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
+        document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
+
+        // Once database context is loaded, check if user has an active pin specifically for THIS department & level
+        if (auth.currentUser) {
+          checkScopeActivation(auth.currentUser.uid);
+        }
+
+      } catch (error) {
+        console.error("Error loading database context:", error);
+        showToast("Error loading session context from database.");
+      }
+    }
+
+    document.getElementById('dynamic-back-btn').href = `dashboard.html`;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        if (window.resolvedData.deptName !== 'Department') {
+          checkScopeActivation(user.uid);
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Verify if user has a valid unexpired pin/scope matching this specific department and level
+    async function checkScopeActivation(uid) {
+      try {
+        const q = query(
+          collection(db, "Pins"),
+          where("usedBy", "==", uid),
+          where("isUsed", "==", true)
+        );
+        const querySnapshot = await getDocs(q);
+
+        const now = new Date();
+        let scopeFoundAndValid = false;
+
+        querySnapshot.forEach(docSnap => {
+          const pinData = docSnap.data();
+          const matchesDept = pinData.department && pinData.department.toLowerCase().trim() === window.resolvedData.deptName.toLowerCase().trim();
+          const matchesLevel = pinData.level && pinData.level.toLowerCase().trim() === window.resolvedData.levelName.toLowerCase().trim();
+          const notExpired = !pinData.expiresAt || new Date(pinData.expiresAt) > now;
+
+          if (matchesDept && matchesLevel && notExpired) {
+            scopeFoundAndValid = true;
+          }
+        });
+
+        isScopeUnlocked = scopeFoundAndValid;
+
+        if (!isScopeUnlocked) {
+          window.sessionConfig.qCount = 5;
+          document.getElementById('q-count-display').textContent = '5';
+          document.getElementById('q-count-slider').value = '5';
+          document.getElementById('q-count-slider').max = '5';
+          document.getElementById('free-tier-notice').style.display = 'block';
+        } else {
+          document.getElementById('q-count-slider').max = '50';
+          document.getElementById('free-tier-notice').style.display = 'none';
+        }
+      } catch (e) {
+        console.error("Error checking scope activation:", e);
+      }
+    }
+
+    window.setMode = function(modeType) {
+      window.sessionConfig.mode = modeType;
+      document.querySelectorAll('.mode-card').forEach(card => card.classList.remove('active'));
+      document.getElementById(`mode-${modeType}`).classList.add('active');
+      
+      const btnText = document.getElementById('start-btn-text');
+      btnText.textContent = modeType === 'exam' ? 'Start Exam Session' : 'Start Practice Session';
+    };
+
+    window.updateCountDisplay = function(val) {
+      let count = parseInt(val);
+      if (!isScopeUnlocked && count > 5) {
+        count = 5;
+        document.getElementById('q-count-slider').value = '5';
+        showToast("🔒 Locked Scope Limit: Max 5 questions. Buy a pin for this department/level to unlock.");
+      }
+      window.sessionConfig.qCount = count;
+      document.getElementById('q-count-display').textContent = count;
+    };
+
+    window.updateTimerDisplay = function(val) {
+      const minutes = parseInt(val);
+      window.sessionConfig.timerMinutes = minutes;
+      document.getElementById('timer-display').textContent = minutes >= 60 ? `${Math.floor(minutes/60)}h ${minutes%60}m` : `${minutes} mins`;
+    };
+
+    window.startPracticeSession = function() {
+      const practiceUrl = `practice.html?deptId=${encodeURIComponent(deptId)}&deptName=${encodeURIComponent(window.resolvedData.deptName)}&levelId=${encodeURIComponent(levelId)}&levelName=${encodeURIComponent(window.resolvedData.levelName)}&courseId=${encodeURIComponent(courseId)}&courseCode=${encodeURIComponent(window.resolvedData.courseCode)}&courseTitle=${encodeURIComponent(window.resolvedData.courseTitle)}&topicId=${encodeURIComponent(topicId)}&topicName=${encodeURIComponent(window.resolvedData.topicName)}&mode=${window.sessionConfig.mode}&count=${window.sessionConfig.qCount}&time=${window.sessionConfig.timerMinutes}`;
+      
+      window.location.href = practiceUrl;
+    };
+
+    window.selectAgain = function() {
+      const selectionUrl = `dashboard.html?deptId=${encodeURIComponent(deptId)}&levelId=${encodeURIComponent(levelId)}`;
+      window.location.href = selectionUrl;
+    };
+
+    fetchDatabaseContext();
+  </script>
+</body>
+</html>

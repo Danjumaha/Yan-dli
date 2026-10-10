@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Exam Summary & Review</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7C3AED; --primary-hover: #6D28D9; --primary-light: #F3E8FF; --primary-dark: #4C1D95;
+      --bg-gray: #F8FAFC; --card-bg: #FFFFFF;
+      --text-dark: #0F172A; --text-body: #334155; --text-muted: #64748B;
+      --border-color: #E2E8F0; --border-light: #F1F5F9;
+      --success: #10B981; --success-dark: #047857; --success-light: #ECFDF5;
+      --danger: #EF4444; --danger-dark: #B91C1C; --danger-light: #FEF2F2;
+      --warning: #F59E0B; --warning-dark: #B45309; --warning-light: #FFFBEB;
+      --info: #2563EB; --info-light: #EFF6FF;
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04); --shadow-md: 0 4px 14px -2px rgba(124,58,237,0.12);
+    }
+    *, html { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body { background: #CBD5E1; color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+    button, a { font-family: inherit; -webkit-appearance: none; }
+    .app-container { width: 100%; max-width: 480px; background: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    .header { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.85rem 1.1rem; position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+    .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .btn-icon { flex-shrink: 0; background: var(--bg-gray); color: var(--text-dark); border: 1px solid var(--border-color); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: all 0.2s ease; }
+    .btn-icon:active { transform: scale(0.95); background: var(--primary-light); color: var(--primary); }
+    .btn-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    .header-title { font-size: 0.98rem; font-weight: 700; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-badge { flex-shrink: 0; background: var(--primary-light); color: var(--primary); font-size: 0.62rem; font-weight: 700; padding: 4px 9px; border-radius: 20px; letter-spacing: 0.3px; text-transform: uppercase; }
+    .content-body { padding: 1.1rem 1rem; }
+    .score-card { background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white; border-radius: var(--radius-lg); padding: 1.35rem 1rem; text-align: center; box-shadow: var(--shadow-md); position: relative; overflow: hidden; margin-bottom: 0.85rem; }
+    .score-card::before, .score-card::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
+    .score-card::before { top: -40%; right: -30%; width: 180px; height: 180px; background: rgba(255,255,255,0.08); }
+    .score-card::after { bottom: -55%; left: -20%; width: 150px; height: 150px; background: rgba(255,255,255,0.05); }
+    .score-badge-text { position: relative; z-index: 2; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.85); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .score-percentage { position: relative; z-index: 2; font-size: 3rem; font-weight: 800; line-height: 1; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .score-detail { position: relative; z-index: 2; font-size: 0.78rem; color: rgba(255,255,255,0.95); font-weight: 600; background: rgba(255,255,255,0.18); padding: 4px 12px; border-radius: 20px; display: inline-block; backdrop-filter: blur(4px); }
+    .course-subtitle { position: relative; z-index: 2; margin-top: 8px; font-size: 0.7rem; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 0.85rem; }
+    .stat-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.7rem 0.4rem; text-align: center; box-shadow: var(--shadow-sm); }
+    .stat-val { font-size: 1.15rem; font-weight: 700; margin-bottom: 2px; letter-spacing: -0.01em; }
+    .stat-val.correct { color: var(--success); }
+    .stat-val.wrong { color: var(--danger); }
+    .stat-val.skipped { color: var(--warning); }
+    .stat-lbl { font-size: 0.62rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+    .performance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 0.85rem; }
+    .performance-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem; box-shadow: var(--shadow-sm); }
+    .performance-label { display: block; font-size: 0.62rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .performance-value { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); word-break: break-word; }
+    .time-banner { background: var(--card-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; box-shadow: var(--shadow-sm); margin-bottom: 1.1rem; }
+    .time-item { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .time-label { font-size: 0.62rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+    .time-val { font-weight: 700; color: var(--primary); font-size: 0.88rem; }
+    .corrections-section { margin-top: 0.5rem; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .section-title { font-size: 0.9rem; font-weight: 700; color: var(--text-dark); }
+    .question-count { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
+    .filter-tabs { display: flex; gap: 6px; margin-bottom: 0.9rem; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab { background: var(--card-bg); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+    .filter-tab:active { transform: scale(0.97); }
+    .filter-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .correction-card { background: var(--card-bg); border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); margin-bottom: 0.85rem; box-shadow: var(--shadow-sm); }
+    .correction-status-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 0.75rem; }
+    .q-number-tag { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.4px; text-transform: uppercase; }
+    .status-badge { font-size: 0.62rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0; }
+    .status-badge.correct { background: var(--success-light); color: var(--success-dark); }
+    .status-badge.wrong { background: var(--danger-light); color: var(--danger-dark); }
+    .status-badge.skipped { background: var(--warning-light); color: var(--warning-dark); }
+    .correction-q-text { font-size: 0.85rem; font-weight: 500; color: var(--text-dark); line-height: 1.55; margin-bottom: 0.9rem; word-break: break-word; }
+    .question-image-wrapper { width: 100%; margin-bottom: 0.9rem; border-radius: var(--radius-md); overflow: hidden; background: var(--bg-gray); border: 1px solid var(--border-color); text-align: center; }
+    .question-image { display: block; width: 100%; max-height: 320px; object-fit: contain; background: white; }
+    .image-caption { padding: 5px 8px; font-size: 0.62rem; color: var(--text-muted); border-top: 1px solid var(--border-color); }
+    .question-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.8rem; }
+    .meta-chip { background: var(--bg-gray); border: 1px solid var(--border-color); border-radius: 20px; padding: 3px 8px; font-size: 0.62rem; color: var(--text-muted); font-weight: 600; }
+    .options-breakdown { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.75rem; }
+    .option-item { font-size: 0.78rem; padding: 9px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-gray); color: var(--text-body); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; word-break: break-word; }
+    .option-item.user-wrong { background: var(--danger-light); border-color: rgba(239,68,68,0.3); color: #991B1B; font-weight: 600; }
+    .option-item.correct-ans, .option-item.user-correct { background: var(--success-light); border-color: rgba(16,185,129,0.3); color: #065F46; font-weight: 600; }
+    .option-letter { font-weight: 700; min-width: 20px; flex-shrink: 0; }
+    .option-content { flex: 1; min-width: 0; }
+    .option-tag { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-left: auto; white-space: nowrap; flex-shrink: 0; }
+    .option-tag.wrong-tag { background: #FCA5A5; color: #7F1D1D; }
+    .option-tag.correct-tag { background: #6EE7B7; color: #064E3B; }
+    .answer-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 0.75rem; }
+    .answer-box { border-radius: var(--radius-sm); padding: 8px 10px; border: 1px solid var(--border-color); background: var(--bg-gray); }
+    .answer-box-label { display: block; font-size: 0.58rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.35px; margin-bottom: 3px; }
+    .answer-box-value { font-size: 0.74rem; font-weight: 600; color: var(--text-dark); word-break: break-word; }
+    .answer-box.your-answer { border-left: 3px solid var(--primary); }
+    .answer-box.correct-answer { border-left: 3px solid var(--success); }
+    .explanation-box, .steps-box { background: var(--bg-gray); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem; line-height: 1.55; margin-top: 0.75rem; word-break: break-word; }
+    .explanation-box { border-left: 3px solid var(--primary); color: var(--text-body); }
+    .explanation-title { font-weight: 700; font-size: 0.65rem; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; letter-spacing: 0.4px; }
+    .explanation-content { word-break: break-word; }
+    .steps-box { background: var(--info-light); border-color: #DBEAFE; }
+    .steps-title { font-size: 0.65rem; font-weight: 700; color: var(--info); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+    .steps-content { color: var(--text-body); font-size: 0.77rem; line-height: 1.55; word-break: break-word; }
+    .empty-state { text-align: center; color: var(--text-muted); padding: 2.5rem 1rem; font-size: 0.8rem; font-weight: 500; background: var(--card-bg); border-radius: var(--radius-md); border: 1px dashed var(--border-color); }
+    .loading-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.8rem; }
+    .spinner { width: 26px; height: 26px; border: 3px solid var(--primary-light); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 10px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box { background: var(--danger-light); border: 1px solid #FECACA; color: var(--danger-dark); border-radius: var(--radius-md); padding: 1rem; font-size: 0.78rem; line-height: 1.5; margin-bottom: 1rem; }
+    .error-title { font-weight: 700; margin-bottom: 4px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border-color); padding: 10px 16px; display: flex; align-items: center; gap: 10px; z-index: 50; box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
+    .nav-btn { flex: 1; height: 40px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease; }
+    .nav-btn-secondary { background: var(--primary-light); color: var(--primary); }
+    .nav-btn-secondary:active { background: #E9D5FF; transform: scale(0.97); }
+    .nav-btn-primary { background: var(--primary); color: white; }
+    .nav-btn-primary:active { background: var(--primary-hover); transform: scale(0.97); }
+    .nav-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    @media (max-width: 360px) {
+      .content-body { padding-left: 0.75rem; padding-right: 0.75rem; }
+      .score-percentage { font-size: 2.7rem; }
+      .correction-card { padding: 0.85rem; }
+      .answer-summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <header class="header">
+    <div class="header-brand">
+      <a href="dashboard.html" class="btn-icon" id="header-back-link" title="Back to Dashboard" aria-label="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <span class="header-title" id="page-header-title">Exam Review</span>
+    </div>
+    <span class="header-badge" id="session-type-badge">EXAM</span>
+  </header>
+
+  <main class="content-body">
+    <div id="loading-container" class="loading-state">
+      <div class="spinner"></div>
+      Preparing your examination review...
+    </div>
+
+    <div id="result-content" style="display:none;">
+      <section class="score-card">
+        <div class="score-badge-text" id="course-name-tag">COURSE PERFORMANCE</div>
+        <div class="score-percentage" id="score-percentage">0%</div>
+        <div class="score-detail" id="score-count-detail">Scored 0 out of 0</div>
+        <div class="course-subtitle" id="course-subtitle"></div>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val correct" id="stat-correct">0</div>
+          <div class="stat-lbl">Correct</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val wrong" id="stat-wrong">0</div>
+          <div class="stat-lbl">Wrong</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val skipped" id="stat-skipped">0</div>
+          <div class="stat-lbl">Skipped</div>
+        </div>
+      </section>
+
+      <section class="performance-grid">
+        <div class="performance-box">
+          <span class="performance-label">Questions</span>
+          <div class="performance-value" id="performance-total">0</div>
+        </div>
+        <div class="performance-box">
+          <span class="performance-label">Answered</span>
+          <div class="performance-value" id="performance-answered">0</div>
+        </div>
+        <div class="performance-box">
+          <span class="performance-label">Accuracy</span>
+          <div class="performance-value" id="performance-accuracy">0%</div>
+        </div>
+        <div class="performance-box">
+          <span class="performance-label">Result</span>
+          <div class="performance-value" id="performance-result">—</div>
+        </div>
+      </section>
+
+      <section class="time-banner">
+        <div class="time-item">
+          <span class="time-label">Total Duration</span>
+          <span class="time-val" id="time-spent-text">0m 0s</span>
+        </div>
+        <div class="time-item" style="text-align:right;">
+          <span class="time-label">Pace / Question</span>
+          <span class="time-val" id="time-avg-text">0s</span>
+        </div>
+      </section>
+
+      <section class="corrections-section">
+        <div class="section-header">
+          <div class="section-title">Step-by-Step Breakdown</div>
+          <div class="question-count" id="question-count-label">0 questions</div>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" id="tab-all" type="button">All Questions</button>
+          <button class="filter-tab" id="tab-wrong" type="button">Wrong Only</button>
+          <button class="filter-tab" id="tab-correct" type="button">Correct Only</button>
+          <button class="filter-tab" id="tab-skipped" type="button">Skipped</button>
+        </div>
+
+        <div id="corrections-container"></div>
+      </section>
+    </div>
+
+    <div id="error-container" style="display:none;"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="history.html" class="nav-btn nav-btn-secondary">
+      <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      History Logs
+    </a>
+    <a href="exams.html" class="nav-btn nav-btn-primary">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      Take New Test
+    </a>
+  </nav>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+    authDomain: "yan-dli.firebaseapp.com",
+    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+    projectId: "yan-dli",
+    storageBucket: "yan-dli.firebasestorage.app",
+    messagingSenderId: "538794949165",
+    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const optionLetters = ["A", "B", "C", "D", "E"];
+  let sessionData = null;
+  let analyzedResults = [];
+  let activeFilter = "all";
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedSessionId = urlParams.get("id");
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setupFilters();
+    loadSession();
+  });
+
+  function setupFilters() {
+    ["all", "wrong", "correct", "skipped"].forEach(filter => {
+      const button = document.getElementById(`tab-${filter}`);
+      if (!button) return;
+      button.addEventListener("click", () => setFilter(filter));
+    });
+  }
+
+  function setFilter(filter) {
+    activeFilter = filter;
+    document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.remove("active"));
+    const target = document.getElementById(`tab-${filter}`);
+    if (target) target.classList.add("active");
+    renderCorrections(filter);
+  }
+
+  const safeParse = (value, fallback = null) => {
+    try {
+      if (value === null || value === undefined || value === "") return fallback;
+      return typeof value === "string" ? JSON.parse(value) : value;
+    } catch (error) {
+      return fallback;
+    }
+  };
+
+  const firstDefined = (...values) => values.find(v => v !== undefined && v !== null && v !== "");
+  const numberValue = (value, fallback = 0) => { const n = Number(value); return Number.isFinite(n) ? n : fallback; };
+  const normalizeText = value => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+  const escapeHtml = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+  const textToHtml = value => {
+    const str = String(value ?? "");
+    if (/<[a-z][\s\S]*>/i.test(str)) return str;
+    return escapeHtml(str).replace(/\n/g, "<br>");
+  };
+
+  function parseAnswerIndex(value, options = []) {
+    if (value === undefined || value === null || value === "") return null;
+    if (typeof value === "object") {
+      return parseAnswerIndex(value.index ?? value.value ?? value.answer ?? value.selectedAnswer, options);
+    }
+    if (typeof value === "number") {
+      if (Number.isInteger(value) && value >= 0 && value < options.length) return value;
+      if (Number.isInteger(value) && value >= 1 && value <= options.length) return value - 1;
+      return null;
+    }
+    if (typeof value === "string") {
+      const clean = value.trim().toUpperCase();
+      const directIndex = optionLetters.indexOf(clean);
+      if (directIndex !== -1) return directIndex;
+      const letterMatch = clean.match(/^\(?([A-E])\)?(?:[.\-:]|\s|$)/);
+      if (letterMatch) return optionLetters.indexOf(letterMatch[1]);
+      const numeric = Number(clean);
+      if (Number.isFinite(numeric)) {
+        if (numeric >= 0 && numeric < options.length) return numeric;
+        if (numeric >= 1 && numeric <= options.length) return numeric - 1;
+      }
+      const matchingOption = options.findIndex(option => normalizeText(option) === normalizeText(value));
+      if (matchingOption !== -1) return matchingOption;
+    }
+    return null;
+  }
+
+  function findUserAnswer(question, index, answers) {
+    if (!answers) return null;
+    const keys = [question?.id, question?.questionId, question?.uid, question?.questionID, String(index), index, String(index + 1), index + 1].filter(k => k !== undefined && k !== null && k !== "");
+    if (Array.isArray(answers)) {
+      for (const key of keys) {
+        if (typeof key === "number" && answers[key] !== undefined) return answers[key];
+      }
+    }
+    if (typeof answers === "object") {
+      for (const key of keys) {
+        if (Object.prototype.hasOwnProperty.call(answers, key)) return answers[key];
+      }
+    }
+    return null;
+  }
+
+  function normalizeOptions(question) {
+    const raw = firstDefined(question?.options, question?.choices, question?.answers, question?.optionList, question?.option);
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw.map(normalizeOptionText);
+    if (typeof raw === "object") {
+      const ordered = optionLetters.map(letter => {
+        if (raw[letter] !== undefined) return raw[letter];
+        if (raw[letter.toLowerCase()] !== undefined) return raw[letter.toLowerCase()];
+        return undefined;
+      }).filter(v => v !== undefined && v !== null);
+      return (ordered.length > 0 ? ordered : Object.values(raw)).map(normalizeOptionText);
+    }
+    return [];
+  }
+
+  function normalizeOptionText(option) {
+    if (option === undefined || option === null) return "";
+    if (typeof option === "object") {
+      return String(firstDefined(option.text, option.label, option.value, option.option, JSON.stringify(option)));
+    }
+    return String(option);
+  }
+
+  const getQuestionText = q => firstDefined(q?.questionText, q?.question, q?.q, q?.text, q?.prompt, q?.question_title, "Question text unavailable.");
+  const getCorrectAnswer = q => firstDefined(q?.correctAnswer, q?.correct, q?.correctOption, q?.correctIndex, q?.answerKey, q?.answer, q?.rightAnswer);
+  const getExplanation = q => firstDefined(q?.explanation, q?.exp, q?.solution, q?.answerExplanation, q?.solutionExplanation, q?.reason, q?.rationale, "No step-by-step solution available for this question.");
+  const getSteps = q => firstDefined(q?.stepByStep, q?.steps, q?.solutionSteps, q?.working, q?.workings, q?.method, q?.solutionMethod);
+
+  function getQuestionImage(question) {
+    const image = firstDefined(question?.imageUrl, question?.imageURL, question?.questionImage, question?.questionImageUrl, question?.image, question?.img, question?.photo, question?.diagram);
+    if (!image) return "";
+    if (typeof image === "object") {
+      return firstDefined(image.url, image.secure_url, image.src, image.downloadURL, image.path, "");
+    }
+    return String(image);
+  }
+
+  const getQuestionId = (question, index) => String(firstDefined(question?.id, question?.questionId, question?.uid, question?.questionID, `question_${index + 1}`));
+
+  function getStoredStatus(question) {
+    const status = firstDefined(question?.status, question?.result, question?.state);
+    if (!status) return null;
+    const normalized = String(status).toLowerCase().trim();
+    if (normalized === "correct" || normalized === "right") return "correct";
+    if (normalized === "wrong" || normalized === "incorrect") return "wrong";
+    if (["skipped", "unattempted", "unanswered"].includes(normalized)) return "skipped";
+    return null;
+  }
+
+  function analyzeQuestion(question, index, userAnswers) {
+    const options = normalizeOptions(question);
+    const correctRaw = getCorrectAnswer(question);
+    const userRaw = firstDefined(question?.userAnswer, question?.selectedAnswer, question?.userSelected, question?.selectedOption, question?.chosenAnswer, findUserAnswer(question, index, userAnswers));
+    const correctIndex = parseAnswerIndex(correctRaw, options);
+    const userSelectedIndex = parseAnswerIndex(userRaw, options);
+    let status = getStoredStatus(question);
+
+    if (!status) {
+      if (userSelectedIndex === null || userSelectedIndex === undefined) status = "skipped";
+      else if (correctIndex !== null && userSelectedIndex === correctIndex) status = "correct";
+      else status = "wrong";
+    }
+
+    if (userSelectedIndex !== null && correctIndex === null && !getStoredStatus(question)) status = "wrong";
+
+    return {
+      original: question,
+      id: getQuestionId(question, index),
+      index: index + 1,
+      question: getQuestionText(question),
+      options,
+      correctRaw,
+      correctIndex,
+      userRaw,
+      userSelectedIndex,
+      status,
+      explanation: getExplanation(question),
+      steps: getSteps(question),
+      image: getQuestionImage(question),
+      topic: firstDefined(question?.topic, question?.topicName, question?.chapter),
+      year: firstDefined(question?.year, question?.examYear),
+      marks: firstDefined(question?.marks, question?.mark, question?.score)
+    };
+  }
+
+  function getSessionId() {
+    if (requestedSessionId && String(requestedSessionId).trim()) return String(requestedSessionId).trim();
+    if (sessionData?.id) return String(sessionData.id).trim();
+    return "";
+  }
+
+  const getLocal = key => { try { return localStorage.getItem(key); } catch (e) { return null; } };
+  const setLocal = (key, value) => { try { localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value)); return true; } catch (e) { return false; } };
+
+  function getKnownUid() {
+    const firebaseUid = auth.currentUser?.uid;
+    if (firebaseUid) return firebaseUid;
+    const storedUser = safeParse(getLocal("yan_user"));
+    if (storedUser?.uid) return storedUser.uid;
+    return "";
+  }
+
+  function findLocalSession() {
+    const sessionId = getSessionId();
+    if (!sessionId) return null;
+
+    const exactReview = safeParse(getLocal(`yan_exam_review_${sessionId}`));
+    if (exactReview && (!exactReview.id || String(exactReview.id) === sessionId)) {
+      return exactReview;
+    }
+
+    const uid = getKnownUid();
+    if (uid) {
+      const userReview = safeParse(getLocal(`yan_exam_review_${uid}_${sessionId}`));
+      if (userReview && (!userReview.id || String(userReview.id) === sessionId)) {
+        return userReview;
+      }
+      const userHistory = safeParse(getLocal(`yan_exam_history_${uid}`), []);
+      if (Array.isArray(userHistory)) {
+        const found = userHistory.find(item => String(item?.id) === sessionId);
+        if (found) return { ...found };
+      }
+    }
+
+    const history = safeParse(getLocal("yan_exam_history"), []);
+    if (Array.isArray(history)) {
+      const found = history.find(item => String(item?.id) === sessionId);
+      if (found) return { ...found };
+    }
+
+    return null;
+  }
+
+  function attachLocalQuestionArchive(session) {
+    if (!session) return session;
+    const existing = firstDefined(session.questionsData, session.questions, session.questionData, session.questionList, session.items);
+    if (Array.isArray(existing) && existing.length > 0) { session.questionsData = existing; return session; }
+    const archive = safeParse(getLocal("yan_exam_questions_archive"), {});
+    if (session.id && archive && Array.isArray(archive[session.id])) { session.questionsData = archive[session.id]; return session; }
+    return session;
+  }
+
+  async function getFirestoreSession(sessionId) {
+    if (!sessionId) return null;
+    try {
+      const snapshot = await getDoc(doc(db, "ExamHistory", sessionId));
+      if (!snapshot.exists()) return null;
+      const data = snapshot.data();
+      const uid = auth.currentUser?.uid;
+      if (uid && data?.uid && String(data.uid) !== String(uid)) return null;
+      return { id: snapshot.id, ...data };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function mergeSessions(localSession, cloudSession) {
+    if (!localSession && !cloudSession) return null;
+    if (!localSession) return attachLocalQuestionArchive(cloudSession);
+    if (!cloudSession) return attachLocalQuestionArchive(localSession);
+
+    const merged = { ...localSession, ...cloudSession };
+    const cloudQuestions = firstDefined(cloudSession.questionsData, cloudSession.questions, cloudSession.questionData, cloudSession.questionList, cloudSession.items);
+    const localQuestions = firstDefined(localSession.questionsData, localSession.questions, localSession.questionData, localSession.questionList, localSession.items);
+
+    if (Array.isArray(cloudQuestions) && cloudQuestions.length > 0) merged.questionsData = cloudQuestions;
+    else if (Array.isArray(localQuestions) && localQuestions.length > 0) merged.questionsData = localQuestions;
+
+    return attachLocalQuestionArchive(merged);
+  }
+
+  function cacheResolvedSession(session) {
+    if (!session) return;
+    const sessionId = String(firstDefined(session.id, session.sessionId, requestedSessionId) || "");
+    if (!sessionId) return;
+    setLocal(`yan_exam_review_${sessionId}`, session);
+    const uid = auth.currentUser?.uid || session.uid || getKnownUid();
+    if (uid) setLocal(`yan_exam_review_${uid}_${sessionId}`, session);
+  }
+
+  async function loadSession() {
+    try {
+      if (!requestedSessionId) { showError("No examination session ID was provided."); return; }
+
+      let localSession = findLocalSession();
+      let resolvedSession = localSession;
+
+      if (localSession) {
+        localSession = attachLocalQuestionArchive(localSession);
+        resolvedSession = localSession;
+        cacheResolvedSession(localSession);
+      }
+
+      const cloudSession = await getFirestoreSession(requestedSessionId);
+
+      if (cloudSession && resolvedSession) {
+        resolvedSession = mergeSessions(resolvedSession, cloudSession);
+      } else if (cloudSession) {
+        resolvedSession = cloudSession;
+        cacheResolvedSession(cloudSession);
+      }
+
+      if (resolvedSession && resolvedSession.id && String(resolvedSession.id) !== String(requestedSessionId)) {
+        showError("The requested examination session could not be matched correctly.");
+        return;
+      }
+
+      sessionData = resolvedSession;
+      if (!sessionData) {
+        showError("No review data was found for this examination session.");
+        return;
+      }
+
+      sessionData = attachLocalQuestionArchive(sessionData);
+      const questions = firstDefined(sessionData?.questionsData, sessionData?.questions, sessionData?.questionData, sessionData?.questionList, sessionData?.items);
+
+      if (!Array.isArray(questions) || questions.length === 0) {
+        showError("The examination session was found, but its question data is missing.");
+        return;
+      }
+
+      sessionData.questionsData = questions;
+      cacheResolvedSession(sessionData);
+      processAndRenderResults();
+    } catch (error) {
+      showError("Something went wrong while loading this examination review.");
+    }
+  }
+
+  function processAndRenderResults() {
+    const rawQuestions = firstDefined(sessionData?.questionsData, sessionData?.questions, []);
+    if (!Array.isArray(rawQuestions) || rawQuestions.length === 0) { showError("No questions are available for this review."); return; }
+
+    const userAnswers = firstDefined(sessionData.userAnswers, sessionData.selectedAnswers, sessionData.answers, sessionData.responses, {});
+    analyzedResults = rawQuestions.map((q, i) => analyzeQuestion(q || {}, i, userAnswers));
+
+    const calcCorrect = analyzedResults.filter(i => i.status === "correct").length;
+    const calcWrong = analyzedResults.filter(i => i.status === "wrong").length;
+    const calcSkipped = analyzedResults.filter(i => i.status === "skipped").length;
+    const totalQuestions = numberValue(firstDefined(sessionData.totalQuestions, sessionData.total, sessionData.questionCount), analyzedResults.length);
+
+    let correctCount = numberValue(firstDefined(sessionData.correctCount, sessionData.correct), calcCorrect);
+    let wrongCount = numberValue(firstDefined(sessionData.wrongCount, sessionData.incorrect), calcWrong);
+    let skippedCount = numberValue(firstDefined(sessionData.unattemptedCount, sessionData.skippedCount, sessionData.skipped), calcSkipped);
+
+    if (correctCount + wrongCount + skippedCount > totalQuestions && totalQuestions > 0) {
+      correctCount = calcCorrect; wrongCount = calcWrong; skippedCount = calcSkipped;
+    }
+
+    let scorePct = numberValue(firstDefined(sessionData.scorePercentage, sessionData.percentage, sessionData.percent, sessionData.score), totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0);
+    scorePct = Math.max(0, Math.min(100, Math.round(scorePct)));
+
+    const timeSpentSeconds = numberValue(firstDefined(sessionData.timeSpentSeconds, sessionData.durationSeconds, sessionData.timeSpent, sessionData.duration), 0);
+    const answered = correctCount + wrongCount;
+    const accuracy = answered > 0 ? Math.round((correctCount / answered) * 100) : 0;
+
+    renderSummary({ totalQuestions, correctCount, wrongCount, skippedCount, scorePct, timeSpentSeconds, answered, accuracy });
+    renderCorrections(activeFilter);
+
+    document.getElementById("loading-container").style.display = "none";
+    document.getElementById("result-content").style.display = "block";
+  }
+
+  function renderSummary(data) {
+    const mode = firstDefined(sessionData.mode, sessionData.examMode, sessionData.testMode, "practice");
+    const courseCode = firstDefined(sessionData.courseCode, sessionData.course, sessionData.subjectCode, sessionData.subject, sessionData.examTitle, "EXAM");
+    const courseTitle = firstDefined(sessionData.courseTitle, sessionData.subject, sessionData.courseName, sessionData.course, courseCode, "Examination Review");
+
+    document.getElementById("session-type-badge").textContent = String(mode).toUpperCase();
+    document.getElementById("page-header-title").textContent = "Exam Review";
+    document.getElementById("course-name-tag").textContent = String(courseCode).toUpperCase();
+    document.getElementById("score-percentage").textContent = `${data.scorePct}%`;
+    document.getElementById("score-count-detail").textContent = `Scored ${data.correctCount} out of ${data.totalQuestions}`;
+    document.getElementById("course-subtitle").textContent = String(courseTitle);
+    document.getElementById("stat-correct").textContent = data.correctCount;
+    document.getElementById("stat-wrong").textContent = data.wrongCount;
+    document.getElementById("stat-skipped").textContent = data.skippedCount;
+    document.getElementById("performance-total").textContent = data.totalQuestions;
+    document.getElementById("performance-answered").textContent = data.answered;
+    document.getElementById("performance-accuracy").textContent = `${data.accuracy}%`;
+    document.getElementById("performance-result").textContent = data.scorePct >= 80 ? "Excellent" : data.scorePct >= 70 ? "Very Good" : data.scorePct >= 60 ? "Good" : data.scorePct >= 50 ? "Fair" : "Needs Improvement";
+
+    const minutes = Math.floor(data.timeSpentSeconds / 60);
+    const seconds = Math.floor(data.timeSpentSeconds % 60);
+    const averageSeconds = data.totalQuestions > 0 ? Math.round(data.timeSpentSeconds / data.totalQuestions) : 0;
+
+    document.getElementById("time-spent-text").textContent = `${minutes}m ${seconds}s`;
+    document.getElementById("time-avg-text").textContent = `${averageSeconds}s`;
+    document.getElementById("question-count-label").textContent = `${analyzedResults.length} question${analyzedResults.length === 1 ? "" : "s"}`;
+  }
+
+  function renderCorrections(filterMode) {
+    const container = document.getElementById("corrections-container");
+    container.innerHTML = "";
+
+    const filtered = analyzedResults.filter(item => {
+      if (filterMode === "all") return true;
+      if (filterMode === "skipped") return item.status === "skipped" || item.status === "unattempted";
+      return item.status === filterMode;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="empty-state">No questions found under this filter.</div>`;
+      return;
+    }
+
+    filtered.forEach(item => container.appendChild(createQuestionCard(item)));
+  }
+
+  function createQuestionCard(item) {
+    const card = document.createElement("article");
+    card.className = "correction-card";
+
+    const badgeClass = item.status === "correct" ? "correct" : item.status === "wrong" ? "wrong" : "skipped";
+    const badgeLabel = item.status === "correct" ? "Correct" : item.status === "wrong" ? "Wrong" : "Skipped";
+
+    let metaHtml = "";
+    if (item.topic) metaHtml += `<span class="meta-chip">Topic: ${escapeHtml(item.topic)}</span>`;
+    if (item.year) metaHtml += `<span class="meta-chip">Year: ${escapeHtml(item.year)}</span>`;
+    if (item.marks !== undefined && item.marks !== null && item.marks !== "") {
+      metaHtml += `<span class="meta-chip">${escapeHtml(item.marks)} mark${Number(item.marks) === 1 ? "" : "s"}</span>`;
+    }
+    const metaBlock = metaHtml ? `<div class="question-meta">${metaHtml}</div>` : "";
+
+    const imageHtml = item.image ? `
+      <div class="question-image-wrapper">
+        <img class="question-image" src="${escapeHtml(item.image)}" alt="Question ${item.index} image" loading="lazy" onerror="this.parentElement.style.display='none';">
+        <div class="image-caption">Question image</div>
+      </div>
+    ` : "";
+
+    let optionsHtml = "";
+    if (item.options && item.options.length > 0) {
+      optionsHtml = `<div class="options-breakdown">`;
+      item.options.forEach((optionText, optionIndex) => {
+        const letter = optionLetters[optionIndex] || String(optionIndex + 1);
+        let classes = "option-item";
+        let tags = "";
+
+        if (optionIndex === item.correctIndex) {
+          classes += " correct-ans";
+          tags += `<span class="option-tag correct-tag">Correct Answer</span>`;
+        }
+        if (optionIndex === item.userSelectedIndex) {
+          if (item.status === "wrong") {
+            classes += " user-wrong";
+            tags += `<span class="option-tag wrong-tag">Your Choice</span>`;
+          } else if (item.status === "correct") {
+            classes += " user-correct";
+            if (optionIndex !== item.correctIndex) {
+              tags += `<span class="option-tag correct-tag">Your Choice</span>`;
+            }
+          }
+        }
+
+        optionsHtml += `
+          <div class="${classes}">
+            <span class="option-letter">${letter}.</span>
+            <span class="option-content">${textToHtml(optionText)}</span>
+            ${tags}
+          </div>
+        `;
+      });
+      optionsHtml += `</div>`;
+    }
+
+    let userAnswerText = "Not answered";
+    if (item.userSelectedIndex !== null && item.userSelectedIndex !== undefined) {
+      userAnswerText = `${optionLetters[item.userSelectedIndex] || (item.userSelectedIndex + 1)}. ${item.options[item.userSelectedIndex] || ""}`;
+    } else if (item.userRaw !== undefined && item.userRaw !== null && item.userRaw !== "") {
+      userAnswerText = String(item.userRaw);
+    }
+
+    let correctAnswerText = "Not available";
+    if (item.correctIndex !== null && item.correctIndex !== undefined) {
+      correctAnswerText = `${optionLetters[item.correctIndex] || (item.correctIndex + 1)}. ${item.options[item.correctIndex] || ""}`;
+    } else if (item.correctRaw !== undefined && item.correctRaw !== null && item.correctRaw !== "") {
+      correctAnswerText = String(item.correctRaw);
+    }
+
+    const answerSummary = `
+      <div class="answer-summary">
+        <div class="answer-box your-answer">
+          <span class="answer-box-label">Your Answer</span>
+          <div class="answer-box-value">${textToHtml(userAnswerText)}</div>
+        </div>
+        <div class="answer-box correct-answer">
+          <span class="answer-box-label">Correct Answer</span>
+          <div class="answer-box-value">${textToHtml(correctAnswerText)}</div>
+        </div>
+      </div>
+    `;
+
+    const explanationHtml = `
+      <div class="explanation-box">
+        <div class="explanation-title">Solution Explanation</div>
+        <div class="explanation-content">${textToHtml(item.explanation)}</div>
+      </div>
+    `;
+
+    const stepsHtml = item.steps ? `
+      <div class="steps-box">
+        <div class="steps-title">Step-by-Step Solution</div>
+        <div class="steps-content">${textToHtml(item.steps)}</div>
+      </div>
+    ` : "";
+
+    card.innerHTML = `
+      <div class="correction-status-bar">
+        <span class="q-number-tag">QUESTION ${item.index}</span>
+        <span class="status-badge ${badgeClass}">${badgeLabel}</span>
+      </div>
+      ${metaBlock}
+      ${imageHtml}
+      <div class="correction-q-text">${textToHtml(item.question)}</div>
+      ${optionsHtml}
+      ${answerSummary}
+      ${explanationHtml}
+      ${stepsHtml}
+    `;
+
+    return card;
+  }
+
+  function showError(message) {
+    document.getElementById("loading-container").style.display = "none";
+    document.getElementById("result-content").style.display = "none";
+    const errorContainer = document.getElementById("error-container");
+    errorContainer.style.display = "block";
+    errorContainer.innerHTML = `
+      <div class="error-box">
+        <div class="error-title">Unable to Load Review</div>
+        ${textToHtml(message)}
+      </div>
+      <a href="history.html" class="nav-btn nav-btn-primary" style="display:flex;width:100%;">Return to History</a>
+    `;
+  }
+
+  onAuthStateChanged(auth, user => {
+    if (user && requestedSessionId && !sessionData) {
+      getFirestoreSession(requestedSessionId).then(cloudSession => {
+        if (!cloudSession) return;
+        sessionData = attachLocalQuestionArchive(cloudSession);
+        cacheResolvedSession(sessionData);
+        processAndRenderResults();
+      }).catch(err => console.warn("Background sync error:", err));
+    }
+  });
+</script>
+</body>
+</html>

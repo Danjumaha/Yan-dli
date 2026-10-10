@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Practice History</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#7C3AED;--primary-hover:#6D28D9;--primary-light:#F3E8FF;--bg-gray:#F8FAFC;--card-bg:#FFFFFF;--text-dark:#0F172A;--text-body:#334155;--text-muted:#64748B;--border-color:#E2E8F0;--border-light:#F1F5F9;--success:#10B981;--success-light:#ECFDF5;--danger:#EF4444;--danger-light:#FEF2F2;--warning:#F59E0B;--warning-light:#FFFBEB;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--shadow-sm:0 1px 2px rgba(0,0,0,0.03);--shadow-md:0 4px 12px -2px rgba(124,58,237,0.08);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;letter-spacing:0.1px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
+    body{background:#EEF2F7;}
+    .app-container{width:100%;max-width:480px;background:var(--bg-gray);min-height:100vh;position:relative;padding-bottom:90px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);margin:0 auto;}
+    .header{background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.9rem 1.1rem;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;}
+    .header-brand{display:flex;align-items:center;gap:10px;}
+    .btn-icon{background:var(--bg-gray);color:var(--text-dark);border:1px solid var(--border-color);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s ease;}
+    .btn-icon:active{transform:scale(0.95);background:var(--primary-light);color:var(--primary);}
+    .btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .header-title{font-size:0.98rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
+    .header-badge{background:var(--primary-light);color:var(--primary);font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.3px;}
+    .content-body{padding:1.1rem 1rem;}
+    .loading-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted);display:none;}
+    .loading-spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;margin:0 auto 1rem;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .month-group{margin-bottom:1.5rem;}
+    .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;padding:0 2px;}
+    .month-title{font-size:0.82rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
+    .month-sub{font-size:0.75rem;color:var(--text-muted);font-weight:500;}
+    .dates-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    .date-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.75rem 0.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s ease;box-shadow:var(--shadow-sm);}
+    .date-card:hover{border-color:var(--primary);}
+    .date-card:active{transform:scale(0.96);border-color:var(--primary);background:var(--primary-light);}
+    .date-card .day-number{font-size:1.1rem;font-weight:700;color:var(--text-dark);line-height:1.2;}
+    .date-card .attempt-count{font-size:0.65rem;font-weight:600;color:var(--text-muted);margin-top:3px;}
+    .drilldown-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);}
+    .back-btn-inline{display:flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;color:var(--primary);background:var(--primary-light);padding:6px 12px;border-radius:20px;border:none;cursor:pointer;transition:all 0.2s ease;}
+    .back-btn-inline:active{transform:scale(0.95);}
+    .back-btn-inline svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .drilldown-date-title{font-size:0.9rem;font-weight:700;color:var(--text-dark);}
+    .session-card{background:var(--card-bg);border-radius:var(--radius-md);padding:1rem;border:1px solid var(--border-color);box-shadow:var(--shadow-sm);margin-bottom:0.85rem;}
+    .session-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;gap:10px;}
+    .course-title{font-size:0.88rem;font-weight:700;color:var(--text-dark);line-height:1.3;word-break:break-word;}
+    .time-sub{font-size:0.7rem;color:var(--text-muted);margin-top:2px;}
+    .session-head-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .score-pill{font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:0.2px;}
+    .score-pill.high{background:var(--success-light);color:#047857;}
+    .score-pill.mid{background:var(--warning-light);color:#B45309;}
+    .score-pill.low{background:var(--danger-light);color:#B91C1C;}
+    .btn-delete-card{background:var(--danger-light);color:var(--danger);border:none;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .btn-delete-card:active{transform:scale(0.92);}
+    .btn-delete-card svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .session-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-gray);border-radius:var(--radius-sm);padding:0.55rem;margin-bottom:0.85rem;border:1px solid var(--border-light);}
+    .stat-cell{display:flex;flex-direction:column;align-items:center;}
+    .stat-cell-lbl{font-size:0.62rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
+    .stat-cell-val{font-size:0.82rem;font-weight:700;color:var(--text-dark);margin-top:1px;}
+    .session-actions{display:flex;gap:8px;}
+    .action-btn{flex:1;height:36px;border-radius:8px;font-size:0.76rem;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:all 0.2s ease;}
+    .btn-review{background:var(--primary-light);color:var(--primary);}
+    .btn-review:active{background:#E9D5FF;transform:scale(0.97);}
+    .btn-retry{background:var(--primary);color:white;}
+    .btn-retry:active{background:var(--primary-hover);transform:scale(0.97);}
+    .action-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .empty-state,.error-state{text-align:center;padding:3.5rem 1.5rem;background:var(--card-bg);border-radius:var(--radius-md);border:1px dashed var(--border-color);margin-top:0.5rem;display:none;}
+    .error-state{border-style:solid;}
+    .empty-state svg{width:40px;height:40px;stroke:var(--text-muted);margin-bottom:0.85rem;stroke-width:1.6;}
+    .empty-state h4,.error-state h4{font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-bottom:0.3rem;}
+    .empty-state p,.error-state p{font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.45;}
+    .btn-start-first,.retry-load-btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 1.25rem;background:var(--primary);color:white;text-decoration:none;font-weight:600;font-size:0.78rem;border-radius:8px;border:none;cursor:pointer;}
+    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.2s ease;}
+    .modal-overlay.active{opacity:1;pointer-events:auto;}
+    .modal-card{background:var(--card-bg);width:90%;max-width:340px;border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);transform:scale(0.95);transition:transform 0.2s ease;}
+    .modal-overlay.active .modal-card{transform:scale(1);}
+    .modal-icon-wrap{width:48px;height:48px;background:var(--danger-light);color:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+    .modal-icon-wrap svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;}
+    .modal-title{font-size:1rem;font-weight:700;color:var(--text-dark);margin-bottom:0.4rem;}
+    .modal-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.45;margin-bottom:1.25rem;}
+    .modal-actions{display:flex;gap:10px;}
+    .modal-btn{flex:1;height:40px;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;}
+    .modal-btn-cancel{background:var(--bg-gray);color:var(--text-body);border:1px solid var(--border-color);}
+    .modal-btn-delete{background:var(--danger);color:white;}
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border-color);padding:10px 16px;display:flex;align-items:center;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,0.04);}
+    .btn-bottom-cta{width:100%;height:42px;border-radius:10px;background:var(--primary);color:white;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;}
+    .btn-bottom-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <header class="header">
+    <div class="header-brand">
+      <a href="dashboard.html" class="btn-icon" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <span class="header-title">Practice History</span>
+    </div>
+    <span class="header-badge" id="total-attempts-count">0 LOGS</span>
+  </header>
+
+  <div class="content-body">
+    <div id="loading-state" class="loading-state">
+      <div class="loading-spinner"></div>
+      <div>Loading your practice history...</div>
+    </div>
+
+    <div id="dates-overview-container" style="display:none;"></div>
+
+    <div id="sessions-drilldown-container" style="display:none;">
+      <div class="drilldown-header">
+        <div>
+          <div class="drilldown-date-title" id="drilldown-date-title">--</div>
+          <div style="font-size:0.72rem;color:var(--text-muted);font-weight:500;" id="drilldown-attempt-count">0 Attempts</div>
+        </div>
+        <button class="back-btn-inline" id="btn-change-date">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Change Date
+        </button>
+      </div>
+      <div id="sessions-list"></div>
+    </div>
+
+    <div id="empty-state" class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <h4>No Practice Records Found</h4>
+      <p>You haven't completed any practice attempts yet. Take a test to build your history log.</p>
+      <a href="exams.html" class="btn-start-first">Start Practice Exam</a>
+    </div>
+
+    <div id="error-state" class="error-state">
+      <h4>Unable to Load History</h4>
+      <p id="error-message">We couldn't load your practice history right now.</p>
+      <button class="retry-load-btn" id="retry-load-btn">Try Again</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="exams.html" class="btn-bottom-cta">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Take New Practice Test
+    </a>
+  </nav>
+</div>
+
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-card">
+    <div class="modal-icon-wrap">
+      <svg viewBox="0 0 24 24">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        <line x1="10" y1="11" x2="10" y2="17"></line>
+        <line x1="14" y1="11" x2="14" y2="17"></line>
+      </svg>
+    </div>
+    <div class="modal-title">Delete Exam Record?</div>
+    <div class="modal-desc" id="modal-desc-text">Are you sure you want to delete this test attempt?</div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" id="modal-cancel-btn">Cancel</button>
+      <button class="modal-btn modal-btn-delete" id="modal-confirm-delete-btn">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, setDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+  authDomain: "yan-dli.firebaseapp.com",
+  databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+  projectId: "yan-dli",
+  storageBucket: "yan-dli.firebasestorage.app",
+  messagingSenderId: "538794949165",
+  appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let historyRecords = [], groupedData = {}, activeDateKey = null, sessionToDelete = null, currentUserId = null, isLoading = false, syncInProgress = false;
+
+const getLocalHistoryKey = uid => `yan_exam_history_${uid}`;
+const getPendingSyncKey = uid => `yan_exam_pending_sync_${uid}`;
+const getTombstoneKey = uid => `yan_exam_deleted_tombstones_${uid}`;
+const getCanonicalSessionKey = (uid, sessionId) => `yan_exam_session_${uid}_${sessionId}`;
+
+function safeParse(value) { try { return JSON.parse(value); } catch { return null; } }
+function safeLocalSet(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } }
+function safeLocalGet(key) { try { return safeParse(localStorage.getItem(key)); } catch { return null; } }
+function safeLocalRemove(key) { try { localStorage.removeItem(key); } catch {} }
+
+function getTombstones(uid) {
+  const data = safeLocalGet(getTombstoneKey(uid));
+  return Array.isArray(data) ? new Set(data) : new Set();
+}
+
+function addTombstone(uid, sessionId) {
+  if (!uid || !sessionId) return;
+  const tombstones = getTombstones(uid);
+  tombstones.add(String(sessionId));
+  safeLocalSet(getTombstoneKey(uid), Array.from(tombstones));
+}
+
+function escapeHTML(value) {
+  if (value == null) return "";
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function getQuestions(record) {
+  if (!record) return [];
+  const candidates = [record.questionsData, record.questions, record.questionData, record.questionList, record.items, record.examQuestions, record.questionBank];
+  for (const v of candidates) if (Array.isArray(v) && v.length) return v;
+  return [];
+}
+
+function getAnswers(record) {
+  if (!record) return {};
+  const candidates = [record.userAnswers, record.selectedAnswers, record.answers, record.responses, record.answerMap, record.studentAnswers];
+  for (const v of candidates) if (v && typeof v === "object" && !Array.isArray(v)) return v;
+  return {};
+}
+
+function getRecordTime(record) {
+  if (!record) return 0;
+  const values = [record.submittedAt, record.completedAt, record.finishedAt, record.timestamp, record.createdAt, record.updatedAt];
+  for (const v of values) {
+    if (!v) continue;
+    if (typeof v === "object" && typeof v.toDate === "function") {
+      const t = v.toDate().getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+    if (typeof v === "object" && v.seconds != null) {
+      const t = Number(v.seconds) * 1000;
+      if (!Number.isNaN(t)) return t;
+    }
+    if (typeof v === "number") return v > 10000000000 ? v : v * 1000;
+    if (typeof v === "string") {
+      const t = new Date(v).getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+  }
+  return 0;
+}
+
+function getStableRecordId(record) {
+  if (!record) return `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const possibleIds = [record.sessionId, record.examSessionId, record.attemptId, record.historyId, record.recordId, record.id];
+  for (const v of possibleIds) if (v !== undefined && v !== null && String(v).trim()) return String(v);
+  const t = getRecordTime(record);
+  if (t) return `session_${t}`;
+  return `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function normalizeAnswer(value) {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value === "number") return value;
+  const text = String(value).trim().toUpperCase();
+  const letters = ["A", "B", "C", "D", "E"];
+  if (letters.includes(text)) return letters.indexOf(text);
+  const num = parseInt(text, 10);
+  return Number.isNaN(num) ? null : num;
+}
+
+function getQuestionCorrectAnswer(q) {
+  if (!q) return null;
+  const values = [q.correctAnswer, q.answer, q.correctIndex, q.correctOption, q.correct, q.answerIndex, q.correctAnswerIndex];
+  for (const v of values) {
+    if (v !== undefined && v !== null) {
+      const norm = normalizeAnswer(v);
+      if (norm !== null) return norm;
+      if (typeof v === "string") return v.trim();
+    }
+  }
+  return null;
+}
+
+function getQuestionSelectedAnswer(session, q, index) {
+  if (q) {
+    const directValues = [q.userSelected, q.selectedAnswer, q.userAnswer, q.studentAnswer];
+    for (const v of directValues) {
+      if (v !== undefined && v !== null && v !== "") {
+        const norm = normalizeAnswer(v);
+        if (norm !== null) return norm;
+        if (typeof v === "string") return v.trim();
+      }
+    }
+  }
+  const answers = getAnswers(session);
+  const possibleKeys = [index, String(index), index + 1, String(index + 1)];
+  for (const key of possibleKeys) {
+    if (Object.prototype.hasOwnProperty.call(answers, key)) {
+      const val = answers[key];
+      if (val !== undefined && val !== null && val !== "") {
+        const norm = normalizeAnswer(val);
+        if (norm !== null) return norm;
+        if (typeof val === "string") return val.trim();
+      }
+    }
+  }
+  return null;
+}
+
+function compareAnswers(userAns, correctAns) {
+  if (userAns === null || correctAns === null) return false;
+  if (userAns === correctAns) return true;
+  if (typeof userAns === "number" && typeof correctAns === "string") {
+    const letters = ["A", "B", "C", "D", "E"];
+    if (letters[userAns] && letters[userAns].toUpperCase() === correctAns.toUpperCase()) return true;
+  }
+  if (typeof correctAns === "number" && typeof userAns === "string") {
+    const letters = ["A", "B", "C", "D", "E"];
+    if (letters[correctAns] && letters[correctAns].toUpperCase() === userAns.toUpperCase()) return true;
+  }
+  if (typeof userAns === "string" && typeof correctAns === "string") {
+    return userAns.toUpperCase() === correctAns.toUpperCase();
+  }
+  return false;
+}
+
+function calculateCorrect(session) {
+  const qs = getQuestions(session);
+  let correct = 0;
+  qs.forEach((q, i) => {
+    if (compareAnswers(getQuestionSelectedAnswer(session, q, i), getQuestionCorrectAnswer(q))) correct++;
+  });
+  return correct;
+}
+
+function calculateWrong(session) {
+  const qs = getQuestions(session);
+  let wrong = 0;
+  qs.forEach((q, i) => {
+    const ans = getQuestionSelectedAnswer(session, q, i);
+    const corr = getQuestionCorrectAnswer(q);
+    if (ans !== null && corr !== null && !compareAnswers(ans, corr)) wrong++;
+  });
+  return wrong;
+}
+
+function calculateSkipped(session) {
+  const qs = getQuestions(session);
+  let skipped = 0;
+  qs.forEach((q, i) => { if (getQuestionSelectedAnswer(session, q, i) === null) skipped++; });
+  return skipped;
+}
+
+function normalizeSession(record) {
+  if (!record || typeof record !== "object") return null;
+  const qs = getQuestions(record);
+  const ans = getAnswers(record);
+  const total = Number(record.totalQuestions ?? record.total ?? qs.length ?? 0);
+  const hasPrecomputed = record.correctAnswersCount !== undefined || record.correctCount !== undefined;
+  const preCorrect = Number(record.correctAnswersCount ?? record.correctCount ?? 0);
+  const correct = (hasPrecomputed && preCorrect > 0) ? preCorrect : calculateCorrect(record);
+  const wrong = Number(record.wrongAnswersCount ?? record.wrongCount ?? calculateWrong(record));
+  const skipped = Number(record.unattemptedCount ?? record.skippedCount ?? calculateSkipped(record));
+  const score = record.scorePercentage !== undefined ? Number(record.scorePercentage) : record.score !== undefined ? Number(record.score) : total > 0 ? Math.round((correct / total) * 100) : 0;
+  const id = getStableRecordId(record);
+  return {
+    ...record, id, sessionId: record.sessionId || record.examSessionId || id, userId: record.userId || currentUserId,
+    questionsData: qs, questions: qs, userAnswers: ans, selectedAnswers: ans, totalQuestions: total,
+    correctCount: correct, correctAnswersCount: correct, wrongCount: wrong, wrongAnswersCount: wrong,
+    skippedCount: skipped, unattemptedCount: skipped, score, scorePercentage: score, schemaVersion: Number(record.schemaVersion || 2)
+  };
+}
+
+function isValidHistoryRecord(record) {
+  if (!record || typeof record !== "object") return false;
+  if (currentUserId) {
+    const tombstones = getTombstones(currentUserId);
+    const id = getStableRecordId(record);
+    if (tombstones.has(String(id))) return false;
+    if (record.userId && String(record.userId) !== String(currentUserId)) return false;
+  }
+  const qs = getQuestions(record);
+  return qs.length > 0 || record.scorePercentage !== undefined || record.score !== undefined || record.totalQuestions !== undefined || record.correctAnswersCount !== undefined;
+}
+
+function mergeSessionRecords(first, second) {
+  if (!first) return normalizeSession(second);
+  if (!second) return normalizeSession(first);
+  const fNorm = normalizeSession(first), sNorm = normalizeSession(second);
+  const base = sNorm > fNorm ? { ...fNorm, ...sNorm } : { ...sNorm, ...fNorm };
+  const fQs = getQuestions(fNorm), sQs = getQuestions(sNorm);
+  if (sQs.length > fQs.length) { base.questionsData = sQs; base.questions = sQs; }
+  else if (fQs.length) { base.questionsData = fQs; base.questions = fQs; }
+  const fAns = getAnswers(fNorm), sAns = getAnswers(sNorm);
+  if (Object.keys(sAns).length > Object.keys(fAns).length) { base.userAnswers = sAns; base.selectedAnswers = sAns; }
+  else if (Object.keys(fAns).length) { base.userAnswers = fAns; base.selectedAnswers = fAns; }
+  base.id = getStableRecordId(fNorm) || getStableRecordId(sNorm);
+  base.sessionId = fNorm.sessionId || sNorm.sessionId || base.id;
+  base.userId = currentUserId;
+  return normalizeSession(base);
+}
+
+function addRecordToMap(map, record) {
+  if (!record || typeof record !== "object") return;
+  const normalized = normalizeSession({ ...record, userId: record.userId || currentUserId });
+  if (!normalized || !isValidHistoryRecord(normalized)) return;
+  const id = getStableRecordId(normalized);
+  const existing = map.get(String(id));
+  if (existing) map.set(String(id), mergeSessionRecords(existing, normalized));
+  else map.set(String(id), normalized);
+}
+
+function readLocalHistory(uid) {
+  const records = [];
+  const tombstones = getTombstones(uid);
+  const data = safeLocalGet(getLocalHistoryKey(uid));
+  if (Array.isArray(data)) {
+    data.forEach(r => {
+      const id = getStableRecordId(r);
+      if (!tombstones.has(String(id)) && (!r.userId || String(r.userId) === String(uid))) {
+        records.push({ ...r, userId: r.userId || uid });
+      }
+    });
+  }
+  return records;
+}
+
+function readCanonicalSessions(uid) {
+  const records = [];
+  const tombstones = getTombstones(uid);
+  const prefix = `yan_exam_session_${uid}_`;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(prefix)) continue;
+      const data = safeLocalGet(key);
+      if (data && typeof data === "object") {
+        const id = getStableRecordId(data);
+        if (!tombstones.has(String(id)) && (!data.userId || String(data.userId) === String(uid))) {
+          records.push({ ...data, userId: data.userId || uid });
+        }
+      }
+    }
+  } catch (e) {}
+  return records;
+}
+
+function saveLocalHistory(uid, records) {
+  const tombstones = getTombstones(uid);
+  const normalized = records.map(r => normalizeSession(r)).filter(Boolean).filter(r => !tombstones.has(String(getStableRecordId(r))) && (!r.userId || String(r.userId) === String(uid)));
+  safeLocalSet(getLocalHistoryKey(uid), normalized);
+  normalized.forEach(r => { safeLocalSet(getCanonicalSessionKey(uid, getStableRecordId(r)), r); });
+  broadcastHistoryUpdate(uid);
+}
+
+function broadcastHistoryUpdate(uid) {
+  try {
+    if ("BroadcastChannel" in window) {
+      const channel = new BroadcastChannel("yan-dli-history-sync");
+      channel.postMessage({ type: "history-updated", userId: uid, count: historyRecords.length });
+      channel.close();
+    }
+  } catch {}
+}
+
+function readPendingSync(uid) {
+  const data = safeLocalGet(getPendingSyncKey(uid));
+  const tombstones = getTombstones(uid);
+  return Array.isArray(data) ? data.filter(r => !tombstones.has(String(getStableRecordId(r)))) : [];
+}
+
+function savePendingSync(uid, records) {
+  const tombstones = getTombstones(uid);
+  const map = new Map();
+  records.forEach(r => {
+    if (!r) return;
+    const normalized = normalizeSession(r);
+    if (!normalized || tombstones.has(String(getStableRecordId(normalized)))) return;
+    const id = getStableRecordId(normalized);
+    const existing = map.get(id);
+    map.set(id, existing ? mergeSessionRecords(existing, normalized) : normalized);
+  });
+  safeLocalSet(getPendingSyncKey(uid), Array.from(map.values()));
+}
+
+function removeFromPendingSync(uid, sessionId) {
+  const remaining = readPendingSync(uid).filter(r => getStableRecordId(r) !== String(sessionId));
+  savePendingSync(uid, remaining);
+}
+
+function cleanForFirestore(value, seen = new WeakSet()) {
+  if (value === null || value === undefined) return value;
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value;
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === "object" && typeof value.toDate === "function") {
+    try { return value.toDate().toISOString(); } catch { return null; }
+  }
+  if (typeof value === "object") {
+    if (seen.has(value)) return null;
+    seen.add(value);
+    if (Array.isArray(value)) return value.map(item => cleanForFirestore(item, seen));
+    const output = {};
+    Object.keys(value).forEach(key => {
+      if (key === "syncStatus" || key === "syncError" || key === "localOnly") return;
+      output[key] = cleanForFirestore(value[key], seen);
+    });
+    return output;
+  }
+  return String(value);
+}
+
+async function uploadSession(session) {
+  if (!currentUserId || !navigator.onLine) return false;
+  const normalized = normalizeSession({ ...session, userId: currentUserId });
+  if (!normalized) return false;
+  const sessionId = getStableRecordId(normalized);
+  if (getTombstones(currentUserId).has(String(sessionId))) return false;
+  try {
+    const payload = cleanForFirestore(normalized);
+    payload.id = sessionId;
+    payload.sessionId = payload.sessionId || sessionId;
+    payload.userId = currentUserId;
+    payload.schemaVersion = 2;
+    payload.updatedAt = serverTimestamp();
+    await setDoc(doc(db, "ExamHistory", String(sessionId)), payload, { merge: true });
+    removeFromPendingSync(currentUserId, sessionId);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function syncPendingSessions() {
+  if (!currentUserId || !navigator.onLine || syncInProgress) return;
+  const pending = readPendingSync(currentUserId);
+  if (!pending.length) return;
+  syncInProgress = true;
+  const remaining = [];
+  for (const session of pending) {
+    const success = await uploadSession(session);
+    if (!success) remaining.push(session);
+  }
+  savePendingSync(currentUserId, remaining);
+  syncInProgress = false;
+}
+
+async function fetchFirestoreHistory(uid) {
+  const records = [];
+  const tombstones = getTombstones(uid);
+  const historyQuery = query(collection(db, "ExamHistory"), where("userId", "==", uid));
+  const snapshot = await getDocs(historyQuery);
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const id = data.id || docSnap.id;
+    if (tombstones.has(String(id))) return;
+    if (data.userId && String(data.userId) !== String(uid)) return;
+    records.push({
+      ...data, id, sessionId: data.sessionId || data.examSessionId || id,
+      userId: uid, syncStatus: "synced", synced: true
+    });
+  });
+  return records;
+}
+
+function collectAllLocalRecords(uid) {
+  const records = [];
+  records.push(...readLocalHistory(uid));
+  records.push(...readCanonicalSessions(uid));
+  records.push(...readPendingSync(uid).map(r => ({ ...r, userId: r.userId || uid, syncStatus: "pending", synced: false })));
+  return records;
+}
+
+async function loadAllRecords(userId, forceRemote = false) {
+  if (!userId || (isLoading && !forceRemote)) return;
+  isLoading = true;
+  try {
+    const localRecords = collectAllLocalRecords(userId);
+    const localMap = new Map();
+    localRecords.forEach(r => addRecordToMap(localMap, r));
+    historyRecords = Array.from(localMap.values()).filter(isValidHistoryRecord).sort((a, b) => getRecordTime(b) - getRecordTime(a));
+    
+    if (historyRecords.length > 0) {
+      processHistoryData();
+    } else {
+      showEmptyState();
+    }
+
+    if (navigator.onLine) {
+      try {
+        const remoteRecords = await fetchFirestoreHistory(userId);
+        const mergedMap = new Map();
+        historyRecords.forEach(r => addRecordToMap(mergedMap, r));
+        remoteRecords.forEach(r => addRecordToMap(mergedMap, r));
+        historyRecords = Array.from(mergedMap.values()).filter(isValidHistoryRecord).sort((a, b) => getRecordTime(b) - getRecordTime(a));
+        saveLocalHistory(userId, historyRecords);
+        await syncPendingSessions();
+      } catch (e) {}
+    }
+
+    if (historyRecords.length > 0) {
+      processHistoryData();
+    } else {
+      showEmptyState();
+    }
+  } catch (e) {
+    if (historyRecords.length === 0) {
+      showErrorState(e?.message || "Unable to load practice history.");
+    }
+  }
+  isLoading = false;
+}
+
+function processHistoryData() {
+  document.getElementById("empty-state").style.display = "none";
+  document.getElementById("error-state").style.display = "none";
+  document.getElementById("loading-state").style.display = "none";
+  document.getElementById("dates-overview-container").style.display = "block";
+  document.getElementById("total-attempts-count").innerText = `${historyRecords.length} LOGS`;
+
+  groupedData = {};
+  historyRecords.forEach(record => {
+    const time = getRecordTime(record) || Date.now();
+    const date = new Date(time);
+    const monthYear = date.toLocaleString("en-US", { month: "long", year: "numeric" });
+    const dateKey = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+    if (!groupedData[monthYear]) groupedData[monthYear] = {};
+    if (!groupedData[monthYear][dateKey]) groupedData[monthYear][dateKey] = [];
+    groupedData[monthYear][dateKey].push(record);
+  });
+  renderDatesGrid();
+
+  if (activeDateKey) {
+    for (const month in groupedData) {
+      if (groupedData[month][activeDateKey]) {
+        openDrilldown(activeDateKey, groupedData[month][activeDateKey]);
+        return;
+      }
+    }
+    activeDateKey = null;
+    showDatesOverview();
+  }
+}
+
+function renderDatesGrid() {
+  const container = document.getElementById("dates-overview-container");
+  container.innerHTML = "";
+  const monthEntries = Object.entries(groupedData);
+  if (!monthEntries.length) { showEmptyState(); return; }
+
+  monthEntries.sort((a, b) => {
+    const dateA = Object.keys(a[1]).sort().reverse()[0];
+    const dateB = Object.keys(b[1]).sort().reverse()[0];
+    return new Date(`${dateB}T00:00:00`) - new Date(`${dateA}T00:00:00`);
+  });
+
+  monthEntries.forEach(([monthYear, dates]) => {
+    const monthGroup = document.createElement("div");
+    monthGroup.className = "month-group";
+    const total = Object.values(dates).reduce((sum, list) => sum + list.length, 0);
+    monthGroup.innerHTML = `
+      <div class="month-header">
+        <span class="month-title">${escapeHTML(monthYear)}</span>
+        <span class="month-sub">${total} Session${total === 1 ? "" : "s"}</span>
+      </div>
+      <div class="dates-grid"></div>
+    `;
+    const grid = monthGroup.querySelector(".dates-grid");
+    Object.keys(dates).sort().reverse().forEach(dateKey => {
+      const sessions = dates[dateKey];
+      const date = new Date(`${dateKey}T00:00:00`);
+      const card = document.createElement("div");
+      card.className = "date-card";
+      card.innerHTML = `
+        <span style="font-size:0.62rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;">${date.toLocaleString("en-US", { weekday: "short" })}</span>
+        <span class="day-number">${date.getDate()}</span>
+        <span class="attempt-count">${sessions.length} Test${sessions.length === 1 ? "" : "s"}</span>
+      `;
+      card.addEventListener("click", () => openDrilldown(dateKey, sessions));
+      grid.appendChild(card);
+    });
+    container.appendChild(monthGroup);
+  });
+}
+
+function openDrilldown(dateKey, sessions) {
+  activeDateKey = dateKey;
+  document.getElementById("dates-overview-container").style.display = "none";
+  document.getElementById("sessions-drilldown-container").style.display = "block";
+  const date = new Date(`${dateKey}T00:00:00`);
+  document.getElementById("drilldown-date-title").innerText = date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" });
+  document.getElementById("drilldown-attempt-count").innerText = `${sessions.length} Practice Attempt${sessions.length === 1 ? "" : "s"}`;
+  const list = document.getElementById("sessions-list");
+  list.innerHTML = "";
+  [...sessions].sort((a, b) => getRecordTime(b) - getRecordTime(a)).forEach(s => renderSessionCard(s, list));
+}
+
+function renderSessionCard(session, container) {
+  const normalized = normalizeSession(session);
+  if (!normalized) return;
+  const qs = getQuestions(normalized);
+  const total = Number(normalized.totalQuestions || qs.length || 0);
+  const correct = Number(normalized.correctAnswersCount ?? normalized.correctCount ?? calculateCorrect(normalized));
+  const score = normalized.scorePercentage !== undefined ? Number(normalized.scorePercentage) : total ? Math.round((correct / total) * 100) : 0;
+  const timeSpent = Number(normalized.timeSpentSeconds ?? normalized.durationSeconds ?? normalized.timeSpent ?? normalized.elapsedSeconds ?? 0);
+  const mins = Math.floor(timeSpent / 60), secs = timeSpent % 60, avg = total ? Math.round(timeSpent / total) : 0;
+  const scoreClass = score >= 70 ? "high" : score >= 50 ? "mid" : "low";
+  const recordTime = getRecordTime(normalized);
+  const timeString = recordTime ? new Date(recordTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "--";
+  const course = normalized.courseCode || normalized.courseTitle || normalized.courseName || normalized.subject || normalized.examTitle || "PRACTICE EXAM";
+  const mode = normalized.mode || normalized.examMode || "practice";
+
+  const card = document.createElement("div");
+  card.className = "session-card";
+  card.innerHTML = `
+    <div class="session-head">
+      <div>
+        <div class="course-title">${escapeHTML(course)}</div>
+        <div class="time-sub">Completed at ${escapeHTML(timeString)} • ${escapeHTML(String(mode).toUpperCase())}</div>
+      </div>
+      <div class="session-head-right">
+        <span class="score-pill ${scoreClass}">${score}%</span>
+        <button class="btn-delete-card" type="button" title="Delete Exam Record">
+          <svg viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="session-stats-grid">
+      <div class="stat-cell"><span class="stat-cell-lbl">Score</span><span class="stat-cell-val">${correct}/${total}</span></div>
+      <div class="stat-cell"><span class="stat-cell-lbl">Duration</span><span class="stat-cell-val">${mins}m ${secs}s</span></div>
+      <div class="stat-cell"><span class="stat-cell-lbl">Pace</span><span class="stat-cell-val">${avg}s/q</span></div>
+    </div>
+    <div class="session-actions">
+      <button class="action-btn btn-review" type="button">
+        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+        Review Corrections
+      </button>
+      <button class="action-btn btn-retry" type="button">
+        <svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9"></path><path d="M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        Retake
+      </button>
+    </div>
+  `;
+
+  card.querySelector(".btn-review").addEventListener("click", () => reviewSession(normalized));
+  card.querySelector(".btn-retry").addEventListener("click", () => { window.location.href = `exams.html?retake=${encodeURIComponent(getStableRecordId(normalized))}`; });
+  card.querySelector(".btn-delete-card").addEventListener("click", e => { e.stopPropagation(); promptDeleteSession(normalized, course); });
+  container.appendChild(card);
+}
+
+function reviewSession(session) {
+  if (!currentUserId) { window.location.replace("index.html"); return; }
+  const qs = getQuestions(session);
+  if (!qs.length) return;
+  const recordId = getStableRecordId(session);
+  const reviewPayload = { ...session, id: recordId, sessionId: recordId, userId: currentUserId, isReviewMode: true };
+  try {
+    sessionStorage.setItem("yan_review_session", JSON.stringify(reviewPayload));
+  } catch (e) {}
+  window.location.href = `submit.html?id=${encodeURIComponent(recordId)}`;
+}
+
+function promptDeleteSession(session, title) {
+  if (!currentUserId) return;
+  sessionToDelete = session;
+  document.getElementById("modal-desc-text").innerText = `Are you sure you want to delete your ${title} attempt? This will permanently remove it from your history logs.`;
+  document.getElementById("delete-modal").classList.add("active");
+}
+
+function closeDeleteModal() {
+  document.getElementById("delete-modal").classList.remove("active");
+  sessionToDelete = null;
+}
+
+async function confirmDeleteSession() {
+  if (!sessionToDelete || !currentUserId) return;
+  const targetId = getStableRecordId(sessionToDelete);
+  
+  addTombstone(currentUserId, targetId);
+
+  historyRecords = historyRecords.filter(r => getStableRecordId(r) !== String(targetId));
+  saveLocalHistory(currentUserId, historyRecords);
+  removeFromPendingSync(currentUserId, targetId);
+  safeLocalRemove(getCanonicalSessionKey(currentUserId, targetId));
+  
+  closeDeleteModal();
+
+  if (!historyRecords.length) {
+    showEmptyState();
+  } else if (activeDateKey) {
+    let stillHasSessions = false;
+    for (const month in groupedData) {
+      if (groupedData[month][activeDateKey]) {
+        groupedData[month][activeDateKey] = groupedData[month][activeDateKey].filter(r => getStableRecordId(r) !== String(targetId));
+        if (groupedData[month][activeDateKey].length === 0) {
+          delete groupedData[month][activeDateKey];
+          if (Object.keys(groupedData[month]).length === 0) delete groupedData[month];
+        } else {
+          stillHasSessions = true;
+        }
+      }
+    }
+    if (stillHasSessions) {
+      openDrilldown(activeDateKey, groupedData[Object.keys(groupedData)[0]]?.[activeDateKey] || []);
+    } else {
+      showDatesOverview();
+    }
+  } else {
+    processHistoryData();
+  }
+
+  if (navigator.onLine) {
+    try {
+      await deleteDoc(doc(db, "ExamHistory", String(targetId)));
+    } catch (e) {}
+  }
+}
+
+function showEmptyState() {
+  document.getElementById("loading-state").style.display = "none";
+  document.getElementById("empty-state").style.display = "block";
+  document.getElementById("dates-overview-container").style.display = "none";
+  document.getElementById("sessions-drilldown-container").style.display = "none";
+  document.getElementById("error-state").style.display = "none";
+  document.getElementById("total-attempts-count").innerText = "0 LOGS";
+}
+
+function showDatesOverview() {
+  activeDateKey = null;
+  document.getElementById("loading-state").style.display = "none";
+  document.getElementById("dates-overview-container").style.display = "block";
+  document.getElementById("sessions-drilldown-container").style.display = "none";
+  renderDatesGrid();
+}
+
+function showErrorState(message) {
+  document.getElementById("loading-state").style.display = "none";
+  document.getElementById("error-state").style.display = "block";
+  document.getElementById("error-message").innerText = message || "We couldn't load your practice history right now.";
+}
+
+function clearHistoryUI() {
+  historyRecords = []; groupedData = {}; activeDateKey = null;
+  document.getElementById("dates-overview-container").innerHTML = "";
+  document.getElementById("sessions-list").innerHTML = "";
+  document.getElementById("total-attempts-count").innerText = "0 LOGS";
+}
+
+window.addEventListener("online", async () => {
+  if (!currentUserId) return;
+  await syncPendingSessions();
+  await loadAllRecords(currentUserId, true);
+});
+
+let historyChannel = null;
+try {
+  if ("BroadcastChannel" in window) {
+    historyChannel = new BroadcastChannel("yan-dli-history-sync");
+    historyChannel.onmessage = event => {
+      if (!currentUserId) return;
+      if (event.data?.userId && String(event.data.userId) !== String(currentUserId)) return;
+      if (event.data?.type === "history-updated" || event.data?.type === "new-exam-submitted") {
+        loadAllRecords(currentUserId, true);
+      }
+    };
+  }
+} catch (e) {}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btn-change-date").addEventListener("click", showDatesOverview);
+  document.getElementById("modal-cancel-btn").addEventListener("click", closeDeleteModal);
+  document.getElementById("modal-confirm-delete-btn").addEventListener("click", confirmDeleteSession);
+  document.getElementById("retry-load-btn").addEventListener("click", () => { if (currentUserId) loadAllRecords(currentUserId, true); });
+  document.getElementById("delete-modal").addEventListener("click", event => { if (event.target.id === "delete-modal") closeDeleteModal(); });
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      currentUserId = null;
+      clearHistoryUI();
+      window.location.replace("index.html");
+      return;
+    }
+    currentUserId = user.uid;
+    
+    try {
+      const recentExam = sessionStorage.getItem("yan_latest_submitted_exam");
+      if (recentExam) {
+        sessionStorage.removeItem("yan_latest_submitted_exam");
+        const parsed = JSON.parse(recentExam);
+      if (parsed && typeof parsed === "object") {
+          const normalized = normalizeSession({ ...parsed, userId: user.uid });
+          if (normalized && !getTombstones(user.uid).has(String(getStableRecordId(normalized)))) {
+            historyRecords.unshift(normalized);
+            saveLocalHistory(user.uid, historyRecords);
+            uploadSession(normalized);
+          }
+        }
+      }
+    } catch (e) {}
+
+    await loadAllRecords(user.uid, false);
+  });
+});
+</script>
+</body>
+</html>

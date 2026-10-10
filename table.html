@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | University Timetable & Countdowns</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 12px rgba(124, 58, 237, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #ECEFF1;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-gray);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 90px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      overflow-x: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      padding: 4px;
+    }
+
+    .chat-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .chat-btn-group svg {
+      width: 18px;
+      height: 18px;
+      fill: #25D366;
+    }
+
+    .user-avatar-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+    }
+
+    .user-avatar-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--primary);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .content-body {
+      padding: 1rem;
+    }
+
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    /* NOTIFICATION BANNER */
+    .app-notification {
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.85rem;
+      display: none;
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      font-weight: 500;
+    }
+    .app-notification.active { display: block; }
+
+    /* COUNTDOWN SECTION */
+    .countdown-section {
+      margin-bottom: 1.25rem;
+    }
+    .countdown-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .action-text-btn {
+      font-size: 0.78rem;
+      color: var(--primary);
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .countdown-card {
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 1.1rem;
+      position: relative;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    .countdown-card.urgent {
+      background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+    }
+
+    .countdown-card.expired {
+      background: linear-gradient(135deg, #4B5563 0%, #1F2937 100%);
+    }
+
+    .countdown-status-msg {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 0.65rem;
+      display: inline-block;
+      letter-spacing: 0.2px;
+    }
+
+    .countdown-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+
+    .countdown-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .countdown-actions-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .event-chip-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #FFF;
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .event-chip-btn:hover { background: rgba(255, 255, 255, 0.35); }
+
+    .countdown-timers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+      text-align: center;
+    }
+
+    .time-box {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 6px 2px;
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(4px);
+    }
+
+    .time-val {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .time-lbl {
+      font-size: 0.58rem;
+      opacity: 0.85;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* MATRIX TIMETABLE */
+    .matrix-controls-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0.6rem;
+    }
+    .matrix-control-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .matrix-control-btn:hover { background: var(--primary-light); }
+
+    .table-responsive-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.78rem;
+      min-width: 500px;
+    }
+
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    .matrix-table th {
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      font-weight: 600;
+      text-align: center;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .time-col {
+      width: 95px;
+      background: var(--bg-gray);
+      color: var(--text-muted);
+      font-weight: 500;
+      text-align: center;
+      vertical-align: middle !important;
+      font-size: 0.7rem;
+      position: relative;
+    }
+
+    .slot-cell {
+      height: 75px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.1s;
+    }
+
+    .slot-cell:hover {
+      background: rgba(124, 58, 237, 0.03);
+    }
+
+    .slot-content {
+      background: var(--primary-light);
+      border-left: 3px solid var(--primary);
+      padding: 5px 6px;
+      border-radius: 4px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slot-course {
+      font-weight: 600;
+      color: var(--primary-hover);
+      font-size: 0.75rem;
+      line-height: 1.1;
+    }
+
+    .slot-venue {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .empty-slot-hint {
+      color: #9CA3AF;
+      font-size: 0.65rem;
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+      padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 400px;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.85rem;
+      color: var(--text-dark);
+    }
+
+    .form-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      background: var(--bg-gray);
+      color: var(--text-dark);
+      outline: none;
+    }
+    .form-group input:focus { border-color: var(--primary); background: #FFF; }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: var(--primary);
+      border: none;
+      color: #FFF;
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+    }
+
+    /* DRAWER STYLES */
+    .drawer-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(2px);
+    }
+    .drawer-overlay.active { display: block; }
+
+    .drawer {
+      position: fixed;
+      top: 0; left: -280px;
+      width: 280px; height: 100vh;
+      background: var(--card-bg);
+      z-index: 101;
+      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.active { left: 0; }
+
+    .drawer-header {
+      background: var(--primary-light);
+      padding: 1.5rem 1.25rem 1.25rem;
+      position: relative;
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 0.85rem; right: 0.85rem;
+      background: none; border: none;
+      font-size: 1.35rem; color: var(--primary);
+      cursor: pointer; line-height: 1;
+    }
+
+    .drawer-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%; background: #E2E8F0;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.5rem; color: var(--primary);
+    }
+
+    .drawer-user-name {
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--primary-hover); line-height: 1.2;
+    }
+
+    .drawer-edit-link {
+      font-size: 0.75rem; color: var(--primary);
+      text-decoration: none; font-weight: 500;
+      display: inline-block; margin-top: 3px;
+    }
+
+    .drawer-menu { padding: 0.75rem 0; flex: 1; overflow-y: auto; }
+
+    .drawer-item {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.75rem 1.25rem; color: var(--text-dark);
+      text-decoration: none; font-size: 0.83rem;
+    }
+    .drawer-item svg {
+      width: 17px; height: 17px; stroke: var(--primary); fill: none; stroke-width: 2; flex-shrink: 0;
+    }
+    .drawer-item:hover { background: var(--bg-gray); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex; justify-content: space-around;
+      padding: 0.4rem 0; z-index: 30;
+    }
+
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      text-decoration: none; color: var(--text-muted);
+      font-size: 0.65rem; gap: 2px;
+    }
+    .nav-item.active { color: var(--primary); font-weight: 500; }
+    .nav-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Open Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="16" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <a href="https://wa.me/2348000000000" class="chat-btn-group" target="_blank">
+        <span>Chat with us</span>
+        <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.758.459 3.474 1.33 4.982l-1.413 5.161 5.282-1.385a9.923 9.923 0 004.79 1.228h.005c5.505 0 9.988-4.477 9.989-9.983A9.922 9.922 0 0012.012 2z"/></svg>
+      </a>
+
+      <a href="account.html" class="user-avatar-btn" title="Account">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+      <h1 class="page-title">University Timetable & Countdowns</h1>
+
+      <div id="app-notification" class="app-notification"></div>
+
+      <!-- COUNTDOWN SECTION -->
+      <section class="countdown-section">
+        <div class="countdown-header-flex">
+          <span class="section-title">Active Countdowns</span>
+          <button class="action-text-btn" onclick="openAddEventModal(-1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Event
+          </button>
+        </div>
+        <div id="countdown-cards-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- TIMETABLE MATRIX CONTROLS -->
+      <div class="countdown-header-flex" style="margin-top: 1.25rem;">
+        <span class="section-title">Weekly Schedule Matrix</span>
+        <span style="font-size: 0.68rem; color: var(--text-muted);">Tap any slot to edit</span>
+      </div>
+
+      <div class="matrix-controls-row">
+        <button class="matrix-control-btn" onclick="openAddTimeSlotModal()">+ Add Time Slot</button>
+        <button class="matrix-control-btn" onclick="openAddDayModal()">+ Add Day Column</button>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="matrix-table" id="matrix-timetable">
+          <thead id="matrix-head">
+            <!-- Populated dynamically -->
+          </thead>
+          <tbody id="matrix-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- EDIT / ADD CLASS MODAL -->
+    <div id="class-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title" id="modal-class-title">Edit Time Slot</div>
+        <form id="slot-form" onsubmit="saveTimeSlot(event)">
+          <input type="hidden" id="slot-day">
+          <input type="hidden" id="slot-time">
+          <div class="form-group">
+            <label>Selected Slot</label>
+            <input type="text" id="slot-info-display" disabled style="opacity: 0.7;">
+          </div>
+          <div class="form-group">
+            <label for="input-course">Course Title / Code</label>
+            <input type="text" id="input-course" placeholder="e.g. CSC301 - Operating Systems" required>
+          </div>
+          <div class="form-group">
+            <label for="input-venue">Venue / Hall</label>
+            <input type="text" id="input-venue" placeholder="e.g. Lecture Theatre 1" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeClassModal()">Cancel</button>
+            <button type="button" class="btn-secondary" style="color: #EF4444;" onclick="clearTimeSlot()">Clear Slot</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT COUNTDOWN EVENT MODAL -->
+    <div id="event-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title" id="event-modal-title">Add Countdown Event</div>
+        <form id="event-form" onsubmit="saveCountdownEvent(event)">
+          <input type="hidden" id="event-edit-index" value="-1">
+          <div class="form-group">
+            <label for="event-name-input">Event Name</label>
+            <input type="text" id="event-name-input" placeholder="e.g. Mid-Semester Exams" required>
+          </div>
+          <div class="form-group">
+            <label for="event-date-input">Target Date & Time</label>
+            <input type="datetime-local" id="event-date-input" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeEventModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD TIME SLOT MODAL -->
+    <div id="time-slot-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Add New Time Slot</div>
+        <form onsubmit="addNewTimeSlot(event)">
+          <div class="form-group">
+            <label for="new-time-val">Time Range</label>
+            <input type="text" id="new-time-val" placeholder="e.g. 04:00 - 06:00" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="document.getElementById('time-slot-modal').classList.remove('active')">Cancel</button>
+            <button type="submit" class="btn-primary">Add Slot</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD DAY MODAL -->
+    <div id="day-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Add New Day Column</div>
+        <form onsubmit="addNewDayColumn(event)">
+          <div class="form-group">
+            <label for="new-day-val">Day Name</label>
+            <input type="text" id="new-day-val" placeholder="e.g. Sunday" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="document.getElementById('day-modal').classList.remove('active')">Cancel</button>
+            <button type="submit" class="btn-primary">Add Day</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIDE DRAWER BACKDROP -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+    <!-- SIDE NAVIGATION DRAWER -->
+    <aside id="drawer" class="drawer">
+      <div class="drawer-header">
+        <button class="drawer-close-btn" onclick="toggleDrawer(false)">&times;</button>
+        <div class="drawer-avatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="drawer-user-name" id="drawer-user-name">Student</div>
+        <a href="profile.html" class="drawer-edit-link">Edit Profile</a>
+      </div>
+
+      <nav class="drawer-menu">
+        <a href="dashboard.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home
+        </a>
+        <a href="table.html" class="drawer-item" style="color: var(--primary); font-weight: 500;">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Campus Timetable
+        </a>
+        <a href="hard.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>My Hard Questions
+        </a>
+        <a href="history.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Practice History
+        </a>
+        <a href="analysis.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Performance Analysis
+        </a>
+        <a href="leaderboard.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Leaderboard
+        </a>
+        <a href="activate.html" class="drawer-item">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Activation
+        </a>
+        <a href="#" id="logout-btn" class="drawer-item" style="color: #EF4444;">
+          <svg viewBox="0 0 24 24" style="stroke: #EF4444;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log out
+        </a>
+      </nav>
+    </aside>
+
+    <!-- BOTTOM FIXED NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Account</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- FIREBASE & MATRIX TIMETABLE ENGINE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserUid = null;
+    
+    let timeSlots = ["08:00 - 10:00", "10:00 - 12:00", "12:00 - 02:00", "02:00 - 04:00"];
+    let daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+    let matrixTimetable = {}; 
+    let countdownEvents = [];
+
+    function showNotification(msg) {
+      const note = document.getElementById('app-notification');
+      note.innerText = msg;
+      note.classList.add('active');
+      setTimeout(() => note.classList.remove('active'), 3500);
+    }
+
+    window.toggleDrawer = (open) => {
+      document.getElementById('drawer').classList.toggle('active', open);
+      document.getElementById('drawer-overlay').classList.toggle('active', open);
+    };
+
+    function renderMatrixTimetable() {
+      const thead = document.getElementById('matrix-head');
+      const tbody = document.getElementById('matrix-body');
+      
+      let headerHTML = `<tr><th>Time</th>`;
+      daysOfWeek.forEach((day, dIdx) => {
+        headerHTML += `<th>${day} <button onclick="deleteDayColumn(${dIdx})" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:0.6rem;margin-left:2px;" title="Remove day">&times;</button></th>`;
+      });
+      headerHTML += `</tr>`;
+      thead.innerHTML = headerHTML;
+
+      tbody.innerHTML = '';
+      timeSlots.forEach((time, tIdx) => {
+        const tr = document.createElement('tr');
+        
+        const tdTime = document.createElement('td');
+        tdTime.className = 'time-col';
+        tdTime.innerHTML = `<div>${time}</div><button onclick="deleteTimeSlot(${tIdx})" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:0.6rem;margin-top:2px;">Remove</button>`;
+        tr.appendChild(tdTime);
+
+        daysOfWeek.forEach(day => {
+          const td = document.createElement('td');
+          td.className = 'slot-cell';
+          const key = `${day}_${time}`;
+          const slotData = matrixTimetable[key];
+
+          if (slotData && slotData.course) {
+            td.innerHTML = `
+              <div class="slot-content">
+                <div>
+                  <div class="slot-course">${slotData.course}</div>
+                  <div class="slot-venue">📍 ${slotData.venue}</div>
+                </div>
+                <div style="font-size:0.6rem; color:var(--primary); text-align:right;">Edit</div>
+              </div>
+            `;
+          } else {
+            td.innerHTML = `<div class="empty-slot-hint">+ Add</div>`;
+          }
+
+          td.onclick = () => openSlotModal(day, time);
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.openAddTimeSlotModal = () => document.getElementById('time-slot-modal').classList.add('active');
+    window.openAddDayModal = () => document.getElementById('day-modal').classList.add('active');
+
+    window.addNewTimeSlot = async function(e) {
+      e.preventDefault();
+      const val = document.getElementById('new-time-val').value.trim();
+      if (val && !timeSlots.includes(val)) {
+        timeSlots.push(val);
+        document.getElementById('time-slot-modal').classList.remove('active');
+        document.getElementById('new-time-val').value = '';
+        renderMatrixTimetable();
+        showNotification("Time slot added!");
+        await syncDataToCloud();
+      }
+    };
+
+    window.addNewDayColumn = async function(e) {
+      e.preventDefault();
+      const val = document.getElementById('new-day-val').value.trim();
+      if (val && !daysOfWeek.includes(val)) {
+        daysOfWeek.push(val);
+        document.getElementById('day-modal').classList.remove('active');
+        document.getElementById('new-day-val').value = '';
+        renderMatrixTimetable();
+        showNotification("Day column added!");
+        await syncDataToCloud();
+      }
+    };
+
+    window.deleteTimeSlot = async function(index) {
+      timeSlots.splice(index, 1);
+      renderMatrixTimetable();
+      showNotification("Time slot removed.");
+      await syncDataToCloud();
+    };
+
+    window.deleteDayColumn = async function(index) {
+      daysOfWeek.splice(index, 1);
+      renderMatrixTimetable();
+      showNotification("Day column removed.");
+      await syncDataToCloud();
+    };
+
+    window.openSlotModal = function(day, time) {
+      document.getElementById('slot-day').value = day;
+      document.getElementById('slot-time').value = time;
+      document.getElementById('slot-info-display').value = `${day} (${time})`;
+      
+      const key = `${day}_${time}`;
+      const existing = matrixTimetable[key];
+      if (existing) {
+        document.getElementById('input-course').value = existing.course;
+        document.getElementById('input-venue').value = existing.venue;
+      } else {
+        document.getElementById('input-course').value = '';
+        document.getElementById('input-venue').value = '';
+      }
+
+      document.getElementById('class-modal').classList.add('active');
+    };
+
+    window.closeClassModal = () => document.getElementById('class-modal').classList.remove('active');
+
+    window.saveTimeSlot = async function(e) {
+      e.preventDefault();
+      const day = document.getElementById('slot-day').value;
+      const time = document.getElementById('slot-time').value;
+      const course = document.getElementById('input-course').value.trim();
+      const venue = document.getElementById('input-venue').value.trim();
+
+      const key = `${day}_${time}`;
+      matrixTimetable[key] = { course, venue };
+
+      closeClassModal();
+      renderMatrixTimetable();
+      showNotification("Timetable slot saved!");
+      await syncDataToCloud();
+    };
+
+    window.clearTimeSlot = async function() {
+      const day = document.getElementById('slot-day').value;
+      const time = document.getElementById('slot-time').value;
+      const key = `${day}_${time}`;
+      
+      delete matrixTimetable[key];
+      closeClassModal();
+      renderMatrixTimetable();
+      showNotification("Slot cleared.");
+      await syncDataToCloud();
+    };
+
+    window.openAddEventModal = (editIndex = -1) => {
+      document.getElementById('event-edit-index').value = editIndex;
+      if (editIndex >= 0) {
+        document.getElementById('event-modal-title').innerText = "Edit Countdown Event";
+        document.getElementById('event-name-input').value = countdownEvents[editIndex].name;
+        
+        const d = new Date(countdownEvents[editIndex].timestamp);
+        const pad = n => String(n).padStart(2, '0');
+        const localIso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        document.getElementById('event-date-input').value = localIso;
+      } else {
+        document.getElementById('event-modal-title').innerText = "Add Countdown Event";
+        document.getElementById('event-name-input').value = "";
+        document.getElementById('event-date-input').value = "";
+      }
+      document.getElementById('event-modal').classList.add('active');
+    };
+
+    window.closeEventModal = () => document.getElementById('event-modal').classList.remove('active');
+
+    window.saveCountdownEvent = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('event-name-input').value.trim();
+      const dateVal = document.getElementById('event-date-input').value;
+      const editIndex = parseInt(document.getElementById('event-edit-index').value);
+
+      if (!dateVal) return;
+      const timestamp = new Date(dateVal).getTime();
+
+      if (editIndex >= 0) {
+        countdownEvents[editIndex] = { name, timestamp };
+      } else {
+        countdownEvents.push({ name, timestamp });
+      }
+
+      closeEventModal();
+      renderCountdowns();
+      showNotification("Event countdown saved!");
+      await syncDataToCloud();
+    };
+
+    window.deleteCountdownEvent = async function(index) {
+      countdownEvents.splice(index, 1);
+      renderCountdowns();
+      showNotification("Event deleted.");
+      await syncDataToCloud();
+    };
+
+    function renderCountdowns() {
+      const container = document.getElementById('countdown-cards-container');
+      if (!countdownEvents || countdownEvents.length === 0) {
+        container.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); background:var(--card-bg); padding:1rem; border-radius:var(--radius-sm); text-align:center; border:1px dashed var(--border-color);">No active countdown events. Click "Add Event" above.</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      countdownEvents.forEach((ev, idx) => {
+        const card = document.createElement('div');
+        card.className = 'countdown-card';
+        card.id = `cd-card-${idx}`;
+        card.innerHTML = `
+          <div id="cd-status-${idx}" class="countdown-status-msg" style="display: none;"></div>
+          <div class="countdown-card-top">
+            <span class="countdown-title">${ev.name}</span>
+            <div class="countdown-actions-group">
+              <button class="event-chip-btn" onclick="openAddEventModal(${idx})">Edit</button>
+              <button class="event-chip-btn" onclick="deleteCountdownEvent(${idx})">Delete</button>
+            </div>
+          </div>
+          <div class="countdown-timers" id="cd-timer-${idx}">
+            <div class="time-box"><div class="time-val" id="cd-${idx}-d">00</div><div class="time-lbl">Days</div></div>
+            <div class="time-box"><div class="time-val" id="cd-${idx}-h">00</div><div class="time-lbl">Hours</div></div>
+            <div class="time-box"><div class="time-val" id="cd-${idx}-m">00</div><div class="time-lbl">Mins</div></div>
+            <div class="time-box"><div class="time-val" id="cd-${idx}-s">00</div><div class="time-lbl">Secs</div></div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Live Countdown IntervalTicker with Status Alerts
+    setInterval(() => {
+      const now = new Date().getTime();
+      countdownEvents.forEach((ev, idx) => {
+        const distance = ev.timestamp - now;
+        const dEl = document.getElementById(`cd-${idx}-d`);
+        const hEl = document.getElementById(`cd-${idx}-h`);
+        const mEl = document.getElementById(`cd-${idx}-m`);
+        const sEl = document.getElementById(`cd-${idx}-s`);
+        const cardEl = document.getElementById(`cd-card-${idx}`);
+        const statusEl = document.getElementById(`cd-status-${idx}`);
+
+        if (!dEl || !cardEl || !statusEl) return;
+
+        // Check Event States & Warnings
+        if (distance <= 0) {
+          dEl.innerText = "00"; hEl.innerText = "00"; mEl.innerText = "00"; sEl.innerText = "00";
+          cardEl.className = "countdown-card expired";
+          statusEl.innerText = "🔴 Event has already ended!";
+          statusEl.style.display = "inline-block";
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+        dEl.innerText = String(days).padStart(2, '0');
+        hEl.innerText = String(hours).padStart(2, '0');
+        mEl.innerText = String(mins).padStart(2, '0');
+        sEl.innerText = String(secs).padStart(2, '0');
+
+        // Dynamic Warning Banners based on remaining duration
+        if (days === 0 && hours === 0) {
+          cardEl.className = "countdown-card urgent";
+          statusEl.innerText = "⚡ Running out soon! Less than 1 hour remaining.";
+          statusEl.style.display = "inline-block";
+        } else if (days === 0) {
+          cardEl.className = "countdown-card urgent";
+          statusEl.innerText = "⚠️ Less than 24 hours remaining!";
+          statusEl.style.display = "inline-block";
+        } else {
+          cardEl.className = "countdown-card";
+          statusEl.style.display = "none";
+        }
+      });
+    }, 1000);
+
+    async function syncDataToCloud() {
+      if (!currentUserUid) return;
+      try {
+        const userRef = doc(db, "Users", currentUserUid);
+        await updateDoc(userRef, {
+          matrixTimetable: matrixTimetable,
+          countdownEvents: countdownEvents,
+          timeSlots: timeSlots,
+          daysOfWeek: daysOfWeek
+        });
+      } catch (err) {
+        console.error("Cloud sync failed:", err);
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUserUid = user.uid;
+        try {
+          const docSnap = await getDoc(doc(db, "Users", user.uid));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.name) document.getElementById('drawer-user-name').innerText = data.name;
+            if (data.matrixTimetable) matrixTimetable = data.matrixTimetable;
+            if (data.countdownEvents) countdownEvents = data.countdownEvents;
+            if (data.timeSlots) timeSlots = data.timeSlots;
+            if (data.daysOfWeek) daysOfWeek = data.daysOfWeek;
+          }
+          renderMatrixTimetable();
+          renderCountdowns();
+        } catch (err) {
+          console.error("Error fetching account data:", err);
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => window.location.href = "index.html");
+    });
+  </script>
+</body>
+</html>

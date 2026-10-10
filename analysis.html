@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Performance Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#7C3AED;--primary-hover:#6D28D9;--primary-light:#F3E8FF;--bg-gray:#F8FAFC;--card-bg:#FFFFFF;--text-dark:#0F172A;--text-body:#334155;--text-muted:#64748B;--border-color:#E2E8F0;--border-light:#F1F5F9;--success:#10B981;--success-light:#ECFDF5;--danger:#EF4444;--danger-light:#FEF2F2;--warning:#F59E0B;--warning-light:#FFFBEB;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--shadow-sm:0 1px 2px rgba(0,0,0,0.03);--shadow-md:0 4px 12px -2px rgba(124,58,237,0.08);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;letter-spacing:0.1px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
+    body{background:#EEF2F7;color:var(--text-body);}
+    .app-container{width:100%;max-width:480px;background:var(--bg-gray);min-height:100vh;position:relative;padding-bottom:90px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);margin:0 auto;}
+    .header{background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.9rem 1.1rem;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;}
+    .header-brand{display:flex;align-items:center;gap:10px;}
+    .btn-icon{background:var(--bg-gray);color:var(--text-dark);border:1px solid var(--border-color);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s ease;}
+    .btn-icon:active{transform:scale(0.95);background:var(--primary-light);color:var(--primary);}
+    .btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .header-title{font-size:0.98rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
+    .header-badge{background:var(--primary-light);color:var(--primary);font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.3px;}
+    .content-body{padding:1.1rem 1rem;}
+    
+    .loading-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted);}
+    .loading-spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;margin:0 auto 1rem;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .analytics-hero{background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);color:white;border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.1rem;box-shadow:var(--shadow-md);position:relative;overflow:hidden;}
+    .analytics-hero::after{content:'';position:absolute;right:-20px;bottom:-20px;width:120px;height:120px;background:rgba(255,255,255,0.08);border-radius:50%;pointer-events:none;}
+    .hero-subtitle{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;opacity:0.85;margin-bottom:2px;}
+    .hero-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;}
+    .hero-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15);}
+    .hero-stat-cell{display:flex;flex-direction:column;}
+    .hero-stat-lbl{font-size:0.62rem;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
+    .hero-stat-val{font-size:1rem;font-weight:700;margin-top:1px;}
+
+    .section-title{font-size:0.85rem;font-weight:700;color:var(--text-dark);margin-bottom:0.65rem;display:flex;align-items:center;justify-content:space-between;}
+    
+    .stats-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem;}
+    .stat-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;box-shadow:var(--shadow-sm);}
+    .stat-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+    .stat-card-icon.purple{background:var(--primary-light);color:var(--primary);}
+    .stat-card-icon.green{background:var(--success-light);color:var(--success);}
+    .stat-card-icon.orange{background:var(--warning-light);color:var(--warning);}
+    .stat-card-icon.blue{background:#EFF6FF;color:#3B82F6;}
+    .stat-card-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .stat-card-lbl{font-size:0.7rem;color:var(--text-muted);font-weight:600;margin-bottom:2px;}
+    .stat-card-val{font-size:1.15rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
+
+    .analytics-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1.1rem;box-shadow:var(--shadow-sm);margin-bottom:1.25rem;}
+    
+    .breakdown-list{display:flex;flex-direction:column;gap:10px;}
+    .breakdown-item{display:flex;flex-direction:column;gap:4px;}
+    .breakdown-info{display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;}
+    .breakdown-name{font-weight:600;color:var(--text-dark);}
+    .breakdown-score{font-weight:700;color:var(--primary);}
+    .progress-bar-bg{width:100%;height:8px;background:var(--border-light);border-radius:4px;overflow:hidden;}
+    .progress-bar-fill{height:100%;background:var(--primary);border-radius:4px;transition:width 0.6s ease;}
+    .progress-bar-fill.green{background:var(--success);}
+    .progress-bar-fill.orange{background:var(--warning);}
+    .progress-bar-fill.red{background:var(--danger);}
+
+    .empty-state{text-align:center;padding:3.5rem 1.5rem;background:var(--card-bg);border-radius:var(--radius-md);border:1px dashed var(--border-color);margin-top:0.5rem;}
+    .empty-state svg{width:40px;height:40px;stroke:var(--text-muted);margin-bottom:0.85rem;stroke-width:1.6;}
+    .empty-state h4{font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-bottom:0.3rem;}
+    .empty-state p{font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.45;}
+    .btn-start-first{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 1.25rem;background:var(--primary);color:white;text-decoration:none;font-weight:600;font-size:0.78rem;border-radius:8px;border:none;cursor:pointer;}
+
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border-color);padding:10px 16px;display:flex;align-items:center;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,0.04);}
+    .btn-bottom-cta{width:100%;height:42px;border-radius:10px;background:var(--primary);color:white;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;}
+    .btn-bottom-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <header class="header">
+    <div class="header-brand">
+      <a href="dashboard.html" class="btn-icon" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <span class="header-title">Performance Analytics</span>
+    </div>
+    <span class="header-badge" id="analytics-badge">0 TESTS</span>
+  </header>
+
+  <div class="content-body">
+    <div id="loading-state" class="loading-state">
+      <div class="loading-spinner"></div>
+      <div>Analyzing your exam metrics...</div>
+    </div>
+
+    <div id="analytics-content" style="display:none;">
+      <!-- Hero Overview Card -->
+      <div class="analytics-hero">
+        <div class="hero-subtitle">Overall Academic Standing</div>
+        <div class="hero-title" id="hero-avg-score">0%</div>
+        <div style="font-size:0.76rem;opacity:0.9;" id="hero-standing-text">Complete more practice tests to build your proficiency profile.</div>
+        <div class="hero-stats-row">
+          <div class="hero-stat-cell">
+            <span class="hero-stat-lbl">Exams Taken</span>
+            <span class="hero-stat-val" id="hero-total-exams">0</span>
+          </div>
+          <div class="hero-stat-cell">
+            <span class="hero-stat-lbl">Questions Solved</span>
+            <span class="hero-stat-val" id="hero-total-questions">0</span>
+          </div>
+          <div class="hero-stat-cell">
+            <span class="hero-stat-lbl">Pass Rate</span>
+            <span class="hero-stat-val" id="hero-pass-rate">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="stats-grid-2">
+        <div class="stat-card">
+          <div class="stat-card-icon green">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="stat-card-lbl">Best Score</div>
+          <div class="stat-card-val" id="stat-best-score">0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon orange">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="stat-card-lbl">Avg. Pace</div>
+          <div class="stat-card-val" id="stat-avg-pace">0s / q</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon purple">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <div class="stat-card-lbl">Total Time Spent</div>
+          <div class="stat-card-val" id="stat-total-time">0m</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon blue">
+            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <div class="stat-card-lbl">Accuracy Rate</div>
+          <div class="stat-card-val" id="stat-accuracy">0%</div>
+        </div>
+      </div>
+
+      <!-- Subject Breakdown Section -->
+      <div class="section-title">
+        <span>Performance by Subject / Course</span>
+        <span style="font-size:0.72rem;color:var(--text-muted);font-weight:500;" id="subject-count-lbl">0 Subjects</span>
+      </div>
+      <div class="analytics-card">
+        <div class="breakdown-list" id="subject-breakdown-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Score Distribution Section -->
+      <div class="section-title">
+        <span>Score Band Distribution</span>
+      </div>
+      <div class="analytics-card">
+        <div class="breakdown-list" id="score-distribution-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="empty-state" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 20V10M12 20V4M6 20v-6"></path>
+      </svg>
+      <h4>No Analytics Data Yet</h4>
+      <p>Complete your first CBT practice test or exam simulation to generate performance metrics.</p>
+      <a href="exams.html" class="btn-start-first">Start Practice Exam</a>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="exams.html" class="btn-bottom-cta">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Take New Practice Test
+    </a>
+  </nav>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+  authDomain: "yan-dli.firebaseapp.com",
+  projectId: "yan-dli",
+  storageBucket: "yan-dli.firebasestorage.app",
+  messagingSenderId: "538794949165",
+  appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let historyRecords = [];
+
+const getLocalHistoryKey = uid => `yan_exam_history_${uid}`;
+const getCanonicalSessionKey = (uid, sessionId) => `yan_exam_session_${uid}_${sessionId}`;
+
+function safeParse(value) { try { return JSON.parse(value); } catch { return null; } }
+function safeLocalGet(key) { try { return safeParse(localStorage.getItem(key)); } catch { return null; } }
+
+function escapeHTML(value) {
+  if (value == null) return "";
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function getQuestions(record) {
+  if (!record) return [];
+  const candidates = [record.questionsData, record.questions, record.questionData, record.questionList, record.items, record.examQuestions, record.questionBank];
+  for (const v of candidates) if (Array.isArray(v) && v.length) return v;
+  return [];
+}
+
+function getRecordTime(record) {
+  if (!record) return 0;
+  const values = [record.submittedAt, record.completedAt, record.finishedAt, record.timestamp, record.createdAt, record.updatedAt];
+  for (const v of values) {
+    if (!v) continue;
+    if (typeof v === "object" && typeof v.toDate === "function") {
+      const t = v.toDate().getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+    if (typeof v === "object" && v.seconds != null) {
+      const t = Number(v.seconds) * 1000;
+      if (!Number.isNaN(t)) return t;
+    }
+    if (typeof v === "number") return v > 10000000000 ? v : v * 1000;
+    if (typeof v === "string") {
+      const t = new Date(v).getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+  }
+  return 0;
+}
+
+function getStableRecordId(record) {
+  if (!record) return `session_${Date.now()}`;
+  const possibleIds = [record.sessionId, record.examSessionId, record.attemptId, record.historyId, record.recordId, record.id];
+  for (const v of possibleIds) if (v !== undefined && v !== null && String(v).trim()) return String(v);
+  const t = getRecordTime(record);
+  if (t) return `session_${t}`;
+  return `session_${Date.now()}`;
+}
+
+function normalizeSession(record) {
+  if (!record || typeof record !== "object") return null;
+  const qs = getQuestions(record);
+  const total = Number(record.totalQuestions ?? record.total ?? qs.length ?? 0);
+  const correct = Number(record.correctAnswersCount ?? record.correctCount ?? 0);
+  const wrong = Number(record.wrongAnswersCount ?? record.wrongCount ?? 0);
+  const score = record.scorePercentage !== undefined ? Number(record.scorePercentage) : record.score !== undefined ? Number(record.score) : total > 0 ? Math.round((correct / total) * 100) : 0;
+  return { ...record, totalQuestions: total, correctCount: correct, wrongCount: wrong, score, scorePercentage: score };
+}
+
+function collectAllLocalRecords(uid) {
+  const records = [];
+  const localData = safeLocalGet(getLocalHistoryKey(uid));
+  if (Array.isArray(localData)) {
+    localData.forEach(r => { if (!r.userId || String(r.userId) === String(uid)) records.push(normalizeSession(r)); });
+  }
+  try {
+    const prefix = `yan_exam_session_${uid}_`;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(prefix)) continue;
+      const data = safeLocalGet(key);
+      if (data && typeof data === "object") records.push(normalizeSession(data));
+    }
+  } catch (e) { console.warn("Local scan error:", e); }
+  return records.filter(Boolean);
+}
+
+async function fetchFirestoreHistory(uid) {
+  const records = [];
+  try {
+    const q = query(collection(db, "ExamHistory"), where("userId", "==", uid));
+    const snap = await getDocs(q);
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      records.push(normalizeSession({ ...data, id: docSnap.id }));
+    });
+  } catch (e) { console.warn("Remote fetch error:", e); }
+  return records;
+}
+
+async function loadAnalyticsData(userId) {
+  const local = collectAllLocalRecords(userId);
+  const map = new Map();
+  local.forEach(r => map.set(getStableRecordId(r), r));
+  
+  if (navigator.onLine) {
+    const remote = await fetchFirestoreHistory(userId);
+    remote.forEach(r => map.set(getStableRecordId(r), r));
+  }
+
+  historyRecords = Array.from(map.values()).sort((a, b) => getRecordTime(b) - getRecordTime(a));
+  
+  document.getElementById("loading-state").style.display = "none";
+  if (!historyRecords.length) {
+    document.getElementById("empty-state").style.display = "block";
+    document.getElementById("analytics-content").style.display = "none";
+    document.getElementById("analytics-badge").innerText = "0 TESTS";
+    return;
+  }
+
+  document.getElementById("empty-state").style.display = "none";
+  document.getElementById("analytics-content").style.display = "block";
+  document.getElementById("analytics-badge").innerText = `${historyRecords.length} TEST${historyRecords.length === 1 ? "" : "S"}`;
+  
+  computeAndRenderAnalytics();
+}
+
+function computeAndRenderAnalytics() {
+  const totalExams = historyRecords.length;
+  let totalQuestionsSolved = 0;
+  let totalCorrectAnswers = 0;
+  let totalWrongAnswers = 0;
+  let totalTimeSeconds = 0;
+  let bestScore = 0;
+  let passingExams = 0;
+  let scoreSum = 0;
+
+  const subjectMap = {};
+
+  historyRecords.forEach(rec => {
+    const score = Number(rec.scorePercentage ?? rec.score ?? 0);
+    const totalQ = Number(rec.totalQuestions || getQuestions(rec).length || 0);
+    const correctQ = Number(rec.correctCount ?? rec.correctAnswersCount ?? 0);
+    const wrongQ = Number(rec.wrongCount ?? rec.wrongAnswersCount ?? 0);
+    const timeSpent = Number(rec.timeSpentSeconds ?? rec.durationSeconds ?? rec.timeSpent ?? 0);
+    const course = rec.courseCode || rec.courseTitle || rec.courseName || rec.subject || rec.examTitle || "General Practice";
+
+    scoreSum += score;
+    if (score > bestScore) bestScore = score;
+    if (score >= 50) passingExams++;
+
+    totalQuestionsSolved += totalQ;
+    totalCorrectAnswers += correctQ;
+    totalWrongAnswers += wrongQ;
+    totalTimeSeconds += timeSpent;
+
+    if (!subjectMap[course]) subjectMap[course] = { count: 0, totalScore: 0 };
+    subjectMap[course].count++;
+    subjectMap[course].totalScore += score;
+  });
+
+  const avgScore = Math.round(scoreSum / totalExams);
+  const passRate = Math.round((passingExams / totalExams) * 100);
+  const accuracyRate = totalQuestionsSolved > 0 ? Math.round((totalCorrectAnswers / totalQuestionsSolved) * 100) : 0;
+  const avgPace = totalQuestionsSolved > 0 ? Math.round(totalTimeSeconds / totalQuestionsSolved) : 0;
+  const totalMins = Math.round(totalTimeSeconds / 60);
+
+  // Render Hero
+  document.getElementById("hero-avg-score").innerText = `${avgScore}%`;
+  document.getElementById("hero-total-exams").innerText = totalExams;
+  document.getElementById("hero-total-questions").innerText = totalQuestionsSolved;
+  document.getElementById("hero-pass-rate").innerText = `${passRate}%`;
+
+  let standingMsg = "Keep practicing regularly to master your examination subjects.";
+  if (avgScore >= 75) standingMsg = "Excellent performance level! You are well prepared for top exam scores.";
+  else if (avgScore >= 50) standingMsg = "Good progress. Focus on reviewing incorrect answers to boost mastery.";
+  document.getElementById("hero-standing-text").innerText = standingMsg;
+
+  // Render Stats Cards
+  document.getElementById("stat-best-score").innerText = `${bestScore}%`;
+  document.getElementById("stat-avg-pace").innerText = `${avgPace}s / q`;
+  document.getElementById("stat-total-time").innerText = totalMins > 60 ? `${(totalMins/60).toFixed(1)}h` : `${totalMins}m`;
+  document.getElementById("stat-accuracy").innerText = `${accuracyRate}%`;
+
+  // Render Subject Breakdown
+  const subjectListEl = document.getElementById("subject-breakdown-list");
+  subjectListEl.innerHTML = "";
+  const subjects = Object.entries(subjectMap);
+  document.getElementById("subject-count-lbl").innerText = `${subjects.length} Subject${subjects.length === 1 ? "" : "s"}`;
+
+  subjects.forEach(([name, data]) => {
+    const avgSubScore = Math.round(data.totalScore / data.count);
+    const fillClass = avgSubScore >= 70 ? "" : avgSubScore >= 50 ? "orange" : "red";
+    const item = document.createElement("div");
+    item.className = "breakdown-item";
+    item.innerHTML = `
+      <div class="breakdown-info">
+        <span class="breakdown-name">${escapeHTML(name)}</span>
+        <span class="breakdown-score">${avgSubScore}% avg (${data.count} test${data.count === 1 ? "" : "s"})</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill ${fillClass}" style="width: ${Math.min(100, Math.max(5, avgSubScore))}%"></div>
+      </div>
+    `;
+    subjectListEl.appendChild(item);
+  });
+
+  // Render Score Distribution Bands
+  const bands = { "Distinction (70% - 100%)": 0, "Credit (50% - 69%)": 0, "Pass (40% - 49%)": 0, "Needs Improvement (<40%)": 0 };
+  historyRecords.forEach(rec => {
+    const s = Number(rec.scorePercentage ?? rec.score ?? 0);
+    if (s >= 70) bands["Distinction (70% - 100%)"]++;
+    else if (s >= 50) bands["Credit (50% - 69%)"]++;
+    else if (s >= 40) bands["Pass (40% - 49%)"]++;
+    else bands["Needs Improvement (<40%)"]++;
+  });
+
+  const distListEl = document.getElementById("score-distribution-list");
+  distListEl.innerHTML = "";
+  Object.entries(bands).forEach(([bandName, count]) => {
+    const pct = Math.round((count / totalExams) * 100);
+    const item = document.createElement("div");
+    item.className = "breakdown-item";
+    item.innerHTML = `
+      <div class="breakdown-info">
+        <span class="breakdown-name">${escapeHTML(bandName)}</span>
+        <span class="breakdown-score">${count} test${count === 1 ? "" : "s"} (${pct}%)</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${Math.min(100, Math.max(0, pct))}%"></div>
+      </div>
+    `;
+    distListEl.appendChild(item);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.replace("index.html");
+      return;
+    }
+    loadAnalyticsData(user.uid);
+  });
+});
+</script>
+</body>
+</html>

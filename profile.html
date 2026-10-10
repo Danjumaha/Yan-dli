@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | My Profile</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #111827;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #ECEFF1;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-gray);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 90px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      overflow-x: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1rem;
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      padding: 4px;
+      text-decoration: none;
+    }
+
+    .top-bar-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .edit-action-btn {
+      background: var(--primary-light);
+      border: none;
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: background 0.15s ease;
+    }
+
+    .edit-action-btn:hover {
+      background: #E9D5FF;
+    }
+
+    .content-body {
+      padding: 1rem;
+    }
+
+    .profile-card-group {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .profile-field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-field-row:last-child {
+      border-bottom: none;
+    }
+
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .field-value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .field-value.placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .delete-account-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      padding: 0.9rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #EF4444;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      width: 100%;
+      transition: background 0.15s ease;
+      margin-top: 1rem;
+    }
+
+    .delete-account-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .delete-account-card svg {
+      width: 18px;
+      height: 18px;
+      stroke: #EF4444;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .delete-account-card:hover {
+      background: #FEF2F2;
+    }
+
+    /* MODAL STYLES */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(3px);
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 1.5rem 1.25rem 2rem;
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .modal-close-icon {
+      background: var(--bg-gray);
+      border: none;
+      cursor: pointer;
+      color: var(--text-dark);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-close-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .modal-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .form-input.readonly-field {
+      background: #F3F4F6;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .email-lock-note {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .gender-options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .gender-pill {
+      border: 1px solid var(--border-color);
+      background: var(--bg-gray);
+      padding: 0.65rem;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .gender-pill.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .dob-trigger-input {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dob-trigger-input svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .fb-picker-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(3px);
+    }
+    .fb-picker-overlay.active {
+      display: flex;
+    }
+    .fb-picker-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 360px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 1.25rem;
+      animation: scaleUp 0.2s ease;
+    }
+    @keyframes scaleUp {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .fb-picker-header {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .fb-selectors-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .fb-select {
+      width: 100%;
+      padding: 0.65rem 0.5rem;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      outline: none;
+    }
+    .fb-select:focus {
+      border-color: var(--primary);
+    }
+    .fb-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+    .fb-cal-day-header {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 4px 0;
+    }
+    .fb-cal-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: background 0.1s ease;
+    }
+    .fb-cal-cell:hover {
+      background: var(--bg-gray);
+    }
+    .fb-cal-cell.empty {
+      cursor: default;
+    }
+    .fb-cal-cell.selected {
+      background: var(--primary);
+      color: white;
+    }
+    .fb-picker-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .fb-btn-cancel, .fb-btn-set {
+      flex: 1;
+      padding: 0.7rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .fb-btn-cancel {
+      background: var(--bg-gray);
+      color: var(--text-muted);
+    }
+    .fb-btn-set {
+      background: var(--primary);
+      color: white;
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.15s ease;
+    }
+
+    .modal-submit-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .modal-submit-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .modal-danger-btn {
+      width: 100%;
+      background: transparent;
+      color: #EF4444;
+      border: 2px solid #EF4444;
+      border-radius: var(--radius-sm);
+      padding: 0.8rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .modal-cancel-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      padding: 4px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 4.8rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text-dark);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      z-index: 200;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+      z-index: 30;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-weight: 500;
+      gap: 3px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <a href="dashboard.html" class="icon-btn" aria-label="Go Back">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+        <h1 class="top-bar-title">My Profile</h1>
+      </div>
+      <button class="edit-action-btn" onclick="toggleEditModal(true)">Edit Profile</button>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+      <div class="profile-card-group">
+        <div class="profile-field-row">
+          <span class="field-label">First name</span>
+          <span class="field-value" id="profile-firstname">Loading...</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Last name</span>
+          <span class="field-value" id="profile-lastname">Loading...</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Gender</span>
+          <span class="field-value placeholder" id="profile-gender">Not specified</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Date of Birth</span>
+          <span class="field-value placeholder" id="profile-dob">Not specified</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Phone number</span>
+          <span class="field-value placeholder" id="profile-phone">Not specified</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Parent/Guardian Phone</span>
+          <span class="field-value placeholder" id="profile-parent-phone">Not specified</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">Email Address</span>
+          <span class="field-value" id="profile-email">Loading...</span>
+        </div>
+        <div class="profile-field-row">
+          <span class="field-label">User ID</span>
+          <span class="field-value" id="profile-userid">YAN_____</span>
+        </div>
+      </div>
+
+      <button class="delete-account-card" onclick="toggleDeleteModal(true)">
+        <div class="delete-account-left">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <span>Delete Account</span>
+        </div>
+        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke: #EF4444; fill: none; stroke-width: 2;"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </main>
+
+    <!-- EDIT PROFILE MODAL -->
+    <div id="edit-modal-overlay" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header-row">
+          <h2 class="modal-title">Edit Profile</h2>
+          <button class="modal-close-icon" onclick="toggleEditModal(false)" aria-label="Close">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <p class="modal-subtitle">Update your personal account details below.</p>
+
+        <form id="edit-profile-form">
+          <div class="form-group">
+            <label class="form-label">First name*</label>
+            <input type="text" id="input-firstname" class="form-input" required placeholder="Enter first name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last name*</label>
+            <input type="text" id="input-lastname" class="form-input" required placeholder="Enter last name">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email Address (Locked)</label>
+            <input type="email" id="input-email" class="form-input readonly-field" disabled readonly>
+            <span class="email-lock-note">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              Email cannot be changed directly for security.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone number*</label>
+            <input type="tel" id="input-phone" class="form-input" required placeholder="e.g. 08012345678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Parent/Guardian Phone number</label>
+            <input type="tel" id="input-parent-phone" class="form-input" placeholder="e.g. 08012345678">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <input type="hidden" id="input-gender">
+            <div class="gender-options-grid">
+              <div class="gender-pill" onclick="selectGender('Male')">Male</div>
+              <div class="gender-pill" onclick="selectGender('Female')">Female</div>
+              <div class="gender-pill" onclick="selectGender('Other')">Other</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Date of birth</label>
+            <input type="hidden" id="input-dob">
+            <div class="dob-trigger-input" onclick="openFbPicker()">
+              <span id="dob-display-text">Select Date of Birth</span>
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <button type="submit" class="modal-submit-btn" id="save-profile-btn">SAVE CHANGES</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- FACEBOOK-STYLE DATE PICKER MODAL -->
+    <div id="fb-picker-overlay" class="fb-picker-overlay">
+      <div class="fb-picker-card">
+        <div class="fb-picker-header">Date of Birth</div>
+        <div class="fb-selectors-row">
+          <select id="fb-month-select" class="fb-select" onchange="updateFbCalendar()"></select>
+          <select id="fb-day-select" class="fb-select" onchange="updateFbCalendarFromDay()"></select>
+          <select id="fb-year-select" class="fb-select" onchange="updateFbCalendar()"></select>
+        </div>
+        <div class="fb-calendar-grid" id="fb-calendar-grid"></div>
+        <div class="fb-picker-actions">
+          <button type="button" class="fb-btn-cancel" onclick="closeFbPicker()">Cancel</button>
+          <button type="button" class="fb-btn-set" onclick="confirmFbDate()">Set</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE ACCOUNT MODAL -->
+    <div id="delete-modal-overlay" class="modal-overlay">
+      <div class="modal-box" style="text-align: center; border-radius: var(--radius-lg); padding-top: 2rem;">
+        <div style="width: 50px; height: 50px; background: #FEF2F2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+          <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: #EF4444; fill: none; stroke-width: 2;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </div>
+        <h2 class="modal-title" style="color: #EF4444;">Delete your profile?</h2>
+        <p class="modal-subtitle" style="margin-bottom: 1.5rem;">
+          All data will be removed. Your email address will be fully freed up so you can reuse it to register a fresh account anytime.
+        </p>
+        <button class="modal-danger-btn" id="confirm-delete-btn">YES, DELETE ACCOUNT</button>
+        <button class="modal-cancel-btn" onclick="toggleDeleteModal(false)">Cancel</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast">Profile updated successfully!</div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-item active">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- FIREBASE ENGINE & PROFILE SYNCHRONIZATION -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let activeAuthUser = null;
+
+    function renderField(elementId, value, defaultText = "Not specified") {
+      const el = document.getElementById(elementId);
+      if (value !== null && value !== undefined && String(value).trim() !== "") {
+        el.innerText = value;
+        el.classList.remove('placeholder');
+      } else {
+        el.innerText = defaultText;
+        el.classList.add('placeholder');
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        activeAuthUser = user;
+        try {
+          const userDocRef = doc(db, "Users", user.uid);
+          const docSnap = await getDoc(userDocRef);
+
+          let currentUserData = {};
+          if (docSnap.exists()) {
+            currentUserData = docSnap.data();
+          } else {
+            currentUserData = {
+              uid: user.uid,
+              Firstname: "",
+              Lastname: "",
+              Email: user.email,
+              createdAt: new Date().toISOString()
+            };
+            await setDoc(userDocRef, currentUserData, { merge: true });
+          }
+
+          const firstName = currentUserData.Firstname || currentUserData.firstName || "";
+          const lastName = currentUserData.Lastname || currentUserData.lastName || "";
+          const email = currentUserData.Email || currentUserData.email || user.email || "---";
+          const phone = currentUserData.PhoneNumber || currentUserData.phone || "";
+          const parentPhone = currentUserData.ParentPhone || currentUserData.parentPhone || "";
+          const gender = currentUserData.Gender || currentUserData.gender || "";
+          const dob = currentUserData.DOB || currentUserData.dob || "";
+          const yanId = currentUserData.YanId || currentUserData.userId || `YAN-${user.uid.substring(0, 6).toUpperCase()}`;
+
+          renderField('profile-firstname', firstName);
+          renderField('profile-lastname', lastName);
+          renderField('profile-gender', gender);
+          renderField('profile-dob', dob);
+          renderField('profile-phone', phone);
+          renderField('profile-parent-phone', parentPhone);
+          renderField('profile-email', email);
+          renderField('profile-userid', yanId);
+
+          document.getElementById('input-firstname').value = firstName;
+          document.getElementById('input-lastname').value = lastName;
+          document.getElementById('input-email').value = email;
+          document.getElementById('input-phone').value = phone;
+          document.getElementById('input-parent-phone').value = parentPhone;
+          
+          setDobValue(dob);
+          selectGender(gender);
+
+        } catch (error) {
+          console.error("Error loading profile data:", error);
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!activeAuthUser) return;
+
+      const saveBtn = document.getElementById('save-profile-btn');
+      saveBtn.innerText = "SAVING...";
+      saveBtn.disabled = true;
+
+      try {
+        const updatedData = {
+          Firstname: document.getElementById('input-firstname').value.trim(),
+          Lastname: document.getElementById('input-lastname').value.trim(),
+          PhoneNumber: document.getElementById('input-phone').value.trim(),
+          ParentPhone: document.getElementById('input-parent-phone').value.trim(),
+          Gender: document.getElementById('input-gender').value,
+          DOB: document.getElementById('input-dob').value,
+          updatedAt: new Date().toISOString()
+        };
+
+        const userDocRef = doc(db, "Users", activeAuthUser.uid);
+        await setDoc(userDocRef, updatedData, { merge: true });
+
+        renderField('profile-firstname', updatedData.Firstname);
+        renderField('profile-lastname', updatedData.Lastname);
+        renderField('profile-gender', updatedData.Gender);
+        renderField('profile-dob', updatedData.DOB);
+        renderField('profile-phone', updatedData.PhoneNumber);
+        renderField('profile-parent-phone', updatedData.ParentPhone);
+
+        toggleEditModal(false);
+        showToast("Profile updated successfully!");
+      } catch (error) {
+        console.error("Update failed:", error);
+        showToast("Failed to update profile.");
+      } finally {
+        saveBtn.innerText = "SAVE CHANGES";
+        saveBtn.disabled = false;
+      }
+    });
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+      if (!activeAuthUser) return;
+      const deleteBtn = document.getElementById('confirm-delete-btn');
+      deleteBtn.innerText = "DELETING...";
+      deleteBtn.disabled = true;
+
+      try {
+        await deleteDoc(doc(db, "Users", activeAuthUser.uid));
+        await deleteUser(activeAuthUser);
+        
+        showToast("Account deleted successfully.");
+        setTimeout(() => { window.location.href = "index.html"; }, 1500);
+      } catch (error) {
+        console.error("Deletion error:", error);
+        showToast("Please re-login and try again.");
+        deleteBtn.innerText = "YES, DELETE ACCOUNT";
+        deleteBtn.disabled = false;
+        toggleDeleteModal(false);
+      }
+    });
+  </script>
+
+  <!-- UI CONTROLLERS & FACEBOOK DATE PICKER LOGIC -->
+  <script>
+    function toggleEditModal(open) {
+      document.getElementById('edit-modal-overlay').classList.toggle('active', open);
+    }
+    function toggleDeleteModal(open) {
+      document.getElementById('delete-modal-overlay').classList.toggle('active', open);
+    }
+    function selectGender(gender) {
+      document.getElementById('input-gender').value = gender;
+      document.querySelectorAll('.gender-pill').forEach(pill => {
+        if (pill.innerText.trim() === gender) {
+          pill.classList.add('selected');
+        } else {
+          pill.classList.remove('selected');
+        }
+      });
+    }
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    const monthsNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let tempSelectedDate = new Date();
+
+    function initFbSelectors() {
+      const monthSel = document.getElementById('fb-month-select');
+      const yearSel = document.getElementById('fb-year-select');
+      
+      if (monthSel.options.length === 0) {
+        monthsNames.forEach((m, idx) => {
+          let opt = document.createElement('option');
+          opt.value = idx;
+          opt.innerText = m;
+          monthSel.appendChild(opt);
+        });
+
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear; y >= 1950; y--) {
+          let opt = document.createElement('option');
+          opt.value = y;
+          opt.innerText = y;
+          yearSel.appendChild(opt);
+        }
+      }
+    }
+
+    function setDobValue(dobStr) {
+      const hiddenInput = document.getElementById('input-dob');
+      const displayText = document.getElementById('dob-display-text');
+      if (dobStr) {
+        hiddenInput.value = dobStr;
+        displayText.innerText = dobStr;
+        displayText.style.color = "var(--text-dark)";
+        displayText.style.fontWeight = "700";
+        let parts = dobStr.split('-');
+        if (parts.length === 3) {
+          tempSelectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+      } else {
+        hiddenInput.value = "";
+        displayText.innerText = "Select Date of Birth";
+        displayText.style.color = "var(--text-muted)";
+        displayText.style.fontWeight = "400";
+      }
+    }
+
+    function openFbPicker() {
+      initFbSelectors();
+      document.getElementById('fb-month-select').value = tempSelectedDate.getMonth();
+      document.getElementById('fb-year-select').value = tempSelectedDate.getFullYear();
+      updateDaysDropdown();
+      document.getElementById('fb-day-select').value = tempSelectedDate.getDate();
+      renderFbCalendarGrid();
+      document.getElementById('fb-picker-overlay').classList.add('active');
+    }
+
+    function closeFbPicker() {
+      document.getElementById('fb-picker-overlay').classList.remove('active');
+    }
+
+    function updateDaysDropdown() {
+      const month = parseInt(document.getElementById('fb-month-select').value);
+      const year = parseInt(document.getElementById('fb-year-select').value);
+      const daySel = document.getElementById('fb-day-select');
+      const currentDay = parseInt(daySel.value) || tempSelectedDate.getDate();
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      daySel.innerHTML = "";
+      for (let d = 1; d <= daysInMonth; d++) {
+        let opt = document.createElement('option');
+        opt.value = d;
+        opt.innerText = d;
+        daySel.appendChild(opt);
+      }
+      daySel.value = Math.min(currentDay, daysInMonth);
+    }
+
+    function updateFbCalendar() {
+      updateDaysDropdown();
+      syncDateFromDropdowns();
+      renderFbCalendarGrid();
+    }
+
+    function updateFbCalendarFromDay() {
+      syncDateFromDropdowns();
+      renderFbCalendarGrid();
+    }
+
+    function syncDateFromDropdowns() {
+      const year = parseInt(document.getElementById('fb-year-select').value);
+      const month = parseInt(document.getElementById('fb-month-select').value);
+      const day = parseInt(document.getElementById('fb-day-select').value);
+      tempSelectedDate = new Date(year, month, day);
+    }
+
+    function renderFbCalendarGrid() {
+      const grid = document.getElementById('fb-calendar-grid');
+      grid.innerHTML = "";
+
+      const daysHeaders = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      daysHeaders.forEach(dh => {
+        let headerDiv = document.createElement('div');
+        headerDiv.className = 'fb-cal-day-header';
+        headerDiv.innerText = dh;
+        grid.appendChild(headerDiv);
+      });
+
+      const year = tempSelectedDate.getFullYear();
+      const month = tempSelectedDate.getMonth();
+      const selectedDay = tempSelectedDate.getDate();
+
+      let firstDayIndex = new Date(year, month, 1).getDay();
+      firstDayIndex = (firstDayIndex === 0) ? 6 : firstDayIndex - 1;
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        let emptyCell = document.createElement('div');
+        emptyCell.className = 'fb-cal-cell empty';
+        grid.appendChild(emptyCell);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        let cell = document.createElement('div');
+        cell.className = 'fb-cal-cell';
+        if (d === selectedDay) cell.classList.add('selected');
+        cell.innerText = d;
+        cell.onclick = () => {
+          tempSelectedDate = new Date(year, month, d);
+          document.getElementById('fb-day-select').value = d;
+          renderFbCalendarGrid();
+        };
+        grid.appendChild(cell);
+      }
+    }
+
+    function confirmFbDate() {
+      const y = tempSelectedDate.getFullYear();
+      const m = String(tempSelectedDate.getMonth() + 1).padStart(2, '0');
+      const d = String(tempSelectedDate.getDate()).padStart(2, '0');
+      setDobValue(`${y}-${m}-${d}`);
+      closeFbPicker();
+    }
+
+    document.getElementById('edit-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) toggleEditModal(false);
+    });
+    document.getElementById('delete-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) toggleDeleteModal(false);
+    });
+    document.getElementById('fb-picker-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeFbPicker();
+    });
+  </script>
+</body>
+</html>

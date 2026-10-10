@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Practice Selection</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8B5CF6;
+      --primary-dark: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-body: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --radius-app: 20px;
+      --radius-btn: 12px;
+      --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 930px;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
+
+    @media (min-width: 500px) {
+      .app-shell {
+        height: 92vh;
+        border-radius: 32px;
+        border: 6px solid #0F172A;
+      }
+    }
+
+    .app-header {
+      padding: 14px 16px 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .header-left-group { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+    }
+    .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 90px;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* SEARCH BAR */
+    .search-bar-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .search-bar-wrapper svg {
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      color: var(--text-sub);
+    }
+    .search-bar-wrapper input {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-size: 0.82rem;
+      background: #F8FAFC;
+      color: var(--text-main);
+      outline: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .search-bar-wrapper input:focus {
+      border-color: var(--primary);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .page-header { margin-bottom: 4px; }
+    .step-badge {
+      display: inline-block; padding: 3px 10px; background: var(--primary-light); color: var(--primary);
+      border-radius: 20px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .page-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); }
+    .page-subtitle { font-size: 0.75rem; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
+
+    /* ITEM CARDS */
+    .item-list { display: flex; flex-direction: column; gap: 8px; }
+    .selection-card {
+      background: var(--card-bg); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center;
+      justify-content: space-between; border: 1px solid var(--border); text-decoration: none; color: inherit;
+      transition: all 0.2s ease; box-shadow: var(--shadow-card); cursor: pointer;
+    }
+    .selection-card:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .selection-card.locked { opacity: 0.7; background: #F8FAFC; border-style: dashed; }
+
+    .card-left { display: flex; align-items: center; gap: 12px; }
+    .icon-box {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .icon-box.locked-icon { background: var(--warning-light); color: var(--warning); }
+    .icon-box svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .card-title { font-weight: 700; font-size: 0.85rem; color: var(--text-main); line-height: 1.3; }
+    .card-sub { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; font-weight: 500; }
+
+    .arrow-icon svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.5; }
+    .lock-badge { font-size: 0.68rem; font-weight: 800; color: var(--warning); background: var(--warning-light); padding: 3px 8px; border-radius: 20px; }
+
+    /* TOAST NOTIFICATION */
+    .toast-notification {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
+      padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+    }
+    .toast-notification.show { transform: translateX(-50%) translateY(0); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
+      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
+    }
+    .nav-tab {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
+    }
+    .nav-tab.active { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <div id="app-toast" class="toast-notification">Notification message</div>
+
+    <header class="app-header">
+      <div class="header-left-group">
+        <button class="back-btn" id="back-btn" onclick="handleBackAction()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div>
+          <h1 class="app-header-title" id="header-main-title">Practice Catalog</h1>
+          <p class="app-header-subtitle">Yan-Dli CBT Suite</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header">
+        <span class="step-badge" id="step-badge">STEP 1 OF 4</span>
+        <h1 class="page-title" id="page-title">Select Department</h1>
+        <p class="page-subtitle" id="page-subtitle">Choose your department to practice</p>
+      </div>
+
+      <div class="search-bar-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="item-search-input" placeholder="Search..." oninput="filterItemsList()">
+      </div>
+
+      <div class="item-list" id="selection-list-container">
+        <div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading database...</div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-tab active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedFacultyParam = urlParams.get('faculty');
+
+    const facultyNameMap = {
+      'commerce': 'Faculty of Commerce',
+      'art': 'Faculty of Art',
+      'science': 'Faculty of Science',
+      'gst': 'General course' 
+    };
+
+    let currentStep = 'department';
+    let selectedDept = null;
+    let selectedLevel = null;
+    let selectedCourse = null;
+    let isUserActivated = false;
+    let userPinData = null;
+    let rawItemsData = [];
+
+    function showToast(message) {
+      const toast = document.getElementById('app-toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    // HELPER FUNCTION: Clean string comparisons for Department & Level checks
+    function cleanString(str) {
+      return (str || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    // HELPER FUNCTION: Check if the user's active pin matches the currently selected Department & Level
+    function isScopeUnlocked() {
+      if (!isUserActivated || !userPinData) return false;
+      
+      const userDept = cleanString(userPinData.department);
+      const userLvl = cleanString(userPinData.level);
+      
+      const currentDept = selectedDept ? cleanString(selectedDept.name) : '';
+      const currentLvl = selectedLevel ? cleanString(selectedLevel.name) : '';
+
+      const deptMatches = userDept === currentDept || userDept.includes(currentDept) || currentDept.includes(userDept);
+      const levelMatches = userLvl === currentLvl || userLvl.includes(currentLvl) || currentLvl.includes(userLvl);
+
+      return deptMatches && levelMatches;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, "Users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            
+            // Check expiry date
+            let isExpired = false;
+            if (userData.expiresAt && new Date(userData.expiresAt) < new Date()) {
+              isExpired = true;
+            }
+
+            isUserActivated = !!userData.isActivated && !isExpired;
+            userPinData = {
+              faculty: userData.faculty || '',
+              department: userData.department || '',
+              level: userData.level || '',
+              pin: userData.activationPinUsed || ''
+            };
+          }
+        } catch (error) {
+          console.error("Error checking activation status:", error);
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    const listContainer = document.getElementById("selection-list-container");
+
+    window.filterItemsList = function() {
+      const queryText = document.getElementById('item-search-input').value.toLowerCase();
+      const filtered = rawItemsData.filter(item => item.searchText.toLowerCase().includes(queryText));
+      renderItems(filtered);
+    };
+
+    function loadDepartments() {
+      currentStep = 'department';
+      document.getElementById('step-badge').innerText = 'STEP 1 OF 4';
+      document.getElementById('page-title').innerText = 'Select Department';
+      const expectedFacultyName = selectedFacultyParam ? facultyNameMap[selectedFacultyParam] : 'your academic';
+      document.getElementById('page-subtitle').innerText = `Choose your department under ${expectedFacultyName}`;
+      document.getElementById('item-search-input').value = '';
+
+      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading departments...</div>`;
+
+      onSnapshot(collection(db, "departments"), (snapshot) => {
+        rawItemsData = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.archived) return;          
+          if (selectedFacultyParam) {
+            const targetFaculty = facultyNameMap[selectedFacultyParam];
+            if (!data.faculty || data.faculty.toLowerCase() !== targetFaculty.toLowerCase()) {
+              return;
+            }
+          }
+          
+          rawItemsData.push({
+            id: docSnap.id,
+            name: data.name || "Unnamed Department",
+            sub: data.faculty || "Faculty",
+            abbr: data.abbr || (data.name ? data.name.substring(0,3).toUpperCase() : 'GEN'),
+            searchText: `${data.name || ''} ${data.faculty || ''}`
+          });
+        });
+        renderItems(rawItemsData);
+      });
+    }
+
+    window.selectDepartment = function(deptId, deptName) {
+      selectedDept = { id: deptId, name: deptName };
+      currentStep = 'level';
+
+      document.getElementById('step-badge').innerText = 'STEP 2 OF 4';
+      document.getElementById('page-title').innerText = 'Select Academic Level';
+      document.getElementById('page-subtitle').innerText = `Department: ${deptName}`;
+      document.getElementById('item-search-input').value = '';
+
+      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading levels...</div>`;
+
+      onSnapshot(collection(db, "levels"), (snapshot) => {
+        let levels = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (!data.archived) {
+            levels.push({ id: docSnap.id, name: data.name || "Level", code: parseInt(data.code) || 100 });
+          }
+        });
+        levels.sort((a, b) => a.code - b.code);
+
+        rawItemsData = levels.map(lvl => ({
+          id: lvl.id,
+          name: lvl.name,
+          code: lvl.code,
+          sub: `Tap to view courses`,
+          searchText: lvl.name
+        }));
+        renderItems(rawItemsData);
+      });
+    };
+
+    window.selectLevel = function(levelId, levelName) {
+      selectedLevel = { id: levelId, name: levelName };
+      currentStep = 'course';
+
+      document.getElementById('step-badge').innerText = 'STEP 3 OF 4';
+      document.getElementById('page-title').innerText = 'Select Course';
+      document.getElementById('page-subtitle').innerText = `${selectedDept.name} • ${levelName}`;
+      document.getElementById('item-search-input').value = '';
+
+      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading courses...</div>`;
+
+      const q = query(
+        collection(db, "courses"),
+        where("departmentId", "==", selectedDept.id),
+        where("levelId", "==", levelId)
+      );
+
+      onSnapshot(q, (snapshot) => {
+        let courses = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (!data.archived) {
+            courses.push({ id: docSnap.id, title: data.title || "Course Title", code: data.code || "CODE" });
+          }
+        });
+
+        // STRICT LOCKING CHECK: Is this specific Dept + Level unlocked by user's pin?
+        const scopeUnlocked = isScopeUnlocked();
+
+        rawItemsData = courses.map((c, index) => {
+          // If Scope is unlocked, all courses under it are accessible.
+          // Otherwise, only index 0 (Free Preview) is unlocked.
+          const isLocked = !scopeUnlocked && index > 0;
+          return {
+            id: c.id,
+            code: c.code,
+            title: c.title,
+            name: `[${c.code}] ${c.title}`,
+            sub: isLocked ? 'Locked (Activate scope to unlock)' : 'Available to practice',
+            locked: isLocked,
+            searchText: `${c.code} ${c.title}`
+          };
+        });
+        renderItems(rawItemsData);
+      });
+    };
+
+    window.selectCourse = function(courseId, courseTitle, courseCode) {
+      selectedCourse = { id: courseId, title: courseTitle, code: courseCode };
+      currentStep = 'topic';
+
+      document.getElementById('step-badge').innerText = 'STEP 4 OF 4';
+      document.getElementById('page-title').innerText = 'Select Topic';
+      document.getElementById('page-subtitle').innerText = `${courseCode}: ${courseTitle}`;
+      document.getElementById('item-search-input').value = '';
+
+      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading topics...</div>`;
+
+      const q = query(collection(db, "topics"), where("courseId", "==", courseId));
+      onSnapshot(q, (snapshot) => {
+        let topics = [];
+        const scopeUnlocked = isScopeUnlocked();
+
+        topics.push({
+          id: 'all',
+          name: '🎯 Practice All Topics',
+          sub: scopeUnlocked ? 'Random questions across full syllabus' : 'Locked (Activate scope to unlock full syllabus)',
+          locked: !scopeUnlocked
+        });
+
+        let index = 0;
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.archived) return;
+
+          const isLocked = !scopeUnlocked && index > 0;
+          topics.push({
+            id: docSnap.id,
+            name: data.name || "Topic Name",
+            sub: isLocked ? 'Locked (Free tier limit: 1 topic)' : 'Specific Topic Practice',
+            locked: isLocked
+          });
+          index++;
+        });
+
+        rawItemsData = topics.map(t => ({
+          ...t,
+          searchText: t.name
+        }));
+        renderItems(rawItemsData);
+      });
+    };
+
+    function renderItems(items) {
+      if (items.length === 0) {
+        listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">No items found.</div>`;
+        return;
+      }
+
+      listContainer.innerHTML = items.map(item => {
+        if (item.locked) {
+          return `
+            <div class="selection-card locked" onclick="showToast('🔒 Locked! Activate this specific Department & Level to unlock.')">
+              <div class="card-left">
+                <div class="icon-box locked-icon">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                  <div class="card-title">${item.name}</div>
+                  <div class="card-sub">${item.sub}</div>
+                </div>
+              </div>
+              <span class="lock-badge">Locked</span>
+            </div>
+          `;
+        }
+
+        let clickAction = '';
+        if (currentStep === 'department') clickAction = `selectDepartment('${item.id}', '${escapeJs(item.name)}')`;
+        else if (currentStep === 'level') clickAction = `selectLevel('${item.id}', '${escapeJs(item.name)}')`;
+        else if (currentStep === 'course') clickAction = `selectCourse('${item.id}', '${escapeJs(item.title)}', '${escapeJs(item.code)}')`;
+        else if (currentStep === 'topic') clickAction = `proceedToSetup('${item.id}', '${escapeJs(item.name)}')`;
+
+        const isSpecialAll = item.id === 'all';
+        const cardStyle = isSpecialAll ? 'border: 2px solid var(--primary); background: var(--primary-light);' : '';
+        const iconStyle = isSpecialAll ? 'background: var(--primary); color: white;' : '';
+
+        return `
+          <div class="selection-card" style="${cardStyle}" onclick="${clickAction}">
+            <div class="card-left">
+              <div class="icon-box" style="${iconStyle}">
+                <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div>
+                <div class="card-title" style="${isSpecialAll ? 'color: var(--primary-dark); font-weight:800;' : ''}">${item.name}</div>
+                <div class="card-sub" style="${isSpecialAll ? 'color: var(--primary);' : ''}">${item.sub}</div>
+              </div>
+            </div>
+            <span class="arrow-icon"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.proceedToSetup = function(topicId, topicName) {
+      const url = `setup.html?deptId=${selectedDept.id}&deptName=${encodeURIComponent(selectedDept.name)}&levelId=${selectedLevel.id}&levelName=${encodeURIComponent(selectedLevel.name)}&courseId=${selectedCourse.id}&courseCode=${encodeURIComponent(selectedCourse.code)}&courseTitle=${encodeURIComponent(selectedCourse.title)}&topicId=${topicId}&topicName=${encodeURIComponent(topicName)}`;
+      window.location.href = url;
+    };
+
+    window.handleBackAction = function() {
+      if (currentStep === 'topic') {
+        window.selectLevel(selectedLevel.id, selectedLevel.name);
+      } else if (currentStep === 'course') {
+        window.selectDepartment(selectedDept.id, selectedDept.name);
+      } else if (currentStep === 'level') {
+        loadDepartments();
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    };
+
+    function escapeJs(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '"');
+    }
+
+    loadDepartments();
+  </script>
+</body>
+</html>

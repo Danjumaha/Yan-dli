@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Account Activation</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Paystack Inline JS Library -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <style>
+    :root {
+      --primary: #8B5CF6;
+      --primary-dark: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-body: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --radius-app: 20px;
+      --radius-btn: 12px;
+      --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 930px;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
+
+    @media (min-width: 500px) {
+      .app-shell {
+        height: 92vh;
+        border-radius: 32px;
+        border: 6px solid #0F172A;
+      }
+    }
+
+    .app-header {
+      padding: 14px 16px 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .header-left-group { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+    }
+    .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 90px;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-card {
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-app);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .status-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; width: fit-content;
+    }
+    .status-badge.free { background: rgba(255, 255, 255, 0.2); color: #FEF08A; }
+    .status-badge.active { background: #10B981; color: #FFFFFF; }
+
+    .app-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-app);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid #F1F5F9;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .app-card-title { font-size: 0.9rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+
+    .plans-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .plan-box {
+      border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; background: #F8FAFC;
+    }
+    .plan-box.selected { border-color: var(--primary); background: var(--primary-light); }
+    .plan-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
+    .plan-duration { font-size: 0.65rem; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
+
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.4px; }
+
+    .room-select-trigger {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-btn);
+      font-size: 0.82rem; background: #F8FAFC; color: var(--text-main); font-weight: 600; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease;
+    }
+    .room-select-trigger:hover { border-color: var(--primary); background: #FFFFFF; }
+
+    .selector-room-overlay {
+      position: absolute; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+      z-index: 500; display: none; flex-direction: column; justify-content: flex-end; animation: fadeIn 0.2s ease;
+    }
+    .selector-room-overlay.active { display: flex; }
+    .selector-room-panel {
+      background: #FFFFFF; width: 100%; height: 75vh; border-top-left-radius: 24px; border-top-right-radius: 24px;
+      display: flex; flex-direction: column; overflow: hidden; animation: slideUpRoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUpRoom { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .room-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .room-search-box { padding: 12px 16px; border-bottom: 1px solid var(--border); background: #F8FAFC; }
+    .room-search-input {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 0.82rem; background: #FFFFFF; outline: none; font-weight: 600;
+    }
+    .room-search-input:focus { border-color: var(--primary); }
+    .room-list-container { flex: 1; overflow-y: auto; padding: 8px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .room-item {
+      padding: 12px 14px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; color: var(--text-main); background: #F8FAFC; cursor: pointer; border: 1px solid #EDF2F7; transition: all 0.15s ease;
+    }
+    .room-item:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary-light); }
+
+    .app-input {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-btn);
+      font-size: 0.82rem; background: #F8FAFC; color: var(--text-main); outline: none; font-weight: 600; transition: all 0.2s ease;
+    }
+    .app-input:focus { border-color: var(--primary); background: #FFFFFF; box-shadow: 0 0 0 3px var(--primary-light); }
+
+    .app-btn {
+      width: 100%; padding: 11px; background: var(--primary); color: white; border: none; border-radius: var(--radius-btn);
+      font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25); transition: all 0.2s ease;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .app-btn:active { transform: scale(0.98); }
+    .app-btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+
+    .rules-box {
+      background: #FFFBEB; border: 1px solid #FEF3C7; border-radius: 12px; padding: 10px 12px; font-size: 0.73rem; color: #92400E; line-height: 1.4;
+    }
+    .rules-box ul { margin-left: 14px; margin-top: 2px; }
+
+    .pin-display-area {
+      background: var(--primary-light); border: 2px dashed var(--primary); padding: 12px; border-radius: 12px; text-align: center; display: none; flex-direction: column; gap: 6px;
+    }
+    .generated-pin-code { font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
+
+    /* PIN HISTORY TABLE / LIST */
+    .pin-history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .pin-history-card {
+      background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; position: relative;
+    }
+    .pin-history-header { display: flex; justify-content: space-between; align-items: center; }
+    .pin-code-text { font-family: monospace; font-size: 0.82rem; font-weight: 800; color: var(--primary); }
+    .pin-status-pill { font-size: 0.62rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+    .pin-status-pill.unused { background: var(--warning-light); color: var(--warning); }
+    .pin-status-pill.used { background: var(--success-light); color: var(--success); }
+    
+    .pin-details-grid { font-size: 0.72rem; color: var(--text-sub); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-weight: 500; }
+    .pin-details-grid span strong { color: var(--text-main); }
+    .pin-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; padding-top: 6px; margin-top: 2px; font-size: 0.68rem; color: var(--text-sub); }
+    .delete-pin-btn { background: none; border: none; color: var(--danger); cursor: pointer; display: flex; align-items: center; gap: 2px; font-weight: 700; font-size: 0.7rem; }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
+      padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+    }
+    .toast-notification.show { transform: translateX(-50%) translateY(0); }
+
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
+      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
+    }
+    .nav-tab {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
+    }
+    .nav-tab.active { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <div id="app-toast" class="toast-notification">Notification message</div>
+
+    <header class="app-header">
+      <div class="header-left-group">
+        <a href="dashboard.html" class="back-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <div>
+          <h1 class="app-header-title">Account Activation</h1>
+          <p class="app-header-subtitle">Yan-Dli Security & Access</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="status-card">
+        <div style="font-size:0.68rem; opacity:0.9; font-weight:700; text-transform:uppercase;">Membership Status</div>
+        <div id="account-status-badge" class="status-badge free">Free Tier (Locked)</div>
+        <div id="account-expiry-text" style="font-size: 0.73rem; font-weight:500;">Activate a specific department & level to unlock course modules.</div>
+      </div>
+
+      <div class="rules-box">
+        <strong>⚠️ Access Rules:</strong>
+        <ul>
+          <li>Pins unlock only the specific <strong>Faculty, Department, and Level</strong> registered on them.</li>
+          <li>Redeeming a pin binds your account access specifically to that departmental scope.</li>
+        </ul>
+      </div>
+
+      <!-- STEP 1: SELECT PLAN & TARGET SPECIFICATION -->
+      <div class="app-card">
+        <div class="app-card-title">💳 1. Choose Plan & Target Scope</div>
+
+        <div class="plans-grid">
+          <div class="plan-box selected" onclick="selectPlan(3500, 'Semester 4 months', this)">
+            <div class="plan-duration">Semester (4 Mos)</div>
+            <div class="plan-price">₦3,500</div>
+          </div>
+          <div class="plan-box" onclick="selectPlan(10000, 'Yearly 12 months', this)">
+            <div class="plan-duration">Yearly (12 Mos)</div>
+            <div class="plan-price">₦10,000</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Faculty / Category</label>
+          <div class="room-select-trigger" onclick="openSelectorRoom('faculty')">
+            <span id="selected-faculty-label" style="font-size: 0.82rem;">Select Faculty</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <input type="hidden" id="gen-faculty-val">
+        </div>
+
+        <div class="form-group">
+          <label>Target Department</label>
+          <div class="room-select-trigger" onclick="openSelectorRoom('department')">
+            <span id="selected-dept-label" style="font-size: 0.82rem;">Select Department</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <input type="hidden" id="gen-dept-id">
+          <input type="hidden" id="gen-dept-name-val">
+        </div>
+
+        <div class="form-group">
+          <label>Academic Level</label>
+          <div class="room-select-trigger" onclick="openSelectorRoom('level')">
+            <span id="selected-level-label" style="font-size: 0.82rem;">Select Academic Level</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <input type="hidden" id="gen-level-id">
+          <input type="hidden" id="gen-level-name-val">
+        </div>
+
+        <button type="button" class="app-btn" onclick="initiatePaystackPayment()">Pay Securely & Get Your Pin</button>
+
+        <div id="pin-output-box" class="pin-display-area">
+          <div style="font-size:0.68rem; color:var(--primary); font-weight:800; text-transform:uppercase;">Your Generated Scope Pin:</div>
+          <div class="generated-pin-code" id="displayed-pin-string">---</div>
+          <button type="button" class="app-btn" style="padding: 8px; font-size: 0.75rem;" onclick="copyGeneratedPin()">📋 Copy Pin Code</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: REDEEM PIN -->
+      <div class="app-card">
+        <div class="app-card-title">🔑 2. Redeem Activation Pin</div>
+        <div class="form-group">
+          <label>Enter Activation Pin Code</label>
+          <input type="text" id="redeem-pin-input" class="app-input" placeholder="e.g. yan-com-bus-100-8492">
+        </div>
+        <button type="button" class="app-btn app-btn-success" onclick="redeemActivationPin()">Activate Scope Now</button>
+      </div>
+
+      <!-- STEP 3: REDEEMED & PURCHASED PINS HISTORY -->
+      <div class="app-card">
+        <div class="app-card-title">📜 Redeem & Purchased Pins History</div>
+        <div class="pin-history-list" id="pin-history-container">
+          <div style="text-align: center; padding: 1rem; color: var(--text-sub); font-size: 0.78rem;">Loading pin records...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- SELECTION ROOM MODAL OVERLAY -->
+    <div id="selector-room-modal" class="selector-room-overlay" onclick="closeSelectorRoom()">
+      <div class="selector-room-panel" onclick="event.stopPropagation()">
+        <div class="room-header">
+          <h3 id="room-modal-title" style="font-size: 0.95rem; font-weight: 800;">Select Option</h3>
+          <button class="back-btn" onclick="closeSelectorRoom()" style="width: 30px; height: 30px;">&times;</button>
+        </div>
+        <div class="room-search-box">
+          <input type="text" id="room-search-input" class="room-search-input" placeholder="Search..." oninput="filterRoomItems()">
+        </div>
+        <div class="room-list-container" id="room-list-items"></div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-tab active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUser = null;
+    let selectedAmount = 3500;
+    let selectedPlanName = "Semester 4 months";
+    let lastGeneratedPin = "";
+
+    let allDepartments = [];
+    let allLevels = [];
+    let activeSelectorType = '';
+    let currentRawList = [];
+
+    function showToast(message) {
+      const toast = document.getElementById('app-toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    window.selectPlan = function(amount, name, el) {
+      selectedAmount = amount;
+      selectedPlanName = name;
+      document.querySelectorAll('.plan-box').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        checkUserActivationStatus(user.uid);
+        loadUserPinHistory(user.uid);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    async function checkUserActivationStatus(uid) {
+      try {
+        const userDoc = await getDoc(doc(db, "Users", uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          const badge = document.getElementById('account-status-badge');
+          const expiryText = document.getElementById('account-expiry-text');
+          
+          if (data.isActivated) {
+            badge.className = "status-badge active";
+            badge.textContent = "Scope Active 🚀";
+            expiryText.textContent = `${data.faculty || ''} > ${data.department || ''} > ${data.level || ''}`;
+          }
+        }
+      } catch (e) {
+        console.error("Status check error", e);
+      }
+    }
+
+    function initAdminRealtimeSync() {
+      onSnapshot(collection(db, "departments"), (snapshot) => {
+        allDepartments = [];
+        snapshot.forEach(d => {
+          const data = d.data();
+          if (!data.archived) allDepartments.push({ id: d.id, ...data });
+        });
+      });
+
+      onSnapshot(collection(db, "levels"), (snapshot) => {
+        allLevels = [];
+        snapshot.forEach(d => {
+          const data = d.data();
+          if (!data.archived) allLevels.push({ id: d.id, ...data });
+        });
+        allLevels.sort((a, b) => (parseInt(a.code) || 0) - (parseInt(b.code) || 0));
+      });
+    }
+
+    window.openSelectorRoom = function(type) {
+      activeSelectorType = type;
+      const modal = document.getElementById('selector-room-modal');
+      const title = document.getElementById('room-modal-title');
+      const searchInput = document.getElementById('room-search-input');
+      searchInput.value = '';
+
+      if (type === 'faculty') {
+        title.textContent = 'Select Faculty / Category';
+        const faculties = [...new Set(allDepartments.map(d => d.faculty).filter(Boolean))];
+        currentRawList = faculties.map(f => ({ id: f, name: f }));
+      } else if (type === 'department') {
+        const facultyVal = document.getElementById('gen-faculty-val').value;
+        if (!facultyVal) {
+          showToast('⚠️ Please select a Faculty first.');
+          return;
+        }
+        title.textContent = `Departments under ${facultyVal}`;
+        const filteredDepts = allDepartments.filter(d => d.faculty === facultyVal);
+        currentRawList = filteredDepts.map(d => ({ id: d.id, name: d.name, abbr: d.abbr || d.name.substring(0,3).toUpperCase() }));
+      } else if (type === 'level') {
+        title.textContent = 'Select Academic Level';
+        currentRawList = allLevels.map(l => ({ id: l.id, name: l.name, code: l.code || '100' }));
+      }
+
+      renderRoomList(currentRawList);
+      modal.classList.add('active');
+    };
+
+    window.closeSelectorRoom = function() {
+      document.getElementById('selector-room-modal').classList.remove('active');
+    };
+
+    window.filterRoomItems = function() {
+      const queryText = document.getElementById('room-search-input').value.toLowerCase();
+      const filtered = currentRawList.filter(item => item.name.toLowerCase().includes(queryText));
+      renderRoomList(filtered);
+    };
+
+    function renderRoomList(items) {
+      const container = document.getElementById('room-list-items');
+      if (items.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-sub); font-size:0.8rem;">No items found</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="room-item" onclick="handleRoomItemSelect('${item.id}', '${item.name.replace(/'/g, "\\'")}')">
+          ${item.name}
+        </div>
+      `).join('');
+    }
+
+    window.handleRoomItemSelect = function(id, name) {
+      if (activeSelectorType === 'faculty') {
+        document.getElementById('gen-faculty-val').value = name;
+        document.getElementById('selected-faculty-label').textContent = name;
+        document.getElementById('gen-dept-id').value = '';
+        document.getElementById('gen-dept-name-val').value = '';
+        document.getElementById('selected-dept-label').textContent = 'Select Department';
+      } else if (activeSelectorType === 'department') {
+        document.getElementById('gen-dept-id').value = id;
+        document.getElementById('gen-dept-name-val').value = name;
+        document.getElementById('selected-dept-label').textContent = name;
+      } else if (activeSelectorType === 'level') {
+        document.getElementById('gen-level-id').value = id;
+        document.getElementById('gen-level-name-val').value = name;
+        document.getElementById('selected-level-label').textContent = name;
+      }
+      closeSelectorRoom();
+    };
+
+    function abbreviate(str, length = 3) {
+      if (!str) return 'GEN';
+      const clean = str.replace(/[^a-zA-Z]/g, '');
+      return clean.substring(0, length).toUpperCase();
+    }
+
+    window.initiatePaystackPayment = function() {
+      if (!currentUser) return;
+
+      const facultyVal = document.getElementById('gen-faculty-val').value;
+      const deptId = document.getElementById('gen-dept-id').value;
+      const deptNameVal = document.getElementById('gen-dept-name-val').value;
+      const levelId = document.getElementById('gen-level-id').value;
+      const levelNameVal = document.getElementById('gen-level-name-val').value;
+
+      if (!facultyVal || !deptId || !levelId) {
+        showToast("⚠️ Please select Faculty, Department, and Level.");
+        return;
+      }
+
+      const selectedDeptObj = allDepartments.find(d => d.id === deptId);
+      const selectedDeptAbbr = selectedDeptObj?.abbr || abbreviate(deptNameVal, 3);
+      const selectedLevelCode = allLevels.find(l => l.id === levelId)?.code || '100';
+      const facultyAbbr = abbreviate(facultyVal, 3);
+
+      const handler = PaystackPop.setup({
+        key: 'pk_live_d265096a47801eaa597f27f6674e5a6d051e4959',
+        email: currentUser.email || `${currentUser.uid}@yandli.top`,
+        amount: selectedAmount * 100,
+        currency: 'NGN',
+        ref: 'YANDLI_' + Math.floor((Math.random() * 1000000000) + 1),
+        callback: async function(response) {
+          const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+          const newPin = `yan-${facultyAbbr.toLowerCase()}-${selectedDeptAbbr.toLowerCase()}-${selectedLevelCode}-${randomSuffix}`;
+          lastGeneratedPin = newPin;
+
+          const durationMonths = selectedAmount === 10000 ? 12 : 4;
+          const createdAtDate = new Date();
+          const expiryDate = new Date();
+          expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+
+          try {
+            await addDoc(collection(db, "Pins"), {
+              pin: newPin,
+              faculty: facultyVal,
+              department: deptNameVal,
+              level: levelNameVal,
+              plan: selectedPlanName,
+              amountPaid: selectedAmount,
+              durationMonths: durationMonths,
+              isUsed: false,
+              purchasedBy: currentUser.uid,
+              createdAt: createdAtDate.toISOString(),
+              expiresAt: expiryDate.toISOString()
+            });
+
+            await addDoc(collection(db, "Transactions"), {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              amount: selectedAmount,
+              plan: selectedPlanName,
+              reference: response.reference,
+              pinGenerated: newPin,
+              createdAt: createdAtDate.toISOString()
+            });
+
+            document.getElementById('displayed-pin-string').textContent = newPin;
+            document.getElementById('pin-output-box').style.display = 'flex';
+            showToast("🎉 Pin successfully generated!");
+            loadUserPinHistory(currentUser.uid);
+          } catch (err) {
+            console.error("Database error saving pin:", err);
+            showToast("❌ Database error saving pin.");
+          }
+        },
+        onClose: function() {
+          showToast('Payment window closed.');
+        }
+      });
+      handler.openIframe();
+    };
+
+    window.copyGeneratedPin = function() {
+      if (!lastGeneratedPin) return;
+      navigator.clipboard.writeText(lastGeneratedPin);
+      showToast("📋 Pin copied to clipboard!");
+    };
+
+    async function loadUserPinHistory(uid) {
+      const container = document.getElementById('pin-history-container');
+      try {
+        // Query both pins purchased by the user OR used/redeemed by the user
+        const qPurchased = query(collection(db, "Pins"), where("purchasedBy", "==", uid));
+        const qUsed = query(collection(db, "Pins"), where("usedBy", "==", uid));
+
+        const [snapPurchased, snapUsed] = await Promise.all([getDocs(qPurchased), getDocs(qUsed)]);
+        
+        const pinMap = new Map();
+        snapPurchased.forEach(d => pinMap.set(d.id, { id: d.id, ...d.data() }));
+        snapUsed.forEach(d => pinMap.set(d.id, { id: d.id, ...d.data() }));
+
+        const allPins = Array.from(pinMap.values());
+
+        if (allPins.length === 0) {
+          container.innerHTML = `<div style="text-align: center; padding: 1rem; color: var(--text-sub); font-size: 0.78rem;">No pins generated, bought, or redeemed yet.</div>`;
+          return;
+        }
+
+        let pinsHTML = '';
+        allPins.forEach(p => {
+          const pinDocId = p.id;
+          const isUsed = p.isUsed;
+          const statusClass = isUsed ? 'used' : 'unused';
+          const statusText = isUsed ? 'Used / Active' : 'Unused';
+          const formattedCreated = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'N/A';
+          const formattedExpires = p.expiresAt ? new Date(p.expiresAt).toLocaleDateString() : 'N/A';
+
+          pinsHTML += `
+            <div class="pin-history-card">
+              <div class="pin-history-header">
+                <span class="pin-code-text">${p.pin}</span>
+                <span class="pin-status-pill ${statusClass}">${statusText}</span>
+              </div>
+              <div class="pin-details-grid">
+                <span>Faculty: <strong>${p.faculty || 'N/A'}</strong></span>
+                <span>Dept: <strong>${p.department || 'N/A'}</strong></span>
+                <span>Level: <strong>${p.level || 'N/A'}</strong></span>
+                <span>Plan: <strong>${p.plan || 'N/A'}</strong></span>
+              </div>
+              <div class="pin-card-footer">
+                <span>Valid: ${formattedCreated} → Exp: ${formattedExpires}</span>
+                <button type="button" class="delete-pin-btn" onclick="deletePinRecord('${pinDocId}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = pinsHTML;
+      } catch (err) {
+        console.error("Error loading pin history:", err);
+        container.innerHTML = `<div style="text-align: center; padding: 1rem; color: var(--danger); font-size: 0.78rem;">Failed to load pin records.</div>`;
+      }
+    }
+
+    window.deletePinRecord = async function(docId) {
+      if (!confirm("Are you sure you want to delete this pin record?")) return;
+      try {
+        await deleteDoc(doc(db, "Pins", docId));
+        showToast("🗑️ Pin deleted successfully.");
+        if (currentUser) loadUserPinHistory(currentUser.uid);
+      } catch (err) {
+        console.error("Error deleting pin:", err);
+        showToast("❌ Could not delete pin.");
+      }
+    };
+
+    window.redeemActivationPin = async function() {
+      const pinInput = document.getElementById('redeem-pin-input').value.trim();
+      if (!pinInput) {
+        showToast("⚠️ Please enter a valid activation pin.");
+        return;
+      }
+
+      try {
+        const q = query(collection(db, "Pins"), where("pin", "==", pinInput));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          showToast("❌ Invalid activation pin code.");
+          return;
+        }
+
+        let pinDocSnap = null;
+        let pinData = null;
+        querySnapshot.forEach(d => {
+          pinDocSnap = d;
+          pinData = d.data();
+        });
+
+        if (pinData.isUsed) {
+          showToast("❌ This activation pin has already been used!");
+          return;
+        }
+
+        const durationMonths = pinData.durationMonths || (pinData.amountPaid === 10000 ? 12 : 4);
+        const activationDate = new Date();
+        const expiryDate = new Date(pinData.expiresAt || activationDate);
+        if(!pinData.expiresAt) {
+          expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+        }
+
+        await setDoc(doc(db, "Pins", pinDocSnap.id), { 
+          isUsed: true, 
+          usedBy: currentUser.uid, 
+          usedAt: activationDate.toISOString() 
+        }, { merge: true });
+
+        await setDoc(doc(db, "Users", currentUser.uid), { 
+          isActivated: true, 
+          activePlan: pinData.plan,
+          faculty: pinData.faculty || '',
+          department: pinData.department || '',
+          level: pinData.level || '',
+          activationPinUsed: pinInput,
+          activatedAt: activationDate.toISOString(),
+          expiresAt: expiryDate.toISOString()
+        }, { merge: true });
+
+        showToast("🎉 Scope successfully unlocked!");
+        loadUserPinHistory(currentUser.uid);
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
+      } catch (e) {
+        console.error("Redemption error", e);
+        showToast("❌ Error processing activation.");
+      }
+    };
+
+    initAdminRealtimeSync();
+  </script>
+</body>
+</html>

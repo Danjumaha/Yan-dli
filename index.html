@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yan-Dli | Premium Exam Preparation</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* DESIGN SYSTEM VARIABLES */
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --background: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #111827;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --accent-green: #10B981;
+      --accent-red: #EF4444;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 0.1px;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 640px;
+    }
+
+    /* CAROUSEL / SLIDER SECTION */
+    .slider-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem 1rem;
+      text-align: center;
+      touch-action: pan-y;
+      user-select: none;
+      cursor: grab;
+    }
+
+    .slider-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .slide {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s ease-in-out;
+      width: 100%;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    .slide-img-container {
+      width: 220px;
+      height: 180px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background-color: var(--primary-light);
+    }
+
+    .slide-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .slide-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .dots-container {
+      display: flex;
+      gap: 8px;
+      margin: 1rem 0;
+      cursor: pointer;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /* ACTION BUTTONS */
+    .action-group {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-light);
+    }
+
+    /* MODAL / VIEW PANELS */
+    .view-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--card-bg);
+      z-index: 10;
+      display: none;
+      flex-direction: column;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .view-panel.active {
+      display: flex;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 1.25rem;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .panel-header h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .panel-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* FORM STYLES */
+    .form-group {
+      margin-bottom: 1.1rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text-dark);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+      background: #FFFFFF;
+      color: var(--text-dark);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .eye-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* SLIM PASSWORD STRENGTH LINE & CHECKLIST */
+    .password-meta {
+      margin-top: 0.35rem;
+    }
+
+    .slim-strength-bar {
+      height: 3px;
+      width: 100%;
+      background-color: var(--border-color);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.4rem;
+    }
+
+    .slim-strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .password-status-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 0.3rem;
+    }
+
+    .criteria-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+      list-style: none;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .criteria-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .criteria-item.valid {
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    .criteria-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      transition: background-color 0.2s ease;
+    }
+
+    .criteria-item.valid .criteria-dot {
+      background-color: var(--accent-green);
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .checkbox-label input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .text-link {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* OVERLAY LOADER */
+    .loader-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 20;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loader-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--primary-light);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loader-text {
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* CUSTOM TOAST NOTIFICATION STYLES */
+    .toast-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      width: 90%;
+      max-width: 400px;
+      background: var(--text-dark);
+      color: #FFFFFF;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .toast-container.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .toast-container.error {
+      background: #7F1D1D;
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .toast-container.success {
+      background: #064E3B;
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      cursor: pointer;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toast" class="toast-container">
+      <div class="toast-content">
+        <span id="toast-message">Notification message</span>
+      </div>
+      <button class="toast-close" onclick="hideToast()">&times;</button>
+    </div>
+
+    <!-- LOADER OVERLAY -->
+    <div id="loader" class="loader-overlay">
+      <div class="spinner"></div>
+      <div id="loader-label" class="loader-text">Processing...</div>
+    </div>
+
+    <!-- ONBOARDING CAROUSEL -->
+    <div class="slider-wrapper" id="slider-wrapper">
+      <div class="slide active">
+        <div class="slide-img-container">
+          <img src="https://via.placeholder.com/220x180?text=Exam+Simulation" alt="Exam Simulation">
+        </div>
+        <h2 class="slide-title">Exam Simulation</h2>
+        <p class="slide-desc">More than 112,000 standardized practice questions available across several national examinations.</p>
+      </div>
+
+      <div class="slide">
+        <div class="slide-img-container">
+          <img src="https://via.placeholder.com/220x180?text=Practice+Anywhere" alt="Practice Anywhere">
+        </div>
+        <h2 class="slide-title">Practice Anywhere</h2>
+        <p class="slide-desc">Practice online or offline easily, regardless of network connectivity or where you are.</p>
+      </div>
+
+      <div class="slide">
+        <div class="slide-img-container">
+          <img src="https://via.placeholder.com/220x180?text=Detailed+Solutions" alt="Detailed Solutions">
+        </div>
+        <h2 class="slide-title">Detailed Solutions</h2>
+        <p class="slide-desc">Get comprehensive step-by-step explanations and study notes for every question.</p>
+      </div>
+
+      <div class="dots-container">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+      </div>
+    </div>
+
+    <!-- MAIN ACTION BUTTONS -->
+    <div class="action-group">
+      <button class="btn btn-primary" onclick="openView('register-view')">REGISTER</button>
+      <button class="btn btn-outline" onclick="openView('login-view')">LOG IN</button>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div id="register-view" class="view-panel">
+      <button class="back-btn" onclick="closeView('register-view')">&#8592;</button>
+      <div class="panel-header">
+        <h2>We'd love to know you</h2>
+        <p>Create an account below and start preparing for your exams.</p>
+      </div>
+      <form id="register-form">
+        <div class="form-group">
+          <label>First name*</label>
+          <input type="text" id="reg-firstname" class="form-control" placeholder="Type your firstname" required>
+        </div>
+        <div class="form-group">
+          <label>Last name*</label>
+          <input type="text" id="reg-lastname" class="form-control" placeholder="Type your lastname" required>
+        </div>
+        <div class="form-group">
+          <label>Phone number*</label>
+          <input type="tel" id="reg-phone" class="form-control" placeholder="e.g. 08012345678" required>
+        </div>
+        <div class="form-group">
+          <label>Email address*</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="Type your email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Password*</label>
+          <div class="input-wrapper">
+            <input type="password" id="reg-password" class="form-control" placeholder="Type your password" required>
+            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('reg-password', this)">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+          <div class="password-meta">
+            <div class="slim-strength-bar"><div id="slim-strength-fill" class="slim-strength-fill"></div></div>
+            <span id="password-status" class="password-status-text"></span>
+            <ul class="criteria-list">
+              <li id="crit-length" class="criteria-item"><span class="criteria-dot"></span> 8 digit character</li>
+              <li id="crit-special" class="criteria-item"><span class="criteria-dot"></span> Special letter</li>
+              <li id="crit-upper" class="criteria-item"><span class="criteria-dot"></span> Uppercase</li>
+              <li id="crit-number" class="criteria-item"><span class="criteria-dot"></span> Number</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password*</label>
+          <div class="input-wrapper">
+            <input type="password" id="reg-confirm-password" class="form-control" placeholder="Confirm your password" required>
+            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('reg-confirm-password', this)">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">REGISTER</button>
+      </form>
+      <div class="form-footer">
+        Already have an account? <span class="text-link" onclick="switchView('register-view', 'login-view')">Log in</span>
+      </div>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view" class="view-panel">
+      <button class="back-btn" onclick="closeView('login-view')">&#8592;</button>
+      <div class="panel-header">
+        <h2>Welcome back</h2>
+        <p>Log in with your email credentials to continue.</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Email*</label>
+          <input type="email" id="login-id" class="form-control" placeholder="example@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password*</label>
+          <div class="input-wrapper">
+            <input type="password" id="login-password" class="form-control" placeholder="Provide your password" required>
+            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('login-password', this)">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="remember-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me" checked> Remember me
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">LOG IN</button>
+      </form>
+      <div class="form-footer">
+        Are you a new user? <span class="text-link" onclick="switchView('login-view', 'register-view')">Create account</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE MODULAR SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Toast & Loader Utilities
+    window.showToast = function(message, type = 'error') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toast.className = `toast-container ${type} show`;
+      toastMsg.innerText = message;
+      setTimeout(() => { hideToast(); }, 4000);
+    };
+
+    window.hideToast = function() {
+      document.getElementById('toast').classList.remove('show');
+    };
+
+    window.showLoader = function(text = "Processing...") { 
+      document.getElementById('loader-label').innerText = text;
+      document.getElementById('loader').classList.add('active'); 
+    };
+    
+    window.hideLoader = function() { 
+      document.getElementById('loader').classList.remove('active'); 
+    };
+
+    function getFriendlyErrorMessage(errorCode) {
+      switch (errorCode) {
+        case 'auth/invalid-credential':
+        case 'auth/wrong-password':
+        case 'auth/user-not-found':
+          return "Incorrect email or password. Please try again.";
+        case 'auth/email-already-in-use':
+          return "An account with this email already exists.";
+        case 'auth/weak-password':
+          return "Password is too weak. Please choose a stronger password.";
+        case 'auth/invalid-email':
+          return "Please enter a valid email address.";
+        case 'auth/network-request-failed':
+          return "Network error. Please check your internet connection.";
+        case 'auth/too-many-requests':
+          return "Too many failed attempts. Please try again later.";
+        default:
+          return "An unexpected error occurred. Please try again later.";
+      }
+    }
+
+    // Generate or fetch a unique browser session identifier stored locally on this specific phone/browser
+    function getDeviceSessionId() {
+      let sessionId = localStorage.getItem('yandli_device_session');
+      if (!sessionId) {
+        sessionId = 'sess_' + Math.random().toString(36.2) + Date.now().toString(36);
+        localStorage.setItem('yandli_device_session', sessionId);
+      }
+      return sessionId;
+    }
+
+    // Register Form Handler
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const firstName = document.getElementById('reg-firstname').value.trim();
+      const lastName = document.getElementById('reg-lastname').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const confirmPassword = document.getElementById('reg-confirm-password').value.trim();
+
+      if (password !== confirmPassword) {
+        showToast("Passwords do not match!", "error");
+        return;
+      }
+
+      showLoader("Creating account...");
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        const currentSession = getDeviceSessionId();
+
+        // Save new user profile (not activated by default)
+        await setDoc(doc(db, "Users", user.uid), {
+          uid: user.uid,
+          Firstname: firstName,
+          Lastname: lastName,
+          PhoneNumber: phone,
+          Email: email,
+          isActivated: false,
+          currentSessionId: currentSession,
+          createdAt: new Date().toISOString()
+        });
+
+        hideLoader();
+        showToast("Registration successful! Redirecting...", "success");
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+      } catch (error) {
+        hideLoader();
+        showToast(error.code ? getFriendlyErrorMessage(error.code) : error.message, "error");
+      }
+    });
+
+    // Login Form Handler with Single-Device Enforcement for Activated Accounts
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-id').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const rememberMe = document.getElementById('remember-me').checked;
+
+      showLoader("Logging in...");
+      try {
+        const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+        await setPersistence(auth, persistenceType);
+
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Fetch user data to check activation status and session lock
+        const userDocRef = doc(db, "Users", user.uid);
+        const userSnap = await getDoc(userDocRef);
+        const browserSession = getDeviceSessionId();
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+
+          // Check if account is activated
+          if (userData.isActivated === true) {
+            // Check if another device session is already registered
+            if (userData.currentSessionId && userData.currentSessionId !== browserSession) {
+              // Sign out immediately so they aren't authenticated
+              await signOut(auth);
+              hideLoader();
+              showToast("⚠️ Active account already logged in on another device/browser. Security policy allows 1 device per activated account.", "error");
+              return;
+            }
+          }
+
+          // If not activated or session matches, update/set current session ID
+          await setDoc(userDocRef, { currentSessionId: browserSession }, { merge: true });
+        }
+
+        hideLoader();
+        showToast("Login successful! Redirecting...", "success");
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+      } catch (error) {
+        hideLoader();
+        showToast(error.code ? getFriendlyErrorMessage(error.code) : error.message, "error");
+      }
+    });
+  </script>
+
+  <!-- UI & INTERACTION CONTROLS -->
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const sliderWrapper = document.getElementById('slider-wrapper');
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+        dots[i].classList.toggle('active', i === index);
+      });
+      currentSlide = index;
+    }
+
+    function goToSlide(index) { showSlide(index); }
+
+    let startX = 0;
+    let endX = 0;
+
+    sliderWrapper.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    sliderWrapper.addEventListener('touchend', (e) => { endX = e.changedTouches[0].clientX; handleSwipe(); }, { passive: true });
+    sliderWrapper.addEventListener('mousedown', (e) => { startX = e.clientX; });
+    sliderWrapper.addEventListener('mouseup', (e) => { endX = e.clientX; handleSwipe(); });
+
+    function handleSwipe() {
+      const threshold = 40;
+      if (startX - endX > threshold) {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+      } else if (endX - startX > threshold) {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+      }
+    }
+
+    function openView(id) { document.getElementById(id).classList.add('active'); }
+    function closeView(id) { document.getElementById(id).classList.remove('active'); }
+    function switchView(fromId, toId) { closeView(fromId); openView(toId); }
+
+    function togglePasswordVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      button.innerHTML = isPassword 
+        ? `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+        : `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    }
+
+    /* REAL-TIME PASSWORD STRENGTH LINE & CHECKLIST */
+    const passwordInput = document.getElementById('reg-password');
+    const slimFill = document.getElementById('slim-strength-fill');
+    const statusText = document.getElementById('password-status');
+    const critLength = document.getElementById('crit-length');
+    const critSpecial = document.getElementById('crit-special');
+    const critUpper = document.getElementById('crit-upper');
+    const critNumber = document.getElementById('crit-number');
+
+    passwordInput.addEventListener('input', () => {
+      const val = passwordInput.value;
+      if (!val) {
+        slimFill.style.width = '0%';
+        statusText.innerText = '';
+        [critLength, critSpecial, critUpper, critNumber].forEach(el => el.classList.remove('valid'));
+        return;
+      }
+
+      const hasLength = val.length >= 8;
+      const hasSpecial = /[^A-Za-z0-9]/.test(val);
+      const hasUpper = /[A-Z]/.test(val);
+      const hasNumber = /[0-9]/.test(val);
+
+      critLength.classList.toggle('valid', hasLength);
+      critSpecial.classList.toggle('valid', hasSpecial);
+      critUpper.classList.toggle('valid', hasUpper);
+      critNumber.classList.toggle('valid', hasNumber);
+      let passedCount = [hasLength, hasSpecial, hasUpper, hasNumber].filter(Boolean).length;
+
+      if (passedCount <= 1) {
+        slimFill.style.width = '25%';
+        slimFill.style.backgroundColor = '#EF4444';
+        statusText.style.color = '#EF4444';
+        statusText.innerText = 'Weak';
+      } else if (passedCount <= 3) {
+        slimFill.style.width = '65%';
+        slimFill.style.backgroundColor = '#3B82F6';
+        statusText.style.color = '#3B82F6';
+        statusText.innerText = 'Good';
+      } else {
+        slimFill.style.width = '100%';
+        slimFill.style.backgroundColor = '#10B981';
+        statusText.style.color = '#10B981';
+        statusText.innerText = 'Strong';
+      }
+    });
+  </script>
+</body>
+</html>

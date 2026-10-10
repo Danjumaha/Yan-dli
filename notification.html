@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Notifications</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8B5CF6;
+      --primary-dark: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-body: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --radius-app: 20px;
+      --radius-btn: 12px;
+      --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 930px;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
+
+    @media (min-width: 500px) {
+      .app-shell {
+        height: 92vh;
+        border-radius: 32px;
+        border: 6px solid #0F172A;
+      }
+    }
+
+    .app-header {
+      padding: 14px 16px 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .header-left-group { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+    }
+    .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+
+    .clear-all-btn {
+      background: none; border: none; color: var(--danger); font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+    }
+    .clear-all-btn:active { background: var(--danger-light); }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 90px;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* NOTIFICATION CARD STYLING */
+    .notif-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      position: relative;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+
+    .notif-card.unread {
+      border-left: 4px solid var(--primary);
+      background: #FAF5FF;
+    }
+
+    .notif-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .notif-icon-box.success { background: var(--success-light); color: var(--success); }
+    .notif-icon-box.warning { background: var(--warning-light); color: var(--warning); }
+    .notif-icon-box.danger { background: var(--danger-light); color: var(--danger); }
+
+    .notif-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notif-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .notif-time {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .notif-message {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .notif-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 2px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .notif-delete-btn:hover { opacity: 1; color: var(--danger); }
+
+    /* EMPTY STATE */
+    .empty-notif-box {
+      text-align: center;
+      padding: 3rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-sub);
+    }
+    .empty-notif-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-notification {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
+      padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+    }
+    .toast-notification.show { transform: translateX(-50%) translateY(0); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
+      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
+    }
+    .nav-tab {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
+    }
+    .nav-tab.active { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <div id="app-toast" class="toast-notification">Notification message</div>
+
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="header-left-group">
+        <a href="dashboard.html" class="back-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <div>
+          <h1 class="app-header-title">Notifications</h1>
+          <p class="app-header-subtitle" id="unread-count-text">Loading alerts...</p>
+        </div>
+      </div>
+      <button type="button" class="clear-all-btn" onclick="clearAllNotifications()">Clear All</button>
+    </header>
+
+    <!-- CONTENT LIST -->
+    <main class="app-content" id="notification-list-container">
+      <div class="empty-notif-box">
+        <div class="empty-notif-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">Checking notifications...</div>
+      </div>
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUser = null;
+    let notifDocsList = [];
+
+    function showToast(message) {
+      const toast = document.getElementById('app-toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        initRealtimeNotifications(user.uid);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    function initRealtimeNotifications(uid) {
+      const q = query(
+        collection(db, "Notifications"),
+        where("userId", "==", uid)
+      );
+
+      onSnapshot(q, (snapshot) => {
+        notifDocsList = [];
+        snapshot.forEach(docSnap => {
+          notifDocsList.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        // Sort client-side by date newest first
+        notifDocsList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+        renderNotifications(notifDocsList);
+        markAllAsRead(notifDocsList);
+      });
+    }
+
+    function formatTime(isoStr) {
+      if (!isoStr) return 'Just now';
+      const d = new Date(isoStr);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' • ' + d.toLocaleDateString();
+    }
+
+    function renderNotifications(items) {
+      const container = document.getElementById('notification-list-container');
+      const unreadText = document.getElementById('unread-count-text');
+
+      const unreadCount = items.filter(i => !i.isRead).length;
+      unreadText.textContent = unreadCount > 0 ? `${unreadCount} unread alert${unreadCount > 1 ? 's' : ''}` : 'All caught up';
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="empty-notif-box">
+            <div class="empty-notif-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">No notifications yet</div>
+            <div style="font-size: 0.75rem;">Your scope activations, key records, and exam updates will show here.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const typeClass = item.type || 'info';
+        const unreadClass = item.isRead ? '' : 'unread';
+        const formattedDate = formatTime(item.createdAt);
+
+        let iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+        if (typeClass === 'success') {
+          iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+        } else if (typeClass === 'warning') {
+          iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+        }
+
+        return `
+          <div class="notif-card ${unreadClass}">
+            <div class="notif-icon-box ${typeClass}">
+              ${iconSvg}
+            </div>
+            <div class="notif-content">
+              <div class="notif-header">
+                <span class="notif-title">${item.title || 'System Notification'}</span>
+                <span class="notif-time">${formattedDate}</span>
+              </div>
+              <div class="notif-message">${item.message || ''}</div>
+            </div>
+            <button type="button" class="notif-delete-btn" onclick="deleteNotification('${item.id}')" title="Delete Notification">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function markAllAsRead(items) {
+      const unread = items.filter(i => !i.isRead);
+      if (unread.length === 0) return;
+
+      const batch = writeBatch(db);
+      unread.forEach(i => {
+        const docRef = doc(db, "Notifications", i.id);
+        batch.update(docRef, { isRead: true });
+      });
+      try {
+        await batch.commit();
+      } catch(e) {
+        console.error("Error marking read:", e);
+      }
+    }
+
+    window.deleteNotification = async function(docId) {
+      try {
+        await deleteDoc(doc(db, "Notifications", docId));
+        showToast("🗑️ Notification removed.");
+      } catch(e) {
+        console.error("Delete error", e);
+        showToast("❌ Could not delete notification.");
+      }
+    };
+
+    window.clearAllNotifications = async function() {
+      if (notifDocsList.length === 0) return;
+      if (!confirm("Are you sure you want to clear all notifications?")) return;
+
+      try {
+        const batch = writeBatch(db);
+        notifDocsList.forEach(i => {
+          batch.delete(doc(db, "Notifications", i.id));
+        });
+        await batch.commit();
+        showToast("🗑️ All notifications cleared.");
+      } catch(e) {
+        console.error("Clear all error", e);
+        showToast("❌ Could not clear notifications.");
+      }
+    };
+  </script>
+</body>
+</html>

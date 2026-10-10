@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Admin Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+    body { background-color: #1F2937; color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: var(--bg-gray); min-height: 100vh; padding-bottom: 2rem; display: flex; flex-direction: column; position: relative; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; background: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+    .content-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .stat-card { background: var(--card-bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 4px; box-shadow: var(--shadow-sm); }
+    .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+
+    .card { background: var(--card-bg); border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.75rem; box-shadow: var(--shadow-sm); }
+    .section-title { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+
+    .user-list-item { background: var(--bg-gray); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; gap: 8px; }
+    .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; }
+    .badge.active { background: #D1FAE5; color: #065F46; }
+    .badge.free { background: #FEF3C7; color: #92400E; }
+    .badge.banned { background: #FEE2E2; color: #991B1B; }
+    .badge.used { background: #FEE2E2; color: #991B1B; }
+    .badge.unused { background: #D1FAE5; color: #065F46; }
+
+    .btn-action { background: var(--primary); color: #FFF; border: none; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-action:hover { background: #6D28D9; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #DC2626; }
+    .btn-warning { background: var(--warning); color: #FFF; }
+    .btn-warning:hover { background: #D97706; }
+    
+    .icon-btn { background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; border-radius: 6px; transition: background 0.2s; color: var(--text-muted); }
+    .icon-btn:hover { background: var(--primary-light); color: var(--primary); }
+    .icon-btn.danger:hover { background: #FEE2E2; color: var(--danger); }
+
+    .form-input { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.8rem; background: #FFF; outline: none; transition: border-color 0.2s; }
+    .form-input:focus { border-color: var(--primary); }
+
+    /* Plan Selection Grid for Admin Generator */
+    .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .plan-option { border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px; text-align: center; cursor: pointer; background: #FFF; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); transition: all 0.2s; }
+    .plan-option.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+
+    /* Custom Selection Trigger Boxes */
+    .selector-box {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: #FFF;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .selector-box:hover { border-color: var(--primary); }
+
+    /* Modal Styling */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-sheet {
+      background: #FFF;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .modal-item {
+      padding: 0.75rem;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .modal-item:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* User Detail Card Styles inside Modal */
+    .detail-group {
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .detail-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .detail-value {
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    /* MODERN TOAST NOTIFICATION SYSTEM */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: calc(100% - 2rem);
+      max-width: 420px;
+      pointer-events: none;
+    }
+    .toast-card {
+      pointer-events: auto;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast-card.success { border-left: 4px solid var(--success); }
+    .toast-card.error { border-left: 4px solid var(--danger); }
+    .toast-card.info { border-left: 4px solid var(--primary); }
+    .toast-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .toast-content { flex: 1; font-size: 0.8rem; font-weight: 500; color: var(--text-dark); line-height: 1.3; }
+
+    /* CONFIRMATION DIALOG MODAL */
+    .confirm-card {
+      background: #FFF;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      width: calc(100% - 2rem);
+      max-width: 400px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <div class="app-container">
+    <header class="top-bar">
+      <span style="font-weight:700; color:var(--primary);">🛡️ Admin Command Center</span>
+      <a href="dashboard.html" style="font-size:0.75rem; color:var(--text-muted); text-decoration:none;">Exit Admin</a>
+    </header>
+
+    <main class="content-body">
+      <!-- Quick Statistics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-users-count">0</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="total-income-count">₦0</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+      </div>
+
+      <!-- Admin Generator for Activation Keys -->
+      <div class="card">
+        <div class="section-title">🔑 Generate Activation Key</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          
+          <div>
+            <label style="font-size:0.7rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:3px;">Select Subscription Plan</label>
+            <div class="plans-grid">
+              <div class="plan-option selected" id="plan-opt-semester" onclick="selectAdminPlan('Semester 4 months', 3500, this)">Semester 4 months</div>
+              <div class="plan-option" id="plan-opt-yearly" onclick="selectAdminPlan('Yearly 12 months', 10000, this)">Yearly 12 months</div>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.7rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:3px;">Select Faculty</label>
+            <div class="selector-box" id="trigger-faculty" onclick="openSelectionModal('faculty')">
+              <span id="selected-faculty-text" style="color:var(--text-muted);">Choose Faculty...</span>
+              <span style="font-size:0.7rem;">▼</span>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.7rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:3px;">Select Department</label>
+            <div class="selector-box" id="trigger-department" onclick="openSelectionModal('department')">
+              <span id="selected-department-text" style="color:var(--text-muted);">Choose Department...</span>
+              <span style="font-size:0.7rem;">▼</span>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:0.7rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:3px;">Select Academic Level</label>
+            <div class="selector-box" id="trigger-level" onclick="openSelectionModal('level')">
+              <span id="selected-level-text" style="color:var(--text-muted);">Choose Academic Level...</span>
+              <span style="font-size:0.7rem;">▼</span>
+            </div>
+          </div>
+
+          <button class="btn-action" style="padding:0.7rem; font-weight:700; margin-top:6px; font-size:0.8rem;" onclick="generateAdminKey()">Generate & Copy Activation Pin</button>
+        </div>
+      </div>
+
+      <!-- Generated Pins Registry -->
+      <div class="card">
+        <div class="section-title">🎫 Access Pins Registry</div>
+        <div style="margin-bottom: 4px;">
+          <input type="text" id="pin-search" class="form-input" placeholder="Search pins by code, faculty, department..." oninput="renderPinsList()">
+        </div>
+        <div id="admin-pins-list" style="display:flex; flex-direction:column; gap:6px; max-height: 260px; overflow-y:auto;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Users Management List -->
+      <div class="card">
+        <div class="section-title">👥 User Directory</div>
+        <div style="margin-bottom: 4px;">
+          <input type="text" id="user-search" class="form-input" placeholder="Search by ID (e.g. YAN-...), name, email, phone..." oninput="renderUsersList()">
+        </div>
+        <div id="admin-users-list" style="display:flex; flex-direction:column; gap:6px; max-height: 280px; overflow-y:auto;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Custom Bottom Selection Modal (Room Selector) -->
+  <div class="modal-overlay" id="selection-modal" onclick="closeSelectionModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span id="modal-title" style="font-weight:700; font-size:0.95rem;">Select Option</span>
+        <button onclick="closeSelectionModal()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-muted);">✕</button>
+      </div>
+      <div style="padding: 0 1rem 0.5rem 1rem;">
+        <input type="text" id="modal-search" class="form-input" placeholder="Search items..." oninput="filterModalOptions()">
+      </div>
+      <div class="modal-body" id="modal-options-container">
+        <!-- Dynamically populated room options -->
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details Modal (Eye Toggle View) -->
+  <div class="modal-overlay" id="user-detail-modal" onclick="closeUserDetailModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span style="font-weight:700; font-size:0.95rem; color:var(--primary);">👤 Comprehensive User Profile</span>
+        <button onclick="closeUserDetailModal()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-muted);">✕</button>
+      </div>
+      <div class="modal-body" id="user-detail-content">
+        <!-- Dynamically populated comprehensive user details & multi-pin history -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal" style="align-items: center;">
+    <div class="confirm-card" onclick="event.stopPropagation()">
+      <h4 style="font-weight:700; font-size:0.95rem;" id="confirm-title">Confirm Action</h4>
+      <p style="font-size:0.8rem; color:var(--text-muted);" id="confirm-msg">Are you sure you want to proceed?</p>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:4px;">
+        <button class="btn-action" style="background:var(--border-color); color:var(--text-dark);" onclick="closeConfirmModal(false)">Cancel</button>
+        <button class="btn-action btn-danger" id="confirm-ok-btn" onclick="closeConfirmModal(true)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let cachedDepartments = [];
+    let cachedLevels = [];
+    let cachedUsers = [];
+    let cachedPins = [];
+
+    let selectedAdminPlanName = "Semester 4 months";
+    let selectedAdminPlanAmount = 3500;
+    let selectedFacultyValue = "";
+    let selectedDepartmentValue = "";
+    let selectedLevelValue = "";
+    let currentModalType = "";
+    let confirmResolver = null;
+
+    // Toast Notification System
+    window.showToast = function(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast-card ${type}`;
+
+      let iconSvg = '';
+      if (type === 'success') {
+        iconSvg = `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+      } else if (type === 'error') {
+        iconSvg = `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+      } else {
+        iconSvg = `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      }
+
+      toast.innerHTML = `${iconSvg}<div class="toast-content">${message}</div>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 200);
+      }, 3000);
+    };
+
+    window.showConfirmDialog = function(title, message) {
+      return new Promise((resolve) => {
+        document.getElementById('confirm-title').innerText = title;
+        document.getElementById('confirm-msg').innerText = message;
+        document.getElementById('confirm-modal').classList.add('active');
+        confirmResolver = resolve;
+      });
+    };
+
+    window.closeConfirmModal = function(result) {
+      document.getElementById('confirm-modal').classList.remove('active');
+      if (confirmResolver) {
+        confirmResolver(result);
+        confirmResolver = null;
+      }
+    };
+
+    window.selectAdminPlan = function(planName, amount, el) {
+      selectedAdminPlanName = planName;
+      selectedAdminPlanAmount = amount;
+      document.querySelectorAll('.plan-option').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+
+    function abbreviate(str, length = 3) {
+      if (!str) return 'GEN';
+      const clean = str.replace(/[^a-zA-Z]/g, '');
+      return clean.substring(0, length).toLowerCase();
+    }
+
+    function cleanLevelCode(str) {
+      if (!str) return '100';
+      const match = str.match(/\d+/);
+      return match ? match[0] : '100';
+    }
+
+    function initRealtimeListeners() {
+      onSnapshot(collection(db, "departments"), (snapshot) => {
+        cachedDepartments = [];
+        snapshot.forEach(d => {
+          const data = d.id ? { id: d.id, ...d.data() } : null;
+          if (data && !data.archived) cachedDepartments.push(data);
+        });
+      });
+
+      onSnapshot(collection(db, "levels"), (snapshot) => {
+        cachedLevels = [];
+        snapshot.forEach(l => {
+          const data = l.id ? { id: l.id, ...l.data() } : null;
+          if (data && !data.archived) cachedLevels.push(data);
+        });
+        cachedLevels.sort((a, b) => (parseInt(a.code) || 0) - (parseInt(b.code) || 0));
+      });
+
+      onSnapshot(collection(db, "Users"), (snapshot) => {
+        cachedUsers = [];
+        let totalUsers = 0;
+        snapshot.forEach(docSnap => {
+          totalUsers++;
+          cachedUsers.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        document.getElementById('total-users-count').innerText = totalUsers;
+        renderUsersList();
+        renderPinsList();
+      });
+
+      onSnapshot(collection(db, "Pins"), (snapshot) => {
+        cachedPins = [];
+        snapshot.forEach(pinDoc => {
+          cachedPins.push({ id: pinDoc.id, ...pinDoc.data() });
+        });
+        renderPinsList();
+      });
+
+      onSnapshot(collection(db, "Transactions"), (snapshot) => {
+        let totalRevenue = 0;
+        snapshot.forEach(t => {
+          totalRevenue += (t.data().amount || 0);
+        });
+        document.getElementById('total-income-count').innerText = `₦${totalRevenue.toLocaleString()}`;
+      });
+    }
+
+    window.openSelectionModal = function(type) {
+      currentModalType = type;
+      document.getElementById('modal-search').value = '';
+      const titleEl = document.getElementById('modal-title');
+      
+      if (type === 'faculty') titleEl.innerText = 'Select Faculty Room';
+      else if (type === 'department') titleEl.innerText = 'Select Department Room';
+      else if (type === 'level') titleEl.innerText = 'Select Academic Level Room';
+
+      document.getElementById('selection-modal').classList.add('active');
+      renderModalOptions('');
+    };
+
+    window.closeSelectionModal = function() {
+      document.getElementById('selection-modal').classList.remove('active');
+    };
+
+    window.filterModalOptions = function() {
+      const query = document.getElementById('modal-search').value.toLowerCase();
+      renderModalOptions(query);
+    };
+
+    function renderModalOptions(query) {
+      const container = document.getElementById('modal-options-container');
+      container.innerHTML = '';
+      let list = [];
+
+      if (currentModalType === 'faculty') {
+        const facultiesSet = new Set();
+        cachedDepartments.forEach(d => { if (d.faculty) facultiesSet.add(d.faculty); });
+        list = Array.from(facultiesSet);
+      } else if (currentModalType === 'department') {
+        list = cachedDepartments
+          .filter(d => !selectedFacultyValue || d.faculty === selectedFacultyValue)
+          .map(d => d.name);
+      } else if (currentModalType === 'level') {
+        list = cachedLevels.map(l => l.name);
+      }
+
+      const filtered = list.filter(item => item.toLowerCase().includes(query));
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:0.80rem;">No options in this room</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'modal-item';
+        div.innerText = item;
+        div.onclick = () => selectOption(item);
+        container.appendChild(div);
+      });
+    }
+
+    function selectOption(value) {
+      if (currentModalType === 'faculty') {
+        selectedFacultyValue = value;
+        document.getElementById('selected-faculty-text').innerText = value;
+        document.getElementById('selected-faculty-text').style.color = 'var(--text-dark)';
+        selectedDepartmentValue = '';
+        document.getElementById('selected-department-text').innerText = 'Choose Department...';
+        document.getElementById('selected-department-text').style.color = 'var(--text-muted)';
+      } else if (currentModalType === 'department') {
+        selectedDepartmentValue = value;
+        document.getElementById('selected-department-text').innerText = value;
+        document.getElementById('selected-department-text').style.color = 'var(--text-dark)';
+      } else if (currentModalType === 'level') {
+        selectedLevelValue = value;
+        document.getElementById('selected-level-text').innerText = value;
+        document.getElementById('selected-level-text').style.color = 'var(--text-dark)';
+      }
+      closeSelectionModal();
+    }
+
+    window.renderUsersList = function() {
+      const query = (document.getElementById('user-search').value || '').toLowerCase().trim();
+      const usersContainer = document.getElementById('admin-users-list');
+      usersContainer.innerHTML = '';
+
+      const filtered = cachedUsers.filter(u => {
+        const firstName = (u.Firstname || u.name || '').toLowerCase();
+        const lastName = (u.Lastname || '').toLowerCase();
+        const fullName = `${firstName} ${lastName}`.trim();
+        const email = (u.Email || u.email || '').toLowerCase();
+        const phone = (u.PhoneNumber || u.phone || '').toLowerCase();
+        const yanId = (u.YanId || u.userId || `YAN-${u.id.substring(0,6)}`).toLowerCase();
+        
+        return fullName.includes(query) || email.includes(query) || phone.includes(query) || yanId.includes(query) || u.id.toLowerCase().includes(query);
+      });
+
+      if (filtered.length === 0) {
+        usersContainer.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.75rem;">No users found</div>`;
+        return;
+      }
+
+      filtered.forEach(u => {
+        const isBanned = !!u.isBanned;
+        let isPro = !!u.isActivated;
+        if (isPro && u.expiresAt && new Date(u.expiresAt) < new Date()) {
+          isPro = false;
+        }
+
+        const statusClass = isBanned ? 'banned' : (isPro ? 'active' : 'free');
+        const statusText = isBanned ? 'Banned' : (isPro ? 'Pro Active' : 'Free Tier');
+        const isLocked = !!u.currentSessionId;
+
+        const firstName = u.Firstname || u.name || '';
+        const lastName = u.Lastname || '';
+        const displayName = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : (u.email || u.Email || 'Student');
+        const displayEmail = u.Email || u.email || u.id;
+        const displayId = u.YanId || u.userId || `YAN-${u.id.substring(0,6).toUpperCase()}`;
+
+        const div = document.createElement('div');
+        div.className = 'user-list-item';
+        div.innerHTML = `
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight:600; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${displayName}</div>
+            <div style="font-size:0.68rem; color:var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ID: ${displayId} • ${displayEmail}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px; flex-shrink: 0;">
+            <span class="badge ${statusClass}">${statusText}</span>
+            <button class="icon-btn" title="View Details" onclick="openUserDetailModal('${u.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+            ${isLocked ? `<button class="btn-action btn-warning" style="padding: 4px 6px; font-size: 0.62rem;" onclick="resetUserSession('${u.id}', '${displayName}')" title="Unlock device session">Unlock</button>` : ''}
+            <button class="btn-action ${isBanned ? '' : 'btn-danger'}" style="padding: 4px 6px; font-size: 0.62rem;" onclick="toggleUserBan('${u.id}', ${!isBanned})">${isBanned ? 'Unban' : 'Ban'}</button>
+          </div>
+        `;
+        usersContainer.appendChild(div);
+      });
+    };
+
+    window.openUserDetailModal = function(uid) {
+      const u = cachedUsers.find(item => item.id === uid);
+      if (!u) return;
+
+      const firstName = u.Firstname || u.name || 'Not provided';
+      const lastName = u.Lastname || 'Not provided';
+      const email = u.Email || u.email || 'Not provided';
+      const phone = u.PhoneNumber || u.phone || 'Not provided';
+      const yanId = u.YanId || u.userId || `YAN-${u.id.substring(0,6).toUpperCase()}`;
+      
+      let isPro = !!u.isActivated;
+      if (isPro && u.expiresAt && new Date(u.expiresAt) < new Date()) isPro = false;
+      const status = u.isBanned ? 'Banned (Blocked Access)' : (isPro ? 'Pro Active' : 'Free Tier / Expired');
+
+      // Fetch all pins used by this user
+      const userPins = cachedPins.filter(p => p.usedBy === uid || p.purchasedBy === uid);
+
+      let pinsHtml = '';
+      if (userPins.length > 0) {
+        userPins.forEach((p, idx) => {
+          const regDate = p.usedAt || p.createdAt ? new Date(p.usedAt || p.createdAt).toLocaleString() : 'N/A';
+          const expDate = p.expiresAt ? new Date(p.expiresAt).toLocaleString() : 'N/A';
+          const pinTypeLabel = p.pinType === 'Admin Generated' ? 'Admin Generated' : 'Paid via Paystack';
+          pinsHtml += `
+            <div style="background:#FFF; padding:6px 8px; border-radius:6px; border:1px solid var(--border-color); margin-top:4px; font-size:0.75rem;">
+              <div><b>Pin [${idx+1}]:</b> <code style="color:var(--primary);">${p.pin}</code></div>
+              <div><b>Plan:</b> ${p.plan || 'Semester 4 months'} | <b>Type:</b> ${pinTypeLabel}</div>
+              <div><b>Faculty/Dept:</b> ${p.faculty || 'GEN'} / ${p.department || 'General'} (${p.level || 'All'})</div>
+              <div><b>Registered:</b> ${regDate}</div>
+              <div><b>Expires:</b> ${expDate}</div>
+            </div>
+          `;
+        });
+      } else {
+        pinsHtml = `<span style="font-size:0.8rem; color:var(--text-muted);">No activation pins recorded for this account.</span>`;
+      }
+
+      const container = document.getElementById('user-detail-content');
+      container.innerHTML = `
+        <div class="detail-group">
+          <span class="detail-label">User Unique ID</span>
+          <span class="detail-value" style="font-family:monospace; color:var(--primary);">${yanId}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Full Name</span>
+          <span class="detail-value">${firstName} ${lastName}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Email Address</span>
+          <span class="detail-value">${email}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Phone Number</span>
+          <span class="detail-value">${phone}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Account Status</span>
+          <span class="detail-value" style="color:var(--primary);">${status}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Device Lock Status (Single-Device Policy)</span>
+          <span class="detail-value">${u.currentSessionId ? 'Locked to 1 active device/browser' : 'Unlocked / No active session lock'}</span>
+        </div>
+        <div class="detail-group">
+          <span class="detail-label">Activated Pins & Department History</span>
+          ${pinsHtml}
+        </div>
+      `;
+
+      document.getElementById('user-detail-modal').classList.add('active');
+    };
+
+    window.closeUserDetailModal = function(e) {
+      if (!e || e.target.id === 'user-detail-modal' || e.target.tagName === 'BUTTON') {
+        document.getElementById('user-detail-modal').classList.remove('active');
+      }
+    };
+
+    window.renderPinsList = function() {
+      const query = (document.getElementById('pin-search').value || '').toLowerCase();
+      const pinsContainer = document.getElementById('admin-pins-list');
+      pinsContainer.innerHTML = '';
+
+      const filtered = cachedPins.filter(p => 
+        (p.pin || '').toLowerCase().includes(query) || 
+        (p.department || '').toLowerCase().includes(query) || 
+        (p.faculty || '').toLowerCase().includes(query) || 
+        (p.level || '').toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        pinsContainer.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.75rem;">No access pins found</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const isUsed = !!p.isUsed;
+        const badgeClass = isUsed ? 'used' : 'unused';
+        const badgeText = isUsed ? 'Used' : 'Unused';
+        
+        let assignedUserText = "";
+        if (p.usedBy) {
+          const matchedUser = cachedUsers.find(u => u.id === p.usedBy);
+          if (matchedUser) {
+            const userName = `${matchedUser.Firstname || matchedUser.name || ''} ${matchedUser.Lastname || ''}`.trim();
+            assignedUserText = `<div style="font-size:0.63rem; color:var(--primary); margin-top:2px;">Used by: ${userName || matchedUser.Email || p.usedBy}</div>`;
+          } else {
+            assignedUserText = `<div style="font-size:0.63rem; color:var(--danger); margin-top:2px;">Used by: Account Deleted (User Removed)</div>`;
+          }
+        }
+
+        const pinTypeLabel = p.pinType === 'Admin Generated' ? 'Admin Generated' : 'Paid via Paystack';
+        const formattedExp = p.expiresAt ? new Date(p.expiresAt).toLocaleDateString() : 'N/A';
+
+        const div = document.createElement('div');
+        div.className = 'user-list-item';
+        div.innerHTML = `
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight:700; font-family:monospace; color:var(--primary); font-size:0.8rem;">${p.pin}</div>
+            <div style="font-size:0.65rem; color:#6B7280;">${p.plan || 'Semester 4 months'} (${pinTypeLabel}) | ${p.faculty || 'GEN'} | ${p.department || 'General'} | ${p.level || 'All'}</div>
+            <div style="font-size:0.63rem; color:#9CA3AF;">Expires: ${formattedExp}</div>
+            ${assignedUserText}
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-shrink: 0;">
+            <span class="badge ${badgeClass}">${badgeText}</span>
+            <button class="icon-btn danger" title="Delete Pin" onclick="deletePin('${p.id}', '${p.pin}')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </div>
+        `;
+        pinsContainer.appendChild(div);
+      });
+    };
+
+    window.toggleUserBan = async function(uid, shouldBan) {
+      const confirmed = await showConfirmDialog('Update User Access', `Are you sure you want to ${shouldBan ? 'ban' : 'unban'} this user? ${shouldBan ? 'They will be completely blocked from logging in.' : 'They will regain access.'}`);
+      if (!confirmed) return;
+
+      try {
+        await setDoc(doc(db, "Users", uid), { isBanned: shouldBan }, { merge: true });
+        showToast(`User successfully ${shouldBan ? 'banned' : 'unbanned'}`, 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Error updating user status', 'error');
+      }
+    };
+
+    window.resetUserSession = async function(uid, name) {
+      const confirmed = await showConfirmDialog('Unlock Device Session', `Clear active device lock for ${name}? This frees them from the single-device restriction so they can log into a new phone/browser.`);
+      if (!confirmed) return;
+
+      try {
+        await setDoc(doc(db, "Users", uid), { currentSessionId: null }, { merge: true });
+        showToast(`Device session unlocked for ${name}`, 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Error unlocking device session', 'error');
+      }
+    };
+
+    window.deletePin = async function(pinId, pinCode) {
+      const confirmed = await showConfirmDialog('Delete Activation Pin', `Permanently delete pin ${pinCode}?`);
+      if (!confirmed) return;
+
+      try {
+        await deleteDoc(doc(db, "Pins", pinId));
+        showToast(`Pin ${pinCode} deleted`, 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Failed to delete pin', 'error');
+      }
+    };
+
+    window.generateAdminKey = async function() {
+      if (!selectedFacultyValue || !selectedDepartmentValue || !selectedLevelValue) {
+        showToast('Please select Faculty, Department, and Level first', 'error');
+        return;
+      }
+
+      const facultyAbbr = abbreviate(selectedFacultyValue, 3);
+      const selectedDeptObj = cachedDepartments.find(d => d.name === selectedDepartmentValue);
+      const deptAbbr = selectedDeptObj?.abbr || abbreviate(selectedDepartmentValue, 3);
+      const levelNum = cleanLevelCode(selectedLevelValue);
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+
+      const generatedPin = `yan-${facultyAbbr}-${deptAbbr.toLowerCase()}-${levelNum}-${randomSuffix}`;
+      const durationMonths = selectedAdminPlanName.includes('Yearly') ? 12 : 4;
+      const amount = selectedAdminPlanAmount;
+
+      const createdAtDate = new Date();
+      const expiryDate = new Date();
+      expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+
+      try {
+        await setDoc(doc(collection(db, "Pins")), {
+          pin: generatedPin,
+          faculty: selectedFacultyValue,
+          department: selectedDepartmentValue,
+          level: selectedLevelValue,
+          plan: selectedAdminPlanName,
+          pinType: 'Admin Generated',
+          amountPaid: 0,
+          durationMonths: durationMonths,
+          isUsed: false,
+          createdAt: createdAtDate.toISOString(),
+          expiresAt: expiryDate.toISOString()
+        });
+        
+        navigator.clipboard.writeText(generatedPin);
+        showToast(`Pin (${selectedAdminPlanName}) Generated & Copied: ${generatedPin}`, 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Error generating activation pin', 'error');
+      }
+    };
+
+    initRealtimeListeners();
+  </script>
+</body>
+</html>

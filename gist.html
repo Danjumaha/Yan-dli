@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Campus Gist Wall</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #ECEFF1;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-gray);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 90px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      overflow-x: hidden;
+    }
+
+    /* TOP HEADER */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      padding: 4px;
+    }
+
+    .top-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .user-avatar-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* CONTENT BODY */
+    .content-body {
+      padding: 1rem;
+    }
+
+    /* POST CREATION BOX */
+    .create-post-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1rem;
+    }
+
+    .create-post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .username {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+    }
+
+    .create-post-card textarea {
+      width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-size: 0.88rem;
+      resize: none;
+      outline: none;
+      background: var(--bg-gray);
+      color: var(--text-dark);
+      transition: border 0.2s;
+    }
+
+    .create-post-card textarea:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .create-post-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .post-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-post {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-post:hover {
+      background: var(--primary-hover);
+    }
+
+    /* POST CARD */
+    .post-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 0.85rem;
+      position: relative;
+    }
+
+    .post-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .user-info {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .post-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .post-actions-menu {
+      position: relative;
+    }
+
+    .menu-trigger {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 0.9rem;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 25px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      z-index: 10;
+      min-width: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .dropdown-content.active {
+      display: block;
+    }
+
+    .dropdown-content button {
+      width: 100%;
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    .dropdown-content button:hover {
+      background: var(--bg-gray);
+    }
+
+    .dropdown-content button.delete-btn {
+      color: #EF4444;
+    }
+
+    .post-text {
+      font-size: 0.88rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      word-break: break-word;
+      color: var(--text-dark);
+    }
+
+    .post-stats {
+      display: flex;
+      gap: 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .stat-item.liked {
+      color: #EF4444;
+    }
+
+    /* TIKTOK-STYLE COMMENTS BOTTOM SHEET */
+    .comment-sheet-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1000;
+      backdrop-filter: blur(2px);
+    }
+
+    .comment-sheet-overlay.active {
+      display: flex;
+    }
+
+    .comment-sheet {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      height: 75vh;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .sheet-header {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+    }
+
+    .sheet-close {
+      position: absolute;
+      right: 16px;
+      top: 12px;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .comment-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .comment-content-wrapper {
+      flex: 1;
+    }
+
+    .comment-header-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .comment-user {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .creator-badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.55rem;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .comment-bubble {
+      background: var(--bg-gray);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      display: inline-block;
+      max-width: 90%;
+      word-break: break-word;
+      color: var(--text-dark);
+    }
+
+    .comment-sticker {
+      max-width: 110px;
+      max-height: 110px;
+      border-radius: 8px;
+      margin-top: 4px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .comment-footer-row {
+      display: flex;
+      gap: 12px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      align-items: center;
+    }
+
+    .comment-action-btn {
+      background: none;
+      border: none;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .comment-action-btn:hover {
+      color: var(--primary);
+    }
+
+    .comment-action-btn.delete {
+      color: #EF4444;
+    }
+
+    /* REPLY BANNER INDICATOR */
+    .replying-banner {
+      display: none;
+      background: var(--primary-light);
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      color: var(--primary);
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .replying-banner.active {
+      display: flex;
+    }
+
+    .replying-banner button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* TIKTOK-STYLE INPUT BAR */
+    .sheet-footer {
+      border-top: 1px solid var(--border-color);
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-input-row {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .sheet-input-row input {
+      flex: 1;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      padding: 9px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      outline: none;
+      color: var(--text-dark);
+    }
+
+    .sheet-input-row input:focus {
+      border-color: var(--primary);
+    }
+
+    .icon-tools {
+      display: flex;
+      gap: 12px;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      align-items: center;
+    }
+
+    .icon-tools i:hover {
+      color: var(--primary);
+    }
+
+    .send-btn-icon {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .send-btn-icon:hover {
+      background: var(--primary-hover);
+    }
+
+    /* STICKER POPUP */
+    .sticker-popup {
+      display: none;
+      position: absolute;
+      bottom: 60px;
+      right: 14px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      z-index: 110;
+      width: 260px;
+    }
+
+    .sticker-popup.active {
+      display: grid;
+    }
+
+    .sticker-popup img {
+      width: 52px;
+      height: 52px;
+      border-radius: 6px;
+      cursor: pointer;
+      object-fit: cover;
+      background: var(--bg-gray);
+      transition: transform 0.1s ease;
+    }
+
+    .sticker-popup img:hover {
+      transform: scale(1.06);
+    }
+
+    /* BOTTOM NAV BAR (Matching Dashboard) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.4rem 0;
+      z-index: 30;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      font-weight: 400;
+      gap: 2px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .nav-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <button class="icon-btn" onclick="window.location.href='dashboard.html'" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+      <span class="top-title">Campus Gist Wall</span>
+      <a href="account.html" class="user-avatar-btn" id="headerAvatar">T</a>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+
+      <!-- POST CREATION BOX -->
+      <div class="create-post-card">
+        <div class="create-post-header">
+          <div class="avatar" id="createAvatar">T</div>
+          <div class="username" id="createUsername">Student</div>
+        </div>
+        <textarea id="postInput" rows="3" placeholder="What's happening on campus today? Share a gist..."></textarea>
+        <div class="create-post-footer">
+          <span class="post-hint">Public post visible to all students</span>
+          <button class="btn-post" id="postSubmitBtn" onclick="handlePostSubmit()">Post</button>
+        </div>
+      </div>
+
+      <!-- FEED LIST -->
+      <div id="postsList"></div>
+
+    </main>
+
+    <!-- TIKTOK-STYLE COMMENT SHEET MODAL -->
+    <div class="comment-sheet-overlay" id="commentSheet" onclick="closeCommentSheet(event)">
+      <div class="comment-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+          <span id="commentCountTitle">Comments (0)</span>
+          <button class="sheet-close" onclick="closeCommentSheet()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sheet-body" id="commentsListContainer"></div>
+        <div class="sheet-footer" style="position: relative;">
+          <!-- Replying banner -->
+          <div class="replying-banner" id="replyingBanner">
+            <span id="replyingText">Replying to user</span>
+            <button onclick="cancelReply()">Cancel</button>
+          </div>
+          <div class="sheet-input-row">
+            <input type="text" id="commentInput" placeholder="Add comment..." onkeypress="handleCommentKeypress(event)">
+            <div class="icon-tools">
+              <i class="fa-regular fa-image" onclick="toggleStickerPicker(event)" title="Stickers"></i>
+              <button class="send-btn-icon" onclick="submitComment()" title="Send">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+            <!-- STICKER PICKER POPUP -->
+            <div class="sticker-popup" id="stickerPopup">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=120" title="Funny Dog" onclick="sendSticker('https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=120')">
+              <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=120" title="Cute Cat" onclick="sendSticker('https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=120')">
+              <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=120" title="Puppy Wow" onclick="sendSticker('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=120')">
+              <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=120" title="Happy Dogs" onclick="sendSticker('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=120')">
+              <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=120" title="Study Books" onclick="sendSticker('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=120')">
+              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=120" title="Group Study" onclick="sendSticker('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=120')">
+              <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=120" title="Learning" onclick="sendSticker('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=120')">
+              <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=120" title="Exam Prep" onclick="sendSticker('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=120')">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM FIXED NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </span>
+        <span>Home</span>
+      </a>
+      <a href="exams.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
+        <span>Exams</span>
+      </a>
+      <a href="classroom.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span>Classroom</span>
+      </a>
+      <a href="activate.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <span>Activation</span>
+      </a>
+      <a href="account.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span>Account</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- FIREBASE INTEGRATION & GIST WALL LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserDisplayName = "Student";
+    let currentUserId = "local_guest";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUserId = user.uid;
+        try {
+          const userDocRef = doc(db, "Users", user.uid);
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists() && docSnap.data().name) {
+            currentUserDisplayName = docSnap.data().name;
+          } else if (user.displayName) {
+            currentUserDisplayName = user.displayName;
+          } else if (user.email) {
+            currentUserDisplayName = user.email.split('@')[0];
+          }
+        } catch (e) {
+          currentUserDisplayName = user.displayName || "Student";
+        }
+      } else {
+        currentUserDisplayName = "Student";
+        currentUserId = "local_guest";
+      }
+
+      const firstLetter = currentUserDisplayName.charAt(0).toUpperCase();
+      document.getElementById('headerAvatar').innerText = firstLetter;
+      document.getElementById('createAvatar').innerText = firstLetter;
+      document.getElementById('createUsername').innerText = currentUserDisplayName;
+      window.CURRENT_USER = currentUserDisplayName;
+      window.CURRENT_UID = currentUserId;
+      if (typeof renderFeed === 'function') renderFeed();
+    });
+  </script>
+
+  <!-- GIST WALL INTERACTIVITY SCRIPT -->
+  <script>
+    let activePostId = null;
+    let editingPostId = null;
+    let editingCommentId = null;
+    let replyingToUser = null;
+
+    // Local Storage Init with sample posts including likedBy arrays
+    let posts = JSON.parse(localStorage.getItem('yandli_posts')) || [
+      {
+        id: 1,
+        username: "tesleemrazaq",
+        userId: "user_1",
+        text: "Guys don't you notice people are stealing power banks and chargers now at school park?",
+        time: "2h ago",
+        likedBy: [],
+        comments: [
+          { id: 101, username: "tesleemrazaq", text: "That's very true ooo, everyone should be careful.", time: "8m ago", type: "text" }
+        ]
+      },
+      {
+        id: 2,
+        username: "Prof_Ade",
+        userId: "user_2",
+        text: "GST 101 past questions have been uploaded to the Cram Notes section. Go check it out before exams!",
+        time: "5h ago",
+        likedBy: ["user_2"],
+        comments: [
+          { id: 102, username: "tesleemrazaq", text: "Thanks a lot for this update!", time: "1h ago", type: "text" }
+        ]
+      }
+    ];
+
+    function saveAndRender() {
+      localStorage.setItem('yandli_posts', JSON.stringify(posts));
+      renderFeed();
+    }
+
+    function renderFeed() {
+      const container = document.getElementById('postsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const activeUser = window.CURRENT_USER || "Student";
+      const activeUid = window.CURRENT_UID || "local_guest";
+
+      posts.forEach(post => {
+        if (!post.likedBy) post.likedBy = [];
+        const isLiked = post.likedBy.includes(activeUid);
+        const likeCount = post.likedBy.length;
+        const isAuthor = post.username === activeUser;
+
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.innerHTML = `
+          <div class="post-top">
+            <div class="user-info">
+              <div class="avatar">${post.username.charAt(0).toUpperCase()}</div>
+              <div>
+                <div class="username">${post.username}</div>
+                <div class="post-time">${post.time}</div>
+              </div>
+            </div>
+            ${isAuthor ? `
+            <div class="post-actions-menu">
+              <button class="menu-trigger" onclick="toggleMenu(event, 'post-menu-${post.id}')"><i class="fa-solid fa-ellipsis"></i></button>
+              <div class="dropdown-content" id="post-menu-${post.id}">
+                <button onclick="startEditPost(${post.id})">Edit</button>
+                <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+              </div>
+            </div>` : ''}
+          </div>
+          <div class="post-text">${escapeHtml(post.text)}</div>
+          <div class="post-stats">
+            <div class="stat-item ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+              <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i> ${likeCount}
+            </div>
+            <div class="stat-item" onclick="openCommentSheet(${post.id})">
+              <i class="fa-regular fa-comment"></i> ${post.comments.length} Comments
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function handlePostSubmit() {
+      const input = document.getElementById('postInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const activeUser = window.CURRENT_USER || "Student";
+      const activeUid = window.CURRENT_UID || "local_guest";
+
+      if (editingPostId) {
+        const post = posts.find(p => p.id === editingPostId);
+        if (post && post.username === activeUser) {
+          post.text = text;
+        }
+        editingPostId = null;
+        document.getElementById('postSubmitBtn').innerText = "Post";
+      } else {
+        const newPost = {
+          id: Date.now(),
+          username: activeUser,
+          userId: activeUid,
+          text: text,
+          time: "Just now",
+          likedBy: [],
+          comments: []
+        };
+        posts.unshift(newPost);
+      }
+
+      input.value = '';
+      saveAndRender();
+    }
+
+    function startEditPost(id) {
+      const post = posts.find(p => p.id === id);
+      const activeUser = window.CURRENT_USER || "Student";
+      if (!post || post.username !== activeUser) return;
+
+      document.getElementById('postInput').value = post.text;
+      document.getElementById('postInput').focus();
+      editingPostId = id;
+      document.getElementById('postSubmitBtn').innerText = "Update";
+      closeAllMenus();
+    }
+
+    function deletePost(id) {
+      const post = posts.find(p => p.id === id);
+      const activeUser = window.CURRENT_USER || "Student";
+      if (!post || post.username !== activeUser) return;
+
+      if (confirm("Are you sure you want to delete this post?")) {
+        posts = posts.filter(p => p.id !== id);
+        saveAndRender();
+      }
+    }
+
+    function toggleLike(id) {
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+      if (!post.likedBy) post.likedBy = [];
+
+      const activeUid = window.CURRENT_UID || "local_guest";
+      const index = post.likedBy.indexOf(activeUid);
+
+      if (index > -1) {
+        post.likedBy.splice(index, 1);
+      } else {
+        post.likedBy.push(activeUid);
+      }
+      saveAndRender();
+    }
+
+    // TikTok-Style Comment Sheet Logic
+    function openCommentSheet(postId) {
+      activePostId = postId;
+      document.getElementById('commentSheet').classList.add('active');
+      renderComments();
+    }
+
+    function closeCommentSheet(e) {
+      if (!e || e.target.id === 'commentSheet' || e.target.classList.contains('sheet-close') || e.target.closest('.sheet-close')) {
+        document.getElementById('commentSheet').classList.remove('active');
+        activePostId = null;
+        editingCommentId = null;
+        cancelReply();
+        document.getElementById('commentInput').value = '';
+        document.getElementById('commentInput').placeholder = "Add comment...";
+      }
+    }
+
+    function renderComments() {
+      const post = posts.find(p => p.id === activePostId);
+      if (!post) return;
+
+      document.getElementById('commentCountTitle').innerText = `Comments (${post.comments.length})`;
+      const container = document.getElementById('commentsListContainer');
+      container.innerHTML = '';
+
+      if (post.comments.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: var(--text-muted); margin-top: 40px; font-size: 0.85rem;">No comments yet. Be the first to reply!</p>`;
+        return;
+      }
+
+      const activeUser = window.CURRENT_USER || "Student";
+
+      post.comments.forEach(comment => {
+        const isOwner = comment.username === activeUser;
+        const isPostCreator = comment.username === post.username;
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment-item';
+        
+        let contentHtml = '';
+        if (comment.type === 'sticker') {
+          contentHtml = `<img src="${comment.text}" class="comment-sticker">`;
+        } else {
+          contentHtml = `<div class="comment-bubble">${escapeHtml(comment.text)}</div>`;
+        }
+
+        commentDiv.innerHTML = `
+          <div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div>
+          <div class="comment-content-wrapper">
+            <div class="comment-header-row">
+              <span class="comment-user">${comment.username}</span>
+              ${isPostCreator ? `<span class="creator-badge">Creator</span>` : ''}
+            </div>
+            ${contentHtml}
+            <div class="comment-footer-row">
+              <span>${comment.time}</span>
+              <button class="comment-action-btn" onclick="startReply('${comment.username}')">Reply</button>
+              ${isOwner ? `
+                ${comment.type !== 'sticker' ? `<button class="comment-action-btn" onclick="startEditComment(${comment.id})">Edit</button>` : ''}
+                <button class="comment-action-btn delete" onclick="deleteComment(${comment.id})">Delete</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        container.appendChild(commentDiv);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function startReply(username) {
+      replyingToUser = username;
+      const banner = document.getElementById('replyingBanner');
+      const bannerText = document.getElementById('replyingText');
+      bannerText.innerText = `Replying to @${username}`;
+      banner.classList.add('active');
+      const input = document.getElementById('commentInput');
+      input.value = `@${username} `;
+      input.focus();
+    }
+
+    function cancelReply() {
+      replyingToUser = null;
+      document.getElementById('replyingBanner').classList.remove('active');
+      const input = document.getElementById('commentInput');
+      if (input.value.startsWith('@')) {
+        input.value = '';
+      }
+    }
+
+    function handleCommentKeypress(e) {
+      if (e.key === 'Enter') {
+        submitComment();
+      }
+    }
+
+    function submitComment() {
+      const input = document.getElementById('commentInput');
+      const text = input.value.trim();
+      if (!text || !activePostId) return;
+
+      const post = posts.find(p => p.id === activePostId);
+      if (!post) return;
+
+      const activeUser = window.CURRENT_USER || "Student";
+
+      if (editingCommentId) {
+        const comment = post.comments.find(c => c.id === editingCommentId);
+        if (comment && comment.username === activeUser) {
+          comment.text = text;
+        }
+        editingCommentId = null;
+        input.placeholder = "Add comment...";
+      } else {
+        post.comments.push({
+          id: Date.now(),
+          username: activeUser,
+          text: text,
+          time: "Just now",
+          type: "text"
+        });
+      }
+
+      input.value = '';
+      cancelReply();
+      saveAndRender();
+      renderComments();
+    }
+
+    function sendSticker(url) {
+      if (!activePostId) return;
+      const post = posts.find(p => p.id === activePostId);
+      if (!post) return;
+
+      const activeUser = window.CURRENT_USER || "Student";
+
+      post.comments.push({
+        id: Date.now(),
+        username: activeUser,
+        text: url,
+        time: "Just now",
+        type: "sticker"
+      });
+
+      saveAndRender();
+      renderComments();
+      toggleStickerPicker();
+    }
+
+    function startEditComment(commentId) {
+      const post = posts.find(p => p.id === activePostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === commentId);
+      const activeUser = window.CURRENT_USER || "Student";
+      if (!comment || comment.username !== activeUser || comment.type === 'sticker') return;
+
+      const input = document.getElementById('commentInput');
+      input.value = comment.text;
+      input.focus();
+      input.placeholder = "Editing comment...";
+      editingCommentId = commentId;
+    }
+
+    function deleteComment(commentId) {
+      const post = posts.find(p => p.id === activePostId);
+      if (!post) return;
+      const comment = post.comments.find(c => c.id === commentId);
+      const activeUser = window.CURRENT_USER || "Student";
+      if (!comment || comment.username !== activeUser) return;
+
+      post.comments = post.comments.filter(c => c.id !== commentId);
+      saveAndRender();
+      renderComments();
+    }
+
+    // UI Helpers
+    function toggleMenu(e, menuId) {
+      e.stopPropagation();
+      closeAllMenus();
+      document.getElementById(menuId).classList.toggle('active');
+    }
+
+    function closeAllMenus() {
+      document.querySelectorAll('.dropdown-content').forEach(m => m.classList.remove('active'));
+    }
+
+    function toggleStickerPicker(e) {
+      if (e) e.stopPropagation();
+      const popup = document.getElementById('stickerPopup');
+      popup.classList.toggle('active');
+    }
+
+    window.onclick = function() {
+      closeAllMenus();
+      const popup = document.getElementById('stickerPopup');
+      if (popup) popup.classList.remove('active');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // Initial Render
+    renderFeed();
+  </script>
+</body>
+</html>
