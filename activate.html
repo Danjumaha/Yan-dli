@@ -224,7 +224,7 @@
         </a>
         <div>
           <h1 class="app-header-title">Account Activation</h1>
-          <p class="app-header-subtitle">Yan-Dli Security & Access</p>
+          <p class="app-header-subtitle">Yan-Dli Security & Access Portal</p>
         </div>
       </div>
     </header>
@@ -287,7 +287,7 @@
           <input type="hidden" id="gen-level-name-val">
         </div>
 
-        <button type="button" class="app-btn" onclick="initiatePaystackPayment()">Pay Securely & Get Your Pin</button>
+        <button type="button" class="app-btn" id="pay-btn" onclick="initiatePaystackPayment()">Pay Securely & Get Your Pin</button>
 
         <div id="pin-output-box" class="pin-display-area">
           <div style="font-size:0.68rem; color:var(--primary); font-weight:800; text-transform:uppercase;">Your Generated Scope Pin:</div>
@@ -386,6 +386,7 @@
       toast.classList.add('show');
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
+    window.showToast = showToast;
 
     window.selectPlan = function(amount, name, el) {
       selectedAmount = amount;
@@ -520,7 +521,7 @@
       return clean.substring(0, length).toUpperCase();
     }
 
-    // STRICT PAYSTACK CHECKOUT GATEWAY INTEGRATION
+    // EXPOSED GLOBAL PAYSTACK PAYMENT TRIGGER
     window.initiatePaystackPayment = function() {
       if (!currentUser) {
         showToast("⚠️ Please sign in first.");
@@ -538,67 +539,87 @@
         return;
       }
 
+      if (typeof PaystackPop === 'undefined') {
+        showToast("❌ Paystack script failed to load. Check your internet.");
+        return;
+      }
+
       const selectedDeptObj = allDepartments.find(d => d.id === deptId);
       const selectedDeptAbbr = selectedDeptObj?.abbr || abbreviate(deptNameVal, 3);
       const selectedLevelCode = allLevels.find(l => l.id === levelId)?.code || '100';
       const facultyAbbr = abbreviate(facultyVal, 3);
 
-      const handler = PaystackPop.setup({
-        key: 'pk_live_d265096a47801eaa597f27f6674e5a6d051e4959',
-        email: currentUser.email || `${currentUser.uid}@yandli.top`,
-        amount: selectedAmount * 100,
-        currency: 'NGN',
-        ref: 'YANDLI_' + Math.floor((Math.random() * 1000000000) + 1),
-        callback: async function(response) {
-          // EXECUTED ONLY AFTER SUCCESSFUL PAYMENT
-          const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-          const newPin = `yan-${facultyAbbr.toLowerCase()}-${selectedDeptAbbr.toLowerCase()}-${selectedLevelCode}-${randomSuffix}`;
-          lastGeneratedPin = newPin;
+      const payBtn = document.getElementById('pay-btn');
+      payBtn.textContent = "Initializing Checkout...";
+      payBtn.disabled = true;
 
-          const durationMonths = selectedAmount === 10000 ? 12 : 4;
-          const createdAtDate = new Date();
-          const expiryDate = new Date();
-          expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+      try {
+        const handler = PaystackPop.setup({
+          key: 'pk_live_d265096a47801eaa597f27f6674e5a6d051e4959',
+          email: currentUser.email || `${currentUser.uid}@yandli.top`,
+          amount: selectedAmount * 100,
+          currency: 'NGN',
+          ref: 'YANDLI_' + Math.floor((Math.random() * 1000000000) + 1),
+          callback: async function(response) {
+            payBtn.textContent = "Pay Securely & Get Your Pin";
+            payBtn.disabled = false;
 
-          try {
-            await addDoc(collection(db, "Pins"), {
-              pin: newPin,
-              faculty: facultyVal,
-              department: deptNameVal,
-              level: levelNameVal,
-              plan: selectedPlanName,
-              amountPaid: selectedAmount,
-              durationMonths: durationMonths,
-              isUsed: false,
-              purchasedBy: currentUser.uid,
-              createdAt: createdAtDate.toISOString(),
-              expiresAt: expiryDate.toISOString()
-            });
+            const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+            const newPin = `yan-${facultyAbbr.toLowerCase()}-${selectedDeptAbbr.toLowerCase()}-${selectedLevelCode}-${randomSuffix}`;
+            lastGeneratedPin = newPin;
 
-            await addDoc(collection(db, "Transactions"), {
-              uid: currentUser.uid,
-              email: currentUser.email,
-              amount: selectedAmount,
-              plan: selectedPlanName,
-              reference: response.reference,
-              pinGenerated: newPin,
-              createdAt: createdAtDate.toISOString()
-            });
+            const durationMonths = selectedAmount === 10000 ? 12 : 4;
+            const createdAtDate = new Date();
+            const expiryDate = new Date();
+            expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
 
-            document.getElementById('displayed-pin-string').textContent = newPin;
-            document.getElementById('pin-output-box').style.display = 'flex';
-            showToast("🎉 Payment verified! Pin generated successfully.");
-            loadUserPinHistory(currentUser.uid);
-          } catch (err) {
-            console.error("Database error saving pin:", err);
-            showToast("❌ Payment successful, but failed to record pin in database.");
+            try {
+              await addDoc(collection(db, "Pins"), {
+                pin: newPin,
+                faculty: facultyVal,
+                department: deptNameVal,
+                level: levelNameVal,
+                plan: selectedPlanName,
+                amountPaid: selectedAmount,
+                durationMonths: durationMonths,
+                isUsed: false,
+                purchasedBy: currentUser.uid,
+                createdAt: createdAtDate.toISOString(),
+                expiresAt: expiryDate.toISOString()
+              });
+
+              await addDoc(collection(db, "Transactions"), {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                amount: selectedAmount,
+                plan: selectedPlanName,
+                reference: response.reference,
+                pinGenerated: newPin,
+                createdAt: createdAtDate.toISOString()
+              });
+
+              document.getElementById('displayed-pin-string').textContent = newPin;
+              document.getElementById('pin-output-box').style.display = 'flex';
+              showToast("🎉 Payment verified! Pin generated successfully.");
+              loadUserPinHistory(currentUser.uid);
+            } catch (err) {
+              console.error("Database error saving pin:", err);
+              showToast("❌ Payment successful, but failed to record pin in database.");
+            }
+          },
+          onClose: function() {
+            payBtn.textContent = "Pay Securely & Get Your Pin";
+            payBtn.disabled = false;
+            showToast('Payment window closed.');
           }
-        },
-        onClose: function() {
-          showToast('Payment window closed.');
-        }
-      });
-      handler.openIframe();
+        });
+        handler.openIframe();
+      } catch(err) {
+        console.error("Paystack setup error:", err);
+        payBtn.textContent = "Pay Securely & Get Your Pin";
+        payBtn.disabled = false;
+        showToast("❌ Could not launch payment gateway.");
+      }
     };
 
     window.copyGeneratedPin = function() {
