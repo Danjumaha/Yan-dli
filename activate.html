@@ -180,7 +180,6 @@
     }
     .generated-pin-code { font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
 
-    /* PIN HISTORY TABLE / LIST */
     .pin-history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
     .pin-history-card {
       background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; position: relative;
@@ -196,7 +195,6 @@
     .pin-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; padding-top: 6px; margin-top: 2px; font-size: 0.68rem; color: var(--text-sub); }
     .delete-pin-btn { background: none; border: none; color: var(--danger); cursor: pointer; display: flex; align-items: center; gap: 2px; font-weight: 700; font-size: 0.7rem; }
 
-    /* Toast Notification */
     .toast-notification {
       position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
       padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -246,7 +244,6 @@
         </ul>
       </div>
 
-      <!-- STEP 1: SELECT PLAN & TARGET SPECIFICATION -->
       <div class="app-card">
         <div class="app-card-title">💳 1. Choose Plan & Target Scope</div>
 
@@ -299,7 +296,6 @@
         </div>
       </div>
 
-      <!-- STEP 2: REDEEM PIN -->
       <div class="app-card">
         <div class="app-card-title">🔑 2. Redeem Activation Pin</div>
         <div class="form-group">
@@ -309,7 +305,6 @@
         <button type="button" class="app-btn app-btn-success" onclick="redeemActivationPin()">Activate Scope Now</button>
       </div>
 
-      <!-- STEP 3: REDEEMED & PURCHASED PINS HISTORY -->
       <div class="app-card">
         <div class="app-card-title">📜 Redeem & Purchased Pins History</div>
         <div class="pin-history-list" id="pin-history-container">
@@ -332,7 +327,6 @@
       </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
       <a href="dashboard.html" class="nav-tab">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -526,8 +520,12 @@
       return clean.substring(0, length).toUpperCase();
     }
 
+    // STRICT PAYSTACK CHECKOUT GATEWAY INTEGRATION
     window.initiatePaystackPayment = function() {
-      if (!currentUser) return;
+      if (!currentUser) {
+        showToast("⚠️ Please sign in first.");
+        return;
+      }
 
       const facultyVal = document.getElementById('gen-faculty-val').value;
       const deptId = document.getElementById('gen-dept-id').value;
@@ -552,6 +550,7 @@
         currency: 'NGN',
         ref: 'YANDLI_' + Math.floor((Math.random() * 1000000000) + 1),
         callback: async function(response) {
+          // EXECUTED ONLY AFTER SUCCESSFUL PAYMENT
           const randomSuffix = Math.floor(1000 + Math.random() * 9000);
           const newPin = `yan-${facultyAbbr.toLowerCase()}-${selectedDeptAbbr.toLowerCase()}-${selectedLevelCode}-${randomSuffix}`;
           lastGeneratedPin = newPin;
@@ -588,11 +587,11 @@
 
             document.getElementById('displayed-pin-string').textContent = newPin;
             document.getElementById('pin-output-box').style.display = 'flex';
-            showToast("🎉 Pin successfully generated!");
+            showToast("🎉 Payment verified! Pin generated successfully.");
             loadUserPinHistory(currentUser.uid);
           } catch (err) {
             console.error("Database error saving pin:", err);
-            showToast("❌ Database error saving pin.");
+            showToast("❌ Payment successful, but failed to record pin in database.");
           }
         },
         onClose: function() {
@@ -611,7 +610,6 @@
     async function loadUserPinHistory(uid) {
       const container = document.getElementById('pin-history-container');
       try {
-        // Query both pins purchased by the user OR used/redeemed by the user
         const qPurchased = query(collection(db, "Pins"), where("purchasedBy", "==", uid));
         const qUsed = query(collection(db, "Pins"), where("usedBy", "==", uid));
 
@@ -624,7 +622,7 @@
         const allPins = Array.from(pinMap.values());
 
         if (allPins.length === 0) {
-          container.innerHTML = `<div style="text-align: center; padding: 1rem; color: var(--text-sub); font-size: 0.78rem;">No pins generated, bought, or redeemed yet.</div>`;
+          container.innerHTML = `<div style="text-align: center; padding: 1rem; color: var(--text-sub); font-size: 0.78rem;">No purchased pins found yet.</div>`;
           return;
         }
 
