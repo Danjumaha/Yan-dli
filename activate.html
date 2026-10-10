@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Paystack Inline JS Library -->
-  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <!-- Paystack Inline JS Library V2 -->
+  <script src="https://js.paystack.co/v2/inline.js"></script>
 
   <style>
     :root {
@@ -521,7 +521,7 @@
       return clean.substring(0, length).toUpperCase();
     }
 
-    // EXPOSED GLOBAL PAYSTACK PAYMENT TRIGGER
+    // FIXED PAYSTACK V2 CHECKOUT GATEWAY INTEGRATION
     window.initiatePaystackPayment = function() {
       if (!currentUser) {
         showToast("⚠️ Please sign in first.");
@@ -554,13 +554,14 @@
       payBtn.disabled = true;
 
       try {
-        const handler = PaystackPop.setup({
+        const paystack = new PaystackPop();
+        paystack.newTransaction({
           key: 'pk_live_d265096a47801eaa597f27f6674e5a6d051e4959',
           email: currentUser.email || `${currentUser.uid}@yandli.top`,
           amount: selectedAmount * 100,
           currency: 'NGN',
           ref: 'YANDLI_' + Math.floor((Math.random() * 1000000000) + 1),
-          callback: async function(response) {
+          onSuccess: async function(response) {
             payBtn.textContent = "Pay Securely & Get Your Pin";
             payBtn.disabled = false;
 
@@ -607,15 +608,14 @@
               showToast("❌ Payment successful, but failed to record pin in database.");
             }
           },
-          onClose: function() {
+          onCancel: function() {
             payBtn.textContent = "Pay Securely & Get Your Pin";
             payBtn.disabled = false;
             showToast('Payment window closed.');
           }
         });
-        handler.openIframe();
       } catch(err) {
-        console.error("Paystack setup error:", err);
+        console.error("Paystack popup instantiation error:", err);
         payBtn.textContent = "Pay Securely & Get Your Pin";
         payBtn.disabled = false;
         showToast("❌ Could not launch payment gateway.");
