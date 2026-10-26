@@ -1024,5 +1024,39 @@
   }
 </script>
 
+
+<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+    authDomain: "yan-dli.firebaseapp.com",
+    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+    projectId: "yan-dli",
+    storageBucket: "yan-dli.firebasestorage.app",
+    messagingSenderId: "538794949165",
+    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // Automatically enable offline caching for Firestore data
+    enableIndexedDbPersistence(db).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        console.log("Persistence active in another open tab.");
+      } else if (err.code === 'unimplemented') {
+        console.log("Browser does not support offline persistence.");
+      }
+    });
+  } catch (e) {
+    // Prevents duplicate initialization errors if Firebase is already initialized above
+    console.log("Offline DB engine active.");
+  }
+</script>
+
 </body>
 </html>
