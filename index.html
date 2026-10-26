@@ -962,5 +962,30 @@
         : `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
     };
   </script>
+
+
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => {
+          console.log('Yan-Dli Offline Engine Active:', reg.scope);
+          // Auto update service worker if new version is deployed
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New update available! Reloading...');
+              }
+            };
+          };
+        })
+        .catch((err) => console.error('ServiceWorker registration failed:', err));
+    });
+  }
+</script>
+
 </body>
 </html>

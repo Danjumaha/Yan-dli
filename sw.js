@@ -1,37 +1,47 @@
-const CACHE_NAME = 'yan-dli-offline-v3';
+const CACHE_NAME = 'yandli-offline-v4';
+
+// All HTML pages and key assets to pre-cache
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/dashboard.html',
-  '/exams.html',
-  '/departments.html',
-  '/setup.html',
-  '/practice.html',
-  '/submit.html',
-  '/history.html',
-  '/activate.html',
-  '/account.html',
-  '/notifications.html',
-  '/classroom.html',
-  '/gpa.html',
-  '/timetables.html',
-  '/attendance.html',
-  '/studyroom.html',
-  '/hardquestions.html',
-  '/analytics.html',
-  '/leaderboard.html',
-  '/support.html',
+  './',
+  './index.html',
+  './dashboard.html',
+  './exams.html',
+  './departments.html',
+  './setup.html',
+  './practice.html',
+  './submit.html',
+  './history.html',
+  './activate.html',
+  './account.html',
+  './notification.html',
+  './classroom.html',
+  './gpa.html',
+  './table.html',
+  './attendance.html',
+  './hard.html',
+  './analysis.html',
+  './leaderboard.html',
+  './profile.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
+// 1. INSTALLATION: Cache files individually so if one fails, the rest still cache!
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return Promise.allSettled(
+        ASSETS_TO_CACHE.map((url) =>
+          cache.add(url).catch((err) => console.warn(`Failed to pre-cache ${url}:`, err))
+        )
+      );
     })
   );
   self.skipWaiting();
 });
 
+// 2. ACTIVATION: Clear old cache versions automatically
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -43,30 +53,65 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// 3. FETCH: True Offline Fallback Engine
 self.addEventListener('fetch', (event) => {
-  // Never intercept Firebase, Firestore, or external API requests
-  if (event.request.url.includes('firebase') || event.request.url.includes('googleapis') || event.request.url.includes('firestore')) {
+  // Never intercept Firebase / Firestore authentication & RTDB requests
+  if (
+    event.request.url.includes('firebase') ||
+    event.request.url.includes('googleapis') ||
+    event.request.url.includes('firestore')
+  ) {
     return;
   }
 
-  // For normal page clicks and file navigation, always try network first, then fall back to cache instantly
+  // Handle HTML Page Navigation
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('/dashboard.html');
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          // Served instantly from Cache! Update in background if online
+          fetch(event.request)
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.status === 200) {
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+              }
+            })
+            .catch(() => {});
+          return cachedResponse;
+        }
+
+        // If exact match fails, try matching pathname (ignoring query strings like ?id=123)
+        const url = new URL(event.request.url);
+        return caches.match(url.pathname).then((pathMatch) => {
+          if (pathMatch) return pathMatch;
+
+          // If online, fetch from network
+          return fetch(event.request).catch(() => {
+            // Absolute Offline Fallback
+            return caches.match('./dashboard.html') || caches.match('./index.html');
+          });
         });
       })
     );
     return;
   }
 
-  // For other static assets (CSS, JS, images), serve from cache, update in background
+  // Handle Static Assets (CSS, JS, Fonts, Images)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).then((networkResponse) => {
-        return networkResponse;
-      }).catch(() => {});
+      if (cachedResponse) return cachedResponse;
+
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Silently handle missing asset offline
+        });
     })
   );
 });
