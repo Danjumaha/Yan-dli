@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Practice Selection</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C3AED">
+  <meta name="theme-color" content="#7C3AED">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,7 +176,6 @@
     .arrow-icon svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.5; }
     .lock-badge { font-size: 0.68rem; font-weight: 800; color: var(--warning); background: var(--warning-light); padding: 3px 8px; border-radius: 20px; }
 
-    /* OFFLINE DOWNLOAD BUTTON */
     .download-btn {
       background: var(--primary-light);
       border: 1px solid rgba(139, 92, 246, 0.2);
@@ -239,7 +238,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, enableIndexedDbPersistence, doc, getDoc, collection, query, where, getDocs, getCountFromServer } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -255,6 +254,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    // Turn on offline IndexedDB persistence
+    enableIndexedDbPersistence(db).catch(() => {});
 
     const urlParams = new URLSearchParams(window.location.search);
     const selectedFacultyParam = urlParams.get('faculty');
@@ -287,25 +289,18 @@
 
     function isScopeUnlocked() {
       if (!isUserActivated || !userPinData) return false;
-      
       const userDept = cleanString(userPinData.department);
       const userLvl = cleanString(userPinData.level);
-      
       const currentDept = selectedDept ? cleanString(selectedDept.name) : '';
       const currentLvl = selectedLevel ? cleanString(selectedLevel.name) : '';
-
-      const deptMatches = userDept === currentDept || userDept.includes(currentDept) || currentDept.includes(userDept);
-      const levelMatches = userLvl === currentLvl || userLvl.includes(currentLvl) || currentLvl.includes(userLvl);
-
-      return deptMatches && levelMatches;
+      return (userDept === currentDept || userDept.includes(currentDept) || currentDept.includes(userDept)) && 
+             (userLvl === currentLvl || userLvl.includes(currentLvl) || currentLvl.includes(userLvl));
     }
 
-    // OFFLINE DOWNLOAD FUNCTION
     window.downloadCourseForOffline = async function(event, courseId, courseTitle) {
-      event.stopPropagation(); // Prevent card click navigation
+      event.stopPropagation();
       try {
-        showToast(`⬇️ Downloading ${courseTitle} for offline practice...`, 'info');
-
+        showToast(`⬇️ Downloading ${courseTitle} for offline practice...`);
         const qRef = collection(db, 'questions');
         const qQuery = query(qRef, where('courseId', '==', courseId));
         const qSnap = await getDocs(qQuery);
@@ -316,7 +311,7 @@
         });
 
         if (questionsList.length === 0) {
-          showToast('⚠️ No questions found for this course yet.', 'warning');
+          showToast('⚠️ No questions found for this course yet.');
           return;
         }
 
@@ -326,9 +321,7 @@
           questions: questionsList
         }));
 
-        showToast(`✅ Successfully downloaded ${courseTitle} for offline use!`, 'success');
-        
-        // Update button visual state immediately
+        showToast(`✅ Successfully downloaded ${courseTitle} for offline use!`);
         const btn = document.getElementById(`dl-btn-${courseId}`);
         if (btn) {
           btn.classList.add('downloaded');
@@ -337,7 +330,7 @@
         }
       } catch (err) {
         console.error("Offline download error:", err);
-        showToast('❌ Download failed. Check your internet connection.', 'error');
+        showToast('❌ Download failed. Check internet or local storage.');
       }
     };
 
@@ -347,12 +340,7 @@
           const userDoc = await getDoc(doc(db, "Users", user.uid));
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            
-            let isExpired = false;
-            if (userData.expiresAt && new Date(userData.expiresAt) < new Date()) {
-              isExpired = true;
-            }
-
+            let isExpired = userData.expiresAt && new Date(userData.expiresAt) < new Date();
             isUserActivated = !!userData.isActivated && !isExpired;
             userPinData = {
               faculty: userData.faculty || '',
@@ -377,7 +365,8 @@
       renderItems(filtered);
     };
 
-    function loadDepartments() {
+    // --- STEP 1: LOAD DEPARTMENTS WITH OFFLINE CACHE SUPPORT ---
+    async function loadDepartments() {
       currentStep = 'department';
       document.getElementById('step-badge').innerText = 'STEP 1 OF 4';
       document.getElementById('page-title').innerText = 'Select Department';
@@ -387,9 +376,10 @@
 
       listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading departments...</div>`;
 
-      onSnapshot(collection(db, "departments"), (snapshot) => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "departments"));
         rawItemsData = [];
-        snapshot.forEach((docSnap) => {
+        querySnapshot.forEach((docSnap) => {
           const data = docSnap.data();
           if (data.archived) return;          
           if (selectedFacultyParam) {
@@ -408,10 +398,14 @@
           });
         });
         renderItems(rawItemsData);
-      });
+      } catch (err) {
+        console.error("Error loading departments offline:", err);
+        listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--danger); font-size: 0.8rem;">Unable to load departments. Ensure you opened this page online at least once.</div>`;
+      }
     }
 
-    window.selectDepartment = function(deptId, deptName) {
+    // --- STEP 2: LOAD LEVELS WITH OFFLINE SUPPORT ---
+    window.selectDepartment = async function(deptId, deptName) {
       selectedDept = { id: deptId, name: deptName };
       currentStep = 'level';
 
@@ -422,7 +416,8 @@
 
       listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading levels...</div>`;
 
-      onSnapshot(collection(db, "levels"), (snapshot) => {
+      try {
+        const snapshot = await getDocs(collection(db, "levels"));
         let levels = [];
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -440,10 +435,14 @@
           searchText: lvl.name
         }));
         renderItems(rawItemsData);
-      });
+      } catch (err) {
+        console.error("Error loading levels offline:", err);
+        listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--danger); font-size: 0.8rem;">Failed to load levels offline.</div>`;
+      }
     };
 
-    window.selectLevel = function(levelId, levelName) {
+    // --- STEP 3: LOAD COURSES WITH OFFLINE SUPPORT ---
+    window.selectLevel = async function(levelId, levelName) {
       selectedLevel = { id: levelId, name: levelName };
       currentStep = 'course';
 
@@ -454,13 +453,13 @@
 
       listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading courses...</div>`;
 
-      const q = query(
-        collection(db, "courses"),
-        where("departmentId", "==", selectedDept.id),
-        where("levelId", "==", levelId)
-      );
-
-      onSnapshot(q, (snapshot) => {
+      try {
+        const q = query(
+          collection(db, "courses"),
+          where("departmentId", "==", selectedDept.id),
+          where("levelId", "==", levelId)
+        );
+        const snapshot = await getDocs(q);
         let courses = [];
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -486,10 +485,14 @@
           };
         });
         renderItems(rawItemsData);
-      });
+      } catch (err) {
+        console.error("Error loading courses offline:", err);
+        listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--danger); font-size: 0.8rem;">Failed to load courses offline.</div>`;
+      }
     };
 
-    window.selectCourse = function(courseId, courseTitle, courseCode) {
+    // --- STEP 4: LOAD TOPICS WITH OFFLINE SUPPORT ---
+    window.selectCourse = async function(courseId, courseTitle, courseCode) {
       selectedCourse = { id: courseId, title: courseTitle, code: courseCode };
       currentStep = 'topic';
 
@@ -500,8 +503,9 @@
 
       listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading topics...</div>`;
 
-      const q = query(collection(db, "topics"), where("courseId", "==", courseId));
-      onSnapshot(q, (snapshot) => {
+      try {
+        const q = query(collection(db, "topics"), where("courseId", "==", courseId));
+        const snapshot = await getDocs(q);
         let topics = [];
         const scopeUnlocked = isScopeUnlocked();
 
@@ -527,12 +531,12 @@
           index++;
         });
 
-        rawItemsData = topics.map(t => ({
-          ...t,
-          searchText: t.name
-        }));
+        rawItemsData = topics.map(t => ({ ...t, searchText: t.name }));
         renderItems(rawItemsData);
-      });
+      } catch (err) {
+        console.error("Error loading topics offline:", err);
+        listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--danger); font-size: 0.8rem;">Failed to load topics offline.</div>`;
+      }
     };
 
     function renderItems(items) {
@@ -628,61 +632,12 @@
     loadDepartments();
   </script>
 
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New update available! Reloading...');
-              }
-            };
-          };
-        })
-        .catch((err) => console.error('ServiceWorker registration failed:', err));
-    });
-  }
-</script>
-
-
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
-    authDomain: "yan-dli.firebaseapp.com",
-    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
-    projectId: "yan-dli",
-    storageBucket: "yan-dli.firebasestorage.app",
-    messagingSenderId: "538794949165",
-    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Automatically enable offline caching for Firestore data
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.log("Persistence active in another open tab.");
-      } else if (err.code === 'unimplemented') {
-        console.log("Browser does not support offline persistence.");
-      }
-    });
-  } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
-    console.log("Offline DB engine active.");
-  }
-</script>
-
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => console.error('SW failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

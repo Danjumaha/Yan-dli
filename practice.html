@@ -6,9 +6,8 @@
   <meta name="theme-color" content="#7C3AED">
   <title>Yan-Dli | Exam Interface</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C3AED">
-
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7C3AED">
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
   <style>
@@ -40,7 +39,6 @@
     .timer-badge.warning { color: var(--danger); background: var(--danger-light); border-color: var(--danger-border); animation: pulse 1s infinite alternate; }
     @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
 
-    /* PROFESSIONAL CONTEXT INFO PANEL */
     .context-panel { background: var(--card-bg); margin: 0.75rem 1rem 0.25rem 1rem; padding: 0.9rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px; }
     .context-panel-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .context-dept-badge { font-size: 0.68rem; font-weight: 700; background: var(--primary-light); color: var(--primary); padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
@@ -183,7 +181,6 @@
       </div>
     </header>
 
-    <!-- CONTEXT INFO PANEL -->
     <div class="context-panel">
       <div class="context-panel-top">
         <span class="context-dept-badge" id="display-dept-name">Department</span>
@@ -316,7 +313,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, enableIndexedDbPersistence, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -331,6 +328,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    enableIndexedDbPersistence(db).catch(() => {});
 
     const urlParams = new URLSearchParams(window.location.search);
     const queryParams = {
@@ -441,8 +440,6 @@
 
     async function fetchCourseDetails() {
       if (!queryParams.courseId) return;
-      
-      // Try offline cache first
       const offlineBundle = localStorage.getItem(`yan_offline_course_${queryParams.courseId}`);
       if (!navigator.onLine && offlineBundle) {
         try {
@@ -465,21 +462,21 @@
       } catch (error) {}
     }
 
-    // OFFLINE-AWARE QUESTION FETCHING
+    // ROBUST OFFLINE-AWARE QUESTION FETCHING
     async function fetchExamQuestions() {
       const offlineBundleKey = `yan_offline_course_${queryParams.courseId}`;
       const localBundle = localStorage.getItem(offlineBundleKey);
 
-      // 1. If offline, return downloaded bundle immediately
+      // 1. If offline, load instantly from cached offline course bundle
       if (!navigator.onLine && localBundle) {
         const parsed = safeParse(localBundle);
         if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-          showToast('📱 Running in Offline Mode using cached questions.', 'info');
+          showToast('📱 Running Offline: Loaded from cached course bundle.', 'info');
           return parsed.questions;
         }
       }
 
-      // 2. Try fetching live from Firestore if online
+      // 2. Try fetching from Firestore if online
       try {
         const qRef = collection(db, 'questions');
         let qQuery = qRef;
@@ -490,7 +487,7 @@
         if (!qSnap.empty) {
           const fetched = qSnap.docs.map(questionDoc => ({ id: questionDoc.id, ...questionDoc.data() }));
           
-          // Auto-cache this course for future offline practice
+          // Auto-cache for offline practice
           localStorage.setItem(offlineBundleKey, JSON.stringify({
             title: courseDetails.title || queryParams.courseTitle,
             downloadedAt: new Date().toISOString(),
@@ -500,10 +497,10 @@
           return fetched;
         }
       } catch (error) {
-        console.warn("Firestore fetch failed, checking offline storage...", error);
+        console.warn("Firestore fetch failed, checking local storage cache...", error);
       }
 
-      // 3. Fallback to local storage bundle if online failed
+      // 3. Fallback to local storage if online fetch fails
       if (localBundle) {
         const parsed = safeParse(localBundle);
         if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
@@ -731,7 +728,7 @@
 
         if (secondsRemaining <= 0) {
           clearInterval(timerInterval);
-          showToast('Time up! Processing your submission...', 'warning');
+          showToast('Time up! Processing submission...', 'warning');
           setTimeout(() => submitExam(true), 1200);
         }
       }, 1000);
@@ -1009,62 +1006,12 @@
     });
   </script>
 
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New update available! Reloading...');
-              }
-            };
-          };
-        })
-        .catch((err) => console.error('ServiceWorker registration failed:', err));
-    });
-  }
-</script>
-
-
-
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
-    authDomain: "yan-dli.firebaseapp.com",
-    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
-    projectId: "yan-dli",
-    storageBucket: "yan-dli.firebasestorage.app",
-    messagingSenderId: "538794949165",
-    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Automatically enable offline caching for Firestore data
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.log("Persistence active in another open tab.");
-      } else if (err.code === 'unimplemented') {
-        console.log("Browser does not support offline persistence.");
-      }
-    });
-  } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
-    console.log("Offline DB engine active.");
-  }
-</script>
-
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => console.error('SW failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

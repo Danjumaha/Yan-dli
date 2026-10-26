@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Practice Setup</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C3AED">
-
-
+  <meta name="theme-color" content="#7C3AED">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +69,6 @@
 
     .header-left-group { display: flex; align-items: center; gap: 10px; }
 
-    /* Modern OPay-style Back Button */
     .back-btn {
       width: 40px; 
       height: 40px; 
@@ -116,7 +113,6 @@
       gap: 12px;
     }
 
-    /* BREADCRUMB CONTEXT CARD */
     .context-card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -181,7 +177,6 @@
       margin-bottom: 6px;
     }
 
-    /* MODE SELECTOR CARDS */
     .mode-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -230,21 +225,9 @@
       stroke: white;
     }
 
-    .mode-title {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--text-main);
-    }
+    .mode-title { font-size: 0.8rem; font-weight: 800; color: var(--text-main); }
+    .mode-desc { font-size: 0.65rem; color: var(--text-sub); margin-top: 2px; font-weight: 600; line-height: 1.3; }
 
-    .mode-desc {
-      font-size: 0.65rem;
-      color: var(--text-sub);
-      margin-top: 2px;
-      font-weight: 600;
-      line-height: 1.3;
-    }
-
-    /* CONTROL CARDS */
     .control-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -256,17 +239,8 @@
       gap: 8px;
     }
 
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .slider-value {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
+    .slider-header { display: flex; justify-content: space-between; align-items: center; }
+    .slider-value { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
 
     .range-input {
       width: 100%;
@@ -276,7 +250,6 @@
       outline: none;
       -webkit-appearance: none;
     }
-
     .range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 20px;
@@ -287,7 +260,6 @@
       box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
     }
 
-    /* START ACTION BUTTON */
     .app-btn {
       width: 100%;
       padding: 12px;
@@ -308,7 +280,6 @@
     }
     .app-btn:active { transform: scale(0.98); }
 
-    /* RED / URGENT SELECT AGAIN BUTTON */
     .app-btn-secondary {
       width: 100%;
       padding: 11px;
@@ -328,7 +299,6 @@
     }
     .app-btn-secondary:active { transform: scale(0.98); }
 
-    /* TOAST NOTIFICATION */
     .toast-notification {
       position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
       padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -336,7 +306,6 @@
     }
     .toast-notification.show { transform: translateX(-50%) translateY(0); }
 
-    /* BOTTOM NAV */
     .bottom-nav {
       position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
       display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
@@ -350,13 +319,11 @@
 <body>
 
   <div class="app-shell">
-    <!-- TOAST NOTIFICATION -->
     <div id="app-toast" class="toast-notification">Notification message</div>
 
-    <!-- APP HEADER WITH OPAY-STYLE BACK ARROW -->
     <header class="app-header">
       <div class="header-left-group">
-        <a href="dashboard.html" class="back-btn" id="dynamic-back-btn" title="Back">
+        <a href="departments.html" class="back-btn" id="dynamic-back-btn" title="Back">
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
         <div>
@@ -366,12 +333,10 @@
       </div>
     </header>
 
-    <!-- CONTENT AREA -->
     <main class="app-content">
-      <!-- CONTEXT CARD -->
       <div class="context-card">
         <div class="context-badge-row">
-          <span class="context-badge" id="display-course-code">Loading...</span>
+          <span class="context-badge" id="display-course-code">LOADING...</span>
           <span class="context-topic-tag" id="display-topic-name">Loading topic...</span>
         </div>
         <h1 class="context-title" id="display-course-title">Loading course...</h1>
@@ -382,7 +347,6 @@
         </div>
       </div>
 
-      <!-- PRACTICE MODE SELECTION -->
       <div>
         <div class="section-label">Select Practice Mode</div>
         <div class="mode-grid">
@@ -404,17 +368,15 @@
         </div>
       </div>
 
-      <!-- QUESTION COUNT SLIDER -->
       <div class="control-card">
         <div class="slider-header">
           <span class="section-label" style="margin-bottom:0;">Number of Questions</span>
           <span class="slider-value" id="q-count-display">15</span>
         </div>
         <input type="range" min="5" max="50" step="5" value="15" class="range-input" id="q-count-slider" oninput="updateCountDisplay(this.value)">
-        <div id="free-tier-notice" style="font-size:0.68rem; color:var(--warning); font-weight:700; display:none;">🔒 Free Tier Scope Limit: Max 5 questions allowed for this department/level. Buy a pin for this specific scope to unlock up to 50.</div>
+        <div id="free-tier-notice" style="font-size:0.68rem; color:var(--warning); font-weight:700; display:none;">🔒 Free Tier Scope Limit: Max 5 questions allowed. Activate scope to unlock up to 50.</div>
       </div>
 
-      <!-- TIMER DURATION SLIDER -->
       <div class="control-card">
         <div class="slider-header">
           <span class="section-label" style="margin-bottom:0;">Timer Duration</span>
@@ -423,20 +385,17 @@
         <input type="range" min="5" max="120" step="5" value="20" class="range-input" id="timer-slider" oninput="updateTimerDisplay(this.value)">
       </div>
 
-      <!-- START SESSION ACTION BUTTON -->
       <button class="app-btn" onclick="startPracticeSession()">
         <span id="start-btn-text">Start Practice Session</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <!-- URGENT SELECT AGAIN BUTTON -->
       <button class="app-btn-secondary" onclick="selectAgain()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         <span>Select Again / Change Subject</span>
       </button>
     </main>
 
-    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
       <a href="dashboard.html" class="nav-tab">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -461,10 +420,9 @@
     </nav>
   </div>
 
-  <!-- FIREBASE ENGINE & DIRECT DATABASE RESOLUTION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, enableIndexedDbPersistence, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -481,24 +439,26 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    enableIndexedDbPersistence(db).catch(() => {});
+
     const urlParams = new URLSearchParams(window.location.search);
     
-    const deptId = urlParams.get('deptId');
-    const deptNameParam = urlParams.get('deptName');
-    const levelId = urlParams.get('levelId');
-    const levelNameParam = urlParams.get('levelName');
-    const courseId = urlParams.get('courseId');
-    const courseCodeParam = urlParams.get('courseCode');
-    const courseTitleParam = urlParams.get('courseTitle');
+    const deptId = urlParams.get('deptId') || '';
+    const deptNameParam = urlParams.get('deptName') || 'Department';
+    const levelId = urlParams.get('levelId') || '';
+    const levelNameParam = urlParams.get('levelName') || 'Level';
+    const courseId = urlParams.get('courseId') || '';
+    const courseCodeParam = urlParams.get('courseCode') || 'CODE';
+    const courseTitleParam = urlParams.get('courseTitle') || 'Course Title';
     const topicId = urlParams.get('topicId') || 'all';
-    const topicNameParam = urlParams.get('topicName');
+    const topicNameParam = urlParams.get('topicName') || 'All Topics';
 
     window.resolvedData = {
-      deptName: deptNameParam || 'Department',
-      levelName: levelNameParam || 'Level',
-      courseCode: courseCodeParam || 'CODE',
-      courseTitle: courseTitleParam || 'Course Title',
-      topicName: topicNameParam || 'Topic Name'
+      deptName: deptNameParam,
+      levelName: levelNameParam,
+      courseCode: courseCodeParam,
+      courseTitle: courseTitleParam,
+      topicName: topicNameParam
     };
 
     window.sessionConfig = {
@@ -516,16 +476,15 @@
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
 
-    // OFFLINE-AWARE CONTEXT RESOLUTION
-    async function fetchDatabaseContext() {
-      // 1. Populate immediately from URL parameters if available
+    async function initializeContext() {
+      // 1. Instant Render from URL Parameters
       document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
       document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
       document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
       document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
       document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
 
-      // 2. If offline or if names are missing, check cached offline course bundle
+      // 2. Offline Fallback check from localStorage bundle if offline
       const offlineBundle = localStorage.getItem(`yan_offline_course_${courseId}`);
       if (!navigator.onLine && offlineBundle) {
         try {
@@ -537,41 +496,21 @@
         } catch (e) {}
       }
 
-      // 3. Try to fetch fresh names from Firestore if online
+      // 3. Online sync check if available
       if (navigator.onLine) {
         try {
-          if (deptId && !deptNameParam) {
-            const deptDoc = await getDoc(doc(db, "departments", deptId));
-            if (deptDoc.exists()) window.resolvedData.deptName = deptDoc.data().name || 'Department';
-          }
-          if (levelId && !levelNameParam) {
-            const levelDoc = await getDoc(doc(db, "levels", levelId));
-            if (levelDoc.exists()) window.resolvedData.levelName = levelDoc.data().name || 'Level';
-          }
-          if (courseId && (!courseCodeParam || !courseTitleParam)) {
+          if (courseId && (courseCodeParam === 'CODE' || courseTitleParam === 'Course Title')) {
             const courseDoc = await getDoc(doc(db, "courses", courseId));
             if (courseDoc.exists()) {
               window.resolvedData.courseCode = courseDoc.data().code || 'CODE';
               window.resolvedData.courseTitle = courseDoc.data().title || 'Course Title';
+              document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
+              document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
             }
           }
-          if (topicId !== 'all' && topicId && !topicNameParam) {
-            const topicDoc = await getDoc(doc(db, "topics", topicId));
-            if (topicDoc.exists()) window.resolvedData.topicName = topicDoc.data().name || 'Specific Topic';
-          }
-
-          document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
-          document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
-          document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
-          document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
-          document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
-        } catch (error) {
-          console.warn("Firestore context sync skipped (offline or network error). Using URL/cached parameters.");
+        } catch (err) {
+          console.warn("Offline fallback active for context.");
         }
-      }
-
-      if (auth.currentUser) {
-        checkScopeActivation(auth.currentUser.uid);
       }
     }
 
@@ -579,40 +518,24 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        checkScopeActivation(user.uid);
-      }
-    });
+        try {
+          const userDoc = await getDoc(doc(db, "Users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const userDept = (userData.department || '').toLowerCase().trim();
+            const userLvl = (userData.level || '').toLowerCase().trim();
+            const targetDept = window.resolvedData.deptName.toLowerCase().trim();
+            const targetLvl = window.resolvedData.levelName.toLowerCase().trim();
 
-    async function checkScopeActivation(uid) {
-      try {
-        if (!navigator.onLine) {
-          // Fallback offline check from cached user profile or offline state
-          isScopeUnlocked = true; // Allow offline access if previously downloaded/authenticated
-          return;
-        }
+            const isExpired = userData.expiresAt && new Date(userData.expiresAt) < new Date();
+            const matches = (userDept === targetDept || userDept.includes(targetDept)) && 
+                            (userLvl === targetLvl || userLvl.includes(targetLvl));
 
-        const q = query(
-          collection(db, "Pins"),
-          where("usedBy", "==", uid),
-          where("isUsed", "==", true)
-        );
-        const querySnapshot = await getDocs(q);
-
-        const now = new Date();
-        let scopeFoundAndValid = false;
-
-        querySnapshot.forEach(docSnap => {
-          const pinData = docSnap.data();
-          const matchesDept = pinData.department && pinData.department.toLowerCase().trim() === window.resolvedData.deptName.toLowerCase().trim();
-          const matchesLevel = pinData.level && pinData.level.toLowerCase().trim() === window.resolvedData.levelName.toLowerCase().trim();
-          const notExpired = !pinData.expiresAt || new Date(pinData.expiresAt) > now;
-
-          if (matchesDept && matchesLevel && notExpired) {
-            scopeFoundAndValid = true;
+            isScopeUnlocked = !!userData.isActivated && !isExpired && matches;
           }
-        });
-
-        isScopeUnlocked = scopeFoundAndValid;
+        } catch (e) {
+          isScopeUnlocked = true; // Assume access if offline cached
+        }
 
         if (!isScopeUnlocked) {
           window.sessionConfig.qCount = 5;
@@ -620,22 +543,15 @@
           document.getElementById('q-count-slider').value = '5';
           document.getElementById('q-count-slider').max = '5';
           document.getElementById('free-tier-notice').style.display = 'block';
-        } else {
-          document.getElementById('q-count-slider').max = '50';
-          document.getElementById('free-tier-notice').style.display = 'none';
         }
-      } catch (e) {
-        console.error("Error checking scope activation:", e);
       }
-    }
+    });
 
     window.setMode = function(modeType) {
       window.sessionConfig.mode = modeType;
       document.querySelectorAll('.mode-card').forEach(card => card.classList.remove('active'));
       document.getElementById(`mode-${modeType}`).classList.add('active');
-      
-      const btnText = document.getElementById('start-btn-text');
-      btnText.textContent = modeType === 'exam' ? 'Start Exam Session' : 'Start Practice Session';
+      document.getElementById('start-btn-text').textContent = modeType === 'exam' ? 'Start Exam Session' : 'Start Practice Session';
     };
 
     window.updateCountDisplay = function(val) {
@@ -643,7 +559,7 @@
       if (!isScopeUnlocked && count > 5) {
         count = 5;
         document.getElementById('q-count-slider').value = '5';
-        showToast("🔒 Locked Scope Limit: Max 5 questions. Buy a pin for this department/level to unlock.");
+        showToast("🔒 Locked Free Tier Limit: Max 5 questions.");
       }
       window.sessionConfig.qCount = count;
       document.getElementById('q-count-display').textContent = count;
@@ -662,70 +578,18 @@
     };
 
     window.selectAgain = function() {
-      const selectionUrl = `departments.html?deptId=${encodeURIComponent(deptId)}&levelId=${encodeURIComponent(levelId)}`;
-      window.location.href = selectionUrl;
+      window.location.href = `departments.html`;
     };
 
-    fetchDatabaseContext();
+    initializeContext();
   </script>
 
-
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New update available! Reloading...');
-              }
-            };
-          };
-        })
-        .catch((err) => console.error('ServiceWorker registration failed:', err));
-    });
-  }
-</script>
-
-
-
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
-    authDomain: "yan-dli.firebaseapp.com",
-    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
-    projectId: "yan-dli",
-    storageBucket: "yan-dli.firebasestorage.app",
-    messagingSenderId: "538794949165",
-    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Automatically enable offline caching for Firestore data
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.log("Persistence active in another open tab.");
-      } else if (err.code === 'unimplemented') {
-        console.log("Browser does not support offline persistence.");
-      }
-    });
-  } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
-    console.log("Offline DB engine active.");
-  }
-</script>
-
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => console.error('SW failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
