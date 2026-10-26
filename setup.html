@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Practice Setup</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,10 +70,39 @@
     }
 
     .header-left-group { display: flex; align-items: center; gap: 10px; }
+
+    /* Modern OPay-style Back Button */
     .back-btn {
-      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-main);
+      border: 1px solid var(--border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
     }
+    .back-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-dark);
+      color: var(--primary-dark);
+    }
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
     .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
 
@@ -320,11 +353,11 @@
     <!-- TOAST NOTIFICATION -->
     <div id="app-toast" class="toast-notification">Notification message</div>
 
-    <!-- APP HEADER -->
+    <!-- APP HEADER WITH OPAY-STYLE BACK ARROW -->
     <header class="app-header">
       <div class="header-left-group">
-        <a href="dashboard.html" class="back-btn" id="dynamic-back-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <a href="dashboard.html" class="back-btn" id="dynamic-back-btn" title="Back">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
         <div>
           <h1 class="app-header-title">Practice Setup</h1>
@@ -430,24 +463,42 @@
 
   <!-- FIREBASE ENGINE & DIRECT DATABASE RESOLUTION -->
   <script type="module">
-    import { db } from "./firebase-config.js";
-    import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-    const auth = getAuth();
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
     const urlParams = new URLSearchParams(window.location.search);
     
     const deptId = urlParams.get('deptId');
+    const deptNameParam = urlParams.get('deptName');
     const levelId = urlParams.get('levelId');
+    const levelNameParam = urlParams.get('levelName');
     const courseId = urlParams.get('courseId');
+    const courseCodeParam = urlParams.get('courseCode');
+    const courseTitleParam = urlParams.get('courseTitle');
     const topicId = urlParams.get('topicId') || 'all';
+    const topicNameParam = urlParams.get('topicName');
 
     window.resolvedData = {
-      deptName: 'Department',
-      levelName: 'Level',
-      courseCode: 'CODE',
-      courseTitle: 'Course Title',
-      topicName: 'Topic Name'
+      deptName: deptNameParam || 'Department',
+      levelName: levelNameParam || 'Level',
+      courseCode: courseCodeParam || 'CODE',
+      courseTitle: courseTitleParam || 'Course Title',
+      topicName: topicNameParam || 'Topic Name'
     };
 
     window.sessionConfig = {
@@ -465,72 +516,81 @@
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
 
-    // Fetch correct names directly from Firebase Firestore using IDs
+    // OFFLINE-AWARE CONTEXT RESOLUTION
     async function fetchDatabaseContext() {
-      try {
-        if (deptId) {
-          const deptDoc = await getDoc(doc(db, "departments", deptId));
-          if (deptDoc.exists()) {
-            window.resolvedData.deptName = deptDoc.data().name || 'Department';
+      // 1. Populate immediately from URL parameters if available
+      document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
+      document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
+      document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
+      document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
+      document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
+
+      // 2. If offline or if names are missing, check cached offline course bundle
+      const offlineBundle = localStorage.getItem(`yan_offline_course_${courseId}`);
+      if (!navigator.onLine && offlineBundle) {
+        try {
+          const parsed = JSON.parse(offlineBundle);
+          if (parsed && parsed.title) {
+            window.resolvedData.courseTitle = parsed.title;
+            document.getElementById('display-course-title').textContent = parsed.title;
           }
-        }
+        } catch (e) {}
+      }
 
-        if (levelId) {
-          const levelDoc = await getDoc(doc(db, "levels", levelId));
-          if (levelDoc.exists()) {
-            window.resolvedData.levelName = levelDoc.data().name || 'Level';
+      // 3. Try to fetch fresh names from Firestore if online
+      if (navigator.onLine) {
+        try {
+          if (deptId && !deptNameParam) {
+            const deptDoc = await getDoc(doc(db, "departments", deptId));
+            if (deptDoc.exists()) window.resolvedData.deptName = deptDoc.data().name || 'Department';
           }
-        }
-
-        if (courseId) {
-          const courseDoc = await getDoc(doc(db, "courses", courseId));
-          if (courseDoc.exists()) {
-            window.resolvedData.courseCode = courseDoc.data().code || 'CODE';
-            window.resolvedData.courseTitle = courseDoc.data().title || 'Course Title';
+          if (levelId && !levelNameParam) {
+            const levelDoc = await getDoc(doc(db, "levels", levelId));
+            if (levelDoc.exists()) window.resolvedData.levelName = levelDoc.data().name || 'Level';
           }
-        }
-
-        if (topicId === 'all') {
-          window.resolvedData.topicName = '🎯 Practice All Topics';
-        } else if (topicId) {
-          const topicDoc = await getDoc(doc(db, "topics", topicId));
-          if (topicDoc.exists()) {
-            window.resolvedData.topicName = topicDoc.data().name || 'Specific Topic';
+          if (courseId && (!courseCodeParam || !courseTitleParam)) {
+            const courseDoc = await getDoc(doc(db, "courses", courseId));
+            if (courseDoc.exists()) {
+              window.resolvedData.courseCode = courseDoc.data().code || 'CODE';
+              window.resolvedData.courseTitle = courseDoc.data().title || 'Course Title';
+            }
           }
+          if (topicId !== 'all' && topicId && !topicNameParam) {
+            const topicDoc = await getDoc(doc(db, "topics", topicId));
+            if (topicDoc.exists()) window.resolvedData.topicName = topicDoc.data().name || 'Specific Topic';
+          }
+
+          document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
+          document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
+          document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
+          document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
+          document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
+        } catch (error) {
+          console.warn("Firestore context sync skipped (offline or network error). Using URL/cached parameters.");
         }
+      }
 
-        document.getElementById('display-course-code').textContent = window.resolvedData.courseCode;
-        document.getElementById('display-course-title').textContent = window.resolvedData.courseTitle;
-        document.getElementById('display-dept-name').textContent = window.resolvedData.deptName;
-        document.getElementById('display-level-name').textContent = window.resolvedData.levelName;
-        document.getElementById('display-topic-name').textContent = window.resolvedData.topicName;
-
-        // Once database context is loaded, check if user has an active pin specifically for THIS department & level
-        if (auth.currentUser) {
-          checkScopeActivation(auth.currentUser.uid);
-        }
-
-      } catch (error) {
-        console.error("Error loading database context:", error);
-        showToast("Error loading session context from database.");
+      if (auth.currentUser) {
+        checkScopeActivation(auth.currentUser.uid);
       }
     }
 
-    document.getElementById('dynamic-back-btn').href = `dashboard.html`;
+    document.getElementById('dynamic-back-btn').href = `departments.html?faculty=commerce`;
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        if (window.resolvedData.deptName !== 'Department') {
-          checkScopeActivation(user.uid);
-        }
-      } else {
-        window.location.href = "index.html";
+        checkScopeActivation(user.uid);
       }
     });
 
-    // Verify if user has a valid unexpired pin/scope matching this specific department and level
     async function checkScopeActivation(uid) {
       try {
+        if (!navigator.onLine) {
+          // Fallback offline check from cached user profile or offline state
+          isScopeUnlocked = true; // Allow offline access if previously downloaded/authenticated
+          return;
+        }
+
         const q = query(
           collection(db, "Pins"),
           where("usedBy", "==", uid),
@@ -602,7 +662,7 @@
     };
 
     window.selectAgain = function() {
-      const selectionUrl = `dashboard.html?deptId=${encodeURIComponent(deptId)}&levelId=${encodeURIComponent(levelId)}`;
+      const selectionUrl = `departments.html?deptId=${encodeURIComponent(deptId)}&levelId=${encodeURIComponent(levelId)}`;
       window.location.href = selectionUrl;
     };
 

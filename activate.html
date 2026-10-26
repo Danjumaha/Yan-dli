@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Account Activation</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -69,10 +71,38 @@
     }
 
     .header-left-group { display: flex; align-items: center; gap: 10px; }
+
     .back-btn {
-      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-main);
+      border: 1px solid var(--border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
     }
+    .back-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-dark);
+      color: var(--primary-dark);
+    }
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
     .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
 
@@ -171,9 +201,9 @@
     .app-btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
 
     .rules-box {
-      background: #FFFBEB; border: 1px solid #FEF3C7; border-radius: 12px; padding: 10px 12px; font-size: 0.73rem; color: #92400E; line-height: 1.4;
+      background: #FFFBEB; border: 1px solid #FEF3C7; border-radius: 12px; padding: 12px 14px; font-size: 0.73rem; color: #92400E; line-height: 1.5;
     }
-    .rules-box ul { margin-left: 14px; margin-top: 2px; }
+    .rules-box ul { margin-left: 14px; margin-top: 4px; display: flex; flex-direction: column; gap: 4px; }
 
     .pin-display-area {
       background: var(--primary-light); border: 2px dashed var(--primary); padding: 12px; border-radius: 12px; text-align: center; display: none; flex-direction: column; gap: 6px;
@@ -195,6 +225,29 @@
     .pin-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; padding-top: 6px; margin-top: 2px; font-size: 0.68rem; color: var(--text-sub); }
     .delete-pin-btn { background: none; border: none; color: var(--danger); cursor: pointer; display: flex; align-items: center; gap: 2px; font-weight: 700; font-size: 0.7rem; }
 
+    /* CUSTOM CONFIRMATION MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.5); z-index: 600; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--card-bg); width: 100%; max-width: 340px; border-radius: var(--radius-app); padding: 1.25rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 10px;
+    }
+    .modal-title { font-size: 0.9rem; font-weight: 800; color: var(--text-main); }
+    .modal-desc { font-size: 0.76rem; color: var(--text-sub); line-height: 1.4; font-weight: 500; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .btn-secondary {
+      flex: 1; background: var(--bg-body); border: 1.5px solid var(--border); color: var(--text-main);
+      padding: 10px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; font-size: 0.78rem;
+    }
+    .btn-danger {
+      flex: 1; background: var(--danger); border: none; color: #FFF;
+      padding: 10px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; font-size: 0.78rem;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
     .toast-notification {
       position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
       padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -203,13 +256,43 @@
     .toast-notification.show { transform: translateX(-50%) translateY(0); }
 
     .bottom-nav {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
-      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: #FFFFFF;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.4rem 0;
+      z-index: 30;
     }
-    .nav-tab {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #6B7280;
+      font-size: 0.65rem;
+      font-weight: 400;
+      gap: 2px;
     }
-    .nav-tab.active { color: var(--primary); }
+
+    .nav-item.active {
+      color: #7C3AED;
+      font-weight: 500;
+    }
+
+    .nav-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
   </style>
 </head>
 <body>
@@ -217,10 +300,22 @@
   <div class="app-shell">
     <div id="app-toast" class="toast-notification">Notification message</div>
 
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title" id="confirm-modal-title">Confirm Action</div>
+        <div class="modal-desc" id="confirm-modal-desc">Are you sure you want to proceed?</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button type="button" class="btn-danger" id="confirm-modal-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
     <header class="app-header">
       <div class="header-left-group">
-        <a href="dashboard.html" class="back-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <a href="dashboard.html" class="back-btn" title="Back">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
         <div>
           <h1 class="app-header-title">Account Activation</h1>
@@ -237,10 +332,11 @@
       </div>
 
       <div class="rules-box">
-        <strong>⚠️ Access Rules:</strong>
+        <strong>⚠️ Strict Access & Security Rules:</strong>
         <ul>
-          <li>Pins unlock only the specific <strong>Faculty, Department, and Level</strong> registered on them.</li>
-          <li>Redeeming a pin binds your account access specifically to that departmental scope.</li>
+          <li><strong>Single-Device Policy:</strong> Each account and activation PIN is strictly tied to a single device. Multi-device logins or sharing your login credentials with friends will trigger automated security bans.</li>
+          <li><strong>Scope Restriction:</strong> Pins unlock only the specific <strong>Faculty, Department, and Level</strong> registered on them. Redeeming a pin binds your account access specifically to that departmental scope.</li>
+          <li><strong>Account Bans & Support:</strong> If your account is flagged or banned due to multiple device detections or policy violations, please contact our support desk immediately for assistance. You can but buy pins and give to friend to Activate thier account.</li>
         </ul>
       </div>
 
@@ -249,11 +345,11 @@
 
         <div class="plans-grid">
           <div class="plan-box selected" onclick="selectPlan(3500, 'Semester 4 months', this)">
-            <div class="plan-duration">Semester (4 Mos)</div>
+            <div class="plan-duration">Semester (4 Months)</div>
             <div class="plan-price">₦3,500</div>
           </div>
           <div class="plan-box" onclick="selectPlan(10000, 'Yearly 12 months', this)">
-            <div class="plan-duration">Yearly (12 Mos)</div>
+            <div class="plan-duration">Yearly (12 Months)</div>
             <div class="plan-price">₦10,000</div>
           </div>
         </div>
@@ -327,25 +423,40 @@
       </div>
     </div>
 
+    <!-- BOTTOM FIXED NAVIGATION BAR -->
     <nav class="bottom-nav">
-      <a href="dashboard.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </span>
         <span>Home</span>
       </a>
-      <a href="exams.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+
+      <a href="exams.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
         <span>Exams</span>
       </a>
-      <a href="classroom.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Classroom</span>
+
+      <a href="classroom.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span>Study Room</span>
       </a>
-      <a href="activate.html" class="nav-tab active">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+
+      <a href="activate.html" class="nav-item active">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
         <span>Activation</span>
       </a>
-      <a href="account.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+
+      <a href="account.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
         <span>Account</span>
       </a>
     </nav>
@@ -379,6 +490,7 @@
     let allLevels = [];
     let activeSelectorType = '';
     let currentRawList = [];
+    let pendingConfirmAction = null;
 
     function showToast(message) {
       const toast = document.getElementById('app-toast');
@@ -387,6 +499,39 @@
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
     window.showToast = showToast;
+
+    window.openConfirmModal = function(title, description, onConfirmCallback) {
+      document.getElementById('confirm-modal-title').innerText = title;
+      document.getElementById('confirm-modal-desc').innerText = description;
+      pendingConfirmAction = onConfirmCallback;
+      document.getElementById('confirm-modal').classList.add('active');
+    };
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      pendingConfirmAction = null;
+    };
+
+    document.getElementById('confirm-modal-btn').onclick = function() {
+      if (pendingConfirmAction) pendingConfirmAction();
+      closeConfirmModal();
+    };
+
+    async function sendAppNotification(title, message, type = 'info') {
+      if (!currentUser) return;
+      try {
+        await addDoc(collection(db, "Notifications"), {
+          userId: currentUser.uid,
+          title: title,
+          message: message,
+          type: type,
+          isRead: false,
+          createdAt: new Date().toISOString()
+        });
+      } catch (err) {
+        console.error("Error dispatching notification:", err);
+      }
+    }
 
     window.selectPlan = function(amount, name, el) {
       selectedAmount = amount;
@@ -521,7 +666,6 @@
       return clean.substring(0, length).toUpperCase();
     }
 
-    // FIXED PAYSTACK V2 CHECKOUT GATEWAY INTEGRATION
     window.initiatePaystackPayment = function() {
       if (!currentUser) {
         showToast("⚠️ Please sign in first.");
@@ -599,6 +743,12 @@
                 createdAt: createdAtDate.toISOString()
               });
 
+              await sendAppNotification(
+                "🎉 New Scope PIN Generated",
+                `Your PIN (${newPin}) for ${facultyVal} > ${deptNameVal} (${levelNameVal}) has been successfully created. Paid ₦${selectedAmount.toLocaleString()}.`,
+                "success"
+              );
+
               document.getElementById('displayed-pin-string').textContent = newPin;
               document.getElementById('pin-output-box').style.display = 'flex';
               showToast("🎉 Payment verified! Pin generated successfully.");
@@ -670,7 +820,7 @@
               </div>
               <div class="pin-card-footer">
                 <span>Valid: ${formattedCreated} → Exp: ${formattedExpires}</span>
-                <button type="button" class="delete-pin-btn" onclick="deletePinRecord('${pinDocId}')">
+                <button type="button" class="delete-pin-btn" onclick="promptDeletePin('${pinDocId}', '${p.pin}')">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   Delete
                 </button>
@@ -685,16 +835,28 @@
       }
     }
 
-    window.deletePinRecord = async function(docId) {
-      if (!confirm("Are you sure you want to delete this pin record?")) return;
-      try {
-        await deleteDoc(doc(db, "Pins", docId));
-        showToast("🗑️ Pin deleted successfully.");
-        if (currentUser) loadUserPinHistory(currentUser.uid);
-      } catch (err) {
-        console.error("Error deleting pin:", err);
-        showToast("❌ Could not delete pin.");
-      }
+    window.promptDeletePin = function(docId, pinCode) {
+      openConfirmModal(
+        "Delete PIN Record?",
+        `Are you sure you want to delete PIN "${pinCode}"? This will permanently remove it from your history.`,
+        async function() {
+          try {
+            await deleteDoc(doc(db, "Pins", docId));
+            
+            await sendAppNotification(
+              "🗑️ PIN Record Deleted",
+              `The PIN record (${pinCode}) has been removed from your history.`,
+              "warning"
+            );
+
+            showToast("🗑️ Pin deleted successfully.");
+            if (currentUser) loadUserPinHistory(currentUser.uid);
+          } catch (err) {
+            console.error("Error deleting pin:", err);
+            showToast("❌ Could not delete pin.");
+          }
+        }
+      );
     };
 
     window.redeemActivationPin = async function() {
@@ -749,9 +911,15 @@
           expiresAt: expiryDate.toISOString()
         }, { merge: true });
 
+        await sendAppNotification(
+          "🚀 Account Scope Activated!",
+          `Congratulations! Your account has unlocked access to ${pinData.faculty || 'Faculty'} > ${pinData.department || 'Department'} (${pinData.level || 'Level'}).`,
+          "success"
+        );
+
         showToast("🎉 Scope successfully unlocked!");
         loadUserPinHistory(currentUser.uid);
-        setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 1000);
       } catch (e) {
         console.error("Redemption error", e);
         showToast("❌ Error processing activation.");

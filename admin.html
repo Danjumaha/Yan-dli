@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yan-Dli | Mobile Admin Portal</title>
-    
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +28,9 @@
             --success-light: #D1FAE5;
             --danger: #EF4444;
             --danger-light: #FEE2E2;
-            --radius-app: 24px;
-            --radius-btn: 14px;
-            --shadow-card: 0 10px 25px -5px rgba(139, 92, 246, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --radius-app: 20px;
+            --radius-btn: 12px;
+            --shadow-card: 0 8px 20px -4px rgba(139, 92, 246, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
             --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
         }
 
@@ -49,7 +51,6 @@
             align-items: center;
         }
 
-        /* MOBILE APP CONTAINER SHELL */
         .app-shell {
             width: 100%;
             max-width: 480px;
@@ -71,7 +72,6 @@
             }
         }
 
-        /* SIDEBAR OVERLAY & PANEL */
         .sidebar-overlay {
             position: absolute;
             inset: 0;
@@ -105,15 +105,15 @@
         }
 
         .sidebar-header {
-            padding: 24px 20px;
+            padding: 20px 18px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 12px;
         }
         .sidebar-logo {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             background: var(--primary-light);
             color: var(--primary);
             border-radius: 12px;
@@ -124,10 +124,10 @@
 
         .sidebar-nav {
             flex: 1;
-            padding: 16px 12px;
+            padding: 14px 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             overflow-y: auto;
         }
 
@@ -135,11 +135,11 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 12px;
             color: var(--text-sub);
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -149,11 +149,10 @@
         }
 
         .sidebar-footer {
-            padding: 16px;
+            padding: 14px;
             border-top: 1px solid var(--border);
         }
 
-        /* AUTH SCREEN */
         .admin-login {
             position: absolute;
             inset: 0;
@@ -167,8 +166,8 @@
 
         .login-card {
             background: var(--card-bg);
-            padding: 32px 24px;
-            border-radius: 28px;
+            padding: 28px 20px;
+            border-radius: 24px;
             width: 100%;
             box-shadow: var(--shadow-card);
             text-align: center;
@@ -176,23 +175,22 @@
         }
 
         .login-card .logo-badge {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             background: var(--primary-light);
             color: var(--primary);
-            border-radius: 20px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
+            margin: 0 auto 14px;
         }
 
-        .login-card h2 { font-weight: 800; color: var(--text-main); margin-bottom: 4px; font-size: 1.4rem; }
-        .login-card p { color: var(--text-sub); font-size: 0.85rem; margin-bottom: 24px; }
+        .login-card h2 { font-weight: 800; color: var(--text-main); margin-bottom: 4px; font-size: 1.25rem; }
+        .login-card p { color: var(--text-sub); font-size: 0.8rem; margin-bottom: 20px; }
 
-        /* HEADER APP BAR */
         .app-header {
-            padding: 18px 20px 14px;
+            padding: 14px 16px;
             background: #FFFFFF;
             border-bottom: 1px solid #F1F5F9;
             display: flex;
@@ -208,8 +206,8 @@
         }
 
         .menu-toggle-btn {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 12px;
             background: var(--bg-body);
             color: var(--text-main);
@@ -220,12 +218,12 @@
             cursor: pointer;
         }
 
-        .app-header-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
-        .app-header-subtitle { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
+        .app-header-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+        .app-header-subtitle { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
 
         .exit-icon-btn {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 12px;
             background: var(--danger-light);
             color: var(--danger);
@@ -237,60 +235,57 @@
             transition: all 0.2s ease;
         }
 
-        /* MAIN CONTENT SCROLL AREA */
         .app-content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px 20px 100px;
+            padding: 14px 16px 90px;
             scroll-behavior: smooth;
         }
 
         .section-page { display: none; }
-        .section-page.active { display: block; animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+        .section-page.active { display: block; animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CARDS & CONTAINERS */
         .app-card {
             background: var(--card-bg);
             border-radius: var(--radius-app);
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
             box-shadow: var(--shadow-card);
             border: 1px solid #F1F5F9;
         }
 
         .app-card-title {
-            font-size: 1rem;
+            font-size: 0.92rem;
             font-weight: 800;
             color: var(--text-main);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* SEARCH & FILTER ENGINE */
         .filter-engine-box {
             background: #F8FAFC;
             border: 1.5px solid var(--border);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 14px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .filter-engine-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
             color: var(--primary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -304,18 +299,18 @@
 
         .search-input-wrapper svg {
             position: absolute;
-            left: 14px;
+            left: 12px;
             color: var(--text-sub);
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
         }
 
         .search-input-wrapper input {
             width: 100%;
-            padding: 12px 14px 12px 42px;
+            padding: 10px 12px 10px 36px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.88rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
             background: #FFFFFF;
             outline: none;
             color: var(--text-main);
@@ -324,88 +319,105 @@
         .filter-engine-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .filter-engine-grid select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.78rem;
             background: #FFFFFF;
             outline: none;
             color: var(--text-main);
             font-weight: 600;
         }
 
-        /* METRIC CARDS GRID */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
         .metric-card {
             background: #FFFFFF;
-            padding: 16px;
-            border-radius: 20px;
+            padding: 14px;
+            border-radius: 18px;
             border: 1px solid #F1F5F9;
             box-shadow: var(--shadow-card);
         }
 
         .metric-card .icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
             background: var(--primary-light);
             color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
-        .metric-card .val { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
-        .metric-card .lbl { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
+        .metric-card .val { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
+        .metric-card .lbl { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
 
-        /* LIST ITEMS */
+        /* ITEM CARDS & THREE-DOTS POPUP STACKING FIX */
         .item-card {
             background: #FFFFFF;
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 12px;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 10px;
             border: 1px solid #F1F5F9;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-direction: column;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
+            overflow: visible;
+        }
+
+        /* DYNAMIC STACKING FIX: Whenever a card has an open dropdown, bring it to the absolute top of the stack */
+        .item-card.has-open-menu,
+        .item-card:has(.dots-dropdown-menu.active) {
+            z-index: 100 !important;
+        }
+
+        .item-card.archived { background: #F8FAFC; opacity: 0.9; border-style: dashed; }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             gap: 8px;
+            position: relative;
+            overflow: visible;
         }
 
-        .item-card.archived { background: #F8FAFC; opacity: 0.75; border-style: dashed; }
-
-        .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .item-title { font-weight: 700; color: var(--text-main); font-size: 0.92rem; line-height: 1.4; }
-        .item-sub { font-size: 0.78rem; color: var(--text-sub); line-height: 1.5; }
-
-        .plain-text-preview {
-            background: #F8FAFC;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            color: #334155;
-            line-height: 1.5;
-            word-break: break-word;
-            border: 1px solid #EDF2F7;
+        .item-title {
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            line-height: 1.35;
+            flex: 1;
         }
 
-        .item-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+        .item-header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            position: relative;
+            overflow: visible;
+        }
 
         .badge-chip {
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 20px;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -413,16 +425,92 @@
         .badge-active { background: var(--success-light); color: var(--success); }
         .badge-archived { background: #E2E8F0; color: #475569; }
 
-        /* FORM CONTROLS */
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Three Dots Menu Button */
+        .three-dots-btn {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .three-dots-btn:hover, .three-dots-btn:active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary-light);
+        }
+        .three-dots-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Popover Menu Dropdown Overlay Fix */
+        .dots-dropdown-menu {
+            position: absolute;
+            top: 38px;
+            right: 0;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+            z-index: 9999;
+            min-width: 140px;
+            display: none;
+            flex-direction: column;
+            padding: 6px;
+            overflow: hidden;
+            animation: fadeIn 0.15s ease;
+        }
+
+        /* Dropup variant for items near the bottom of the list */
+        .dots-dropdown-menu.dropup {
+            top: auto;
+            bottom: 38px;
+        }
+
+        .dots-dropdown-menu.active { display: flex; }
+
+        .menu-action-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.15s ease;
+        }
+        .menu-action-item:hover { background: #F1F5F9; }
+        .menu-action-item.danger-item { color: var(--danger); }
+        .menu-action-item.danger-item:hover { background: var(--danger-light); }
+        .menu-action-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+        .item-sub { font-size: 0.75rem; color: var(--text-sub); line-height: 1.4; }
+
+        .plain-text-preview {
+            background: #F8FAFC;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            color: #334155;
+            line-height: 1.45;
+            word-break: break-word;
+            border: 1px solid #EDF2F7;
+        }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
         
         .app-input, select, textarea {
             width: 100%;
-            padding: 13px 16px;
+            padding: 10px 12px;
             border: 1.5px solid var(--border);
             border-radius: var(--radius-btn);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background: #F8FAFC;
             color: var(--text-main);
             outline: none;
@@ -432,37 +520,36 @@
         .app-input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
             background: #FFFFFF;
-            box-shadow: 0 0 0 4px var(--primary-light);
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
 
         .app-btn {
             width: 100%;
-            padding: 14px;
+            padding: 11px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: var(--radius-btn);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .app-btn:active { transform: scale(0.98); }
         .app-btn-secondary { background: var(--primary-light); color: var(--primary); box-shadow: none; }
         .app-btn-danger { background: var(--danger-light); color: var(--danger); box-shadow: none; }
 
-        /* REDESIGNED LARGE IMAGE DROPZONE UPLOADER */
         .image-upload-dropzone {
             border: 2px dashed var(--primary);
             background: var(--primary-light);
-            border-radius: 20px;
-            padding: 28px 16px;
+            border-radius: 16px;
+            padding: 20px 12px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -470,7 +557,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
         .image-upload-dropzone:hover { background: #ECE0FD; }
         .image-upload-dropzone svg { color: var(--primary); }
@@ -479,8 +566,8 @@
             display: none;
             position: relative;
             width: 100%;
-            max-height: 200px;
-            border-radius: 16px;
+            max-height: 180px;
+            border-radius: 14px;
             overflow: hidden;
             border: 1px solid var(--border);
             background: #F8FAFC;
@@ -490,18 +577,18 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            max-height: 200px;
+            max-height: 180px;
         }
         .remove-image-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 6px;
+            right: 6px;
             background: rgba(15, 23, 42, 0.75);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -509,38 +596,37 @@
             font-size: 0.8rem;
         }
 
-        /* BULK CSV ENGINE UI */
         .csv-dropzone {
             border: 2px dashed var(--primary);
             background: var(--primary-light);
-            border-radius: 18px;
-            padding: 24px 16px;
+            border-radius: 16px;
+            padding: 20px 12px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             transition: all 0.2s ease;
         }
         .csv-dropzone:hover { background: #ECE0FD; }
 
         .csv-preview-table-container {
-            max-height: 260px;
+            max-height: 220px;
             overflow: auto;
             border: 1px solid var(--border);
-            border-radius: 14px;
-            margin-bottom: 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
             background: #FFFFFF;
         }
 
         .csv-preview-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-align: left;
         }
 
         .csv-preview-table th {
             background: #F1F5F9;
-            padding: 8px 10px;
+            padding: 8px;
             position: sticky;
             top: 0;
             font-weight: 800;
@@ -549,21 +635,20 @@
         }
 
         .csv-preview-table td {
-            padding: 8px 10px;
+            padding: 8px;
             border-bottom: 1px solid #F1F5F9;
             white-space: nowrap;
-            max-width: 140px;
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* BOTTOM MOBILE NAVIGATION BAR */
         .bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 72px;
+            height: 64px;
             background: #FFFFFF;
             border-top: 1px solid #F1F5F9;
             display: flex;
@@ -579,18 +664,17 @@
             align-items: center;
             justify-content: center;
             color: #94A3B8;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 700;
             cursor: pointer;
             width: 20%;
             height: 100%;
-            gap: 4px;
+            gap: 2px;
             transition: all 0.2s ease;
         }
 
         .nav-tab.active { color: var(--primary); }
 
-        /* MODAL */
         .modal-overlay {
             display: none;
             position: absolute;
@@ -603,23 +687,23 @@
             backdrop-filter: blur(4px);
         }
         .modal-overlay.active { display: flex; }
-        .modal-body { background: white; padding: 24px; border-radius: 24px; width: 100%; text-align: center; }
+        .modal-body { background: white; padding: 20px; border-radius: 20px; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="app-shell">
+    <div class="app-shell" onclick="closeAllActionMenus()">
 
         <!-- SIDEBAR DRAWER OVERLAY & PANEL -->
         <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)">
             <div class="sidebar-panel" onclick="event.stopPropagation()">
                 <div class="sidebar-header">
                     <div class="sidebar-logo">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                     </div>
                     <div>
-                        <div style="font-weight:800; font-size:1rem; color:var(--text-main);">Yan-Dli</div>
-                        <div style="font-size:0.75rem; color:var(--text-sub);">Navigation Menu</div>
+                        <div style="font-weight:800; font-size:0.95rem; color:var(--text-main);">Yan-Dli</div>
+                        <div style="font-size:0.72rem; color:var(--text-sub);">Navigation Menu</div>
                     </div>
                 </div>
 
@@ -627,7 +711,26 @@
                     <div class="sidebar-link active" onclick="navigateToSection('dashboard')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                         Overview
-                    </div>
+                  </div>
+
+
+
+
+<div class="sidebar-link" onclick="window.location.href='mine.html'">My People Page</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <div class="sidebar-link" onclick="navigateToSection('courses')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                         Course Catalog
@@ -667,11 +770,11 @@
         <div id="admin-login" class="admin-login">
             <div class="login-card">
                 <div class="logo-badge">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                 </div>
                 <h2>Yan-Dli Admin</h2>
                 <p>University Academic Management</p>
-                <input type="password" id="admin-password" class="app-input" placeholder="Enter Access Key" style="margin-bottom:16px;" onkeypress="if(event.key==='Enter') adminLogin()">
+                <input type="password" id="admin-password" class="app-input" placeholder="Enter Access Key" style="margin-bottom:14px;" onkeypress="if(event.key==='Enter') adminLogin()">
                 <button class="app-btn" onclick="adminLogin()">Unlock Portal</button>
             </div>
         </div>
@@ -680,7 +783,7 @@
         <header class="app-header">
             <div class="header-left-group">
                 <button class="menu-toggle-btn" onclick="toggleSidebar(true)" title="Open Menu">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div>
                     <h1 class="app-header-title" id="page-title">Overview</h1>
@@ -688,7 +791,7 @@
                 </div>
             </div>
             <button class="exit-icon-btn" onclick="adminLogout()" title="Exit Session">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
         </header>
 
@@ -700,28 +803,28 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
                         </div>
                         <div class="val" id="stat-departments">0</div>
                         <div class="lbl">Departments</div>
                     </div>
                     <div class="metric-card">
                         <div class="icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                         </div>
                         <div class="val" id="stat-levels">0</div>
                         <div class="lbl">Levels</div>
                     </div>
                     <div class="metric-card">
                         <div class="icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                         </div>
                         <div class="val" id="stat-courses">0</div>
                         <div class="lbl">Courses</div>
                     </div>
                     <div class="metric-card">
                         <div class="icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                         </div>
                         <div class="val" id="stat-questions">0</div>
                         <div class="lbl">Questions</div>
@@ -730,7 +833,7 @@
 
                 <div class="app-card">
                     <div class="app-card-title">Express Operations</div>
-                    <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="display:flex; flex-direction:column; gap:8px;">
                         <button class="app-btn" onclick="navigateToSection('csv-import')">⚡ Bulk Upload CSV Questions</button>
                         <button class="app-btn app-btn-secondary" onclick="navigateToSection('questions')">Author Single Question</button>
                         <button class="app-btn app-btn-secondary" onclick="navigateToSection('topics')">Manage Course Topics</button>
@@ -743,7 +846,7 @@
                 <div class="app-card">
                     <div class="app-card-title">
                         <span>Bulk CSV Upload</span>
-                        <button class="app-btn app-btn-secondary" style="width:auto; padding:6px 12px; font-size:0.75rem;" onclick="downloadSampleCSV()">Sample CSV</button>
+                        <button class="app-btn app-btn-secondary" style="width:auto; padding:5px 10px; font-size:0.72rem;" onclick="downloadSampleCSV()">Sample CSV</button>
                     </div>
 
                     <div class="form-group"><label>Target Department</label><select id="csv-dept-select" onchange="filterCsvCascading()"></select></div>
@@ -752,14 +855,14 @@
                     <div class="form-group"><label>Target Topic (Optional)</label><select id="csv-topic-select"></select></div>
 
                     <div class="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary); margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        <div style="font-weight:700; font-size:0.9rem; color:var(--text-main);" id="csv-file-label">Tap to select CSV file</div>
-                        <div style="font-size:0.75rem; color:var(--text-sub); margin-top:4px;">Supports thousands of rows</div>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary); margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <div style="font-weight:700; font-size:0.85rem; color:var(--text-main);" id="csv-file-label">Tap to select CSV file</div>
+                        <div style="font-size:0.72rem; color:var(--text-sub); margin-top:2px;">Supports thousands of rows</div>
                     </div>
                     <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFileSelect(event)">
 
                     <div id="csv-preview-area" style="display:none;">
-                        <div style="font-weight:800; font-size:0.85rem; margin-bottom:8px; color:var(--text-main);" id="csv-count-badge">Parsed 0 Questions</div>
+                        <div style="font-weight:800; font-size:0.8rem; margin-bottom:6px; color:var(--text-main);" id="csv-count-badge">Parsed 0 Questions</div>
                         <div class="csv-preview-table-container">
                             <table class="csv-preview-table">
                                 <thead>
@@ -792,16 +895,15 @@
                         <label>Faculty / College</label>
                         <input type="text" id="dept-faculty" class="app-input" placeholder="e.g. Science">
                     </div>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-dept-btn" onclick="saveDepartment()">Save Department</button>
                         <button class="app-btn app-btn-secondary" id="cancel-dept-btn" onclick="resetDepartmentForm()" style="display:none;">Cancel</button>
                     </div>
                 </div>
 
-                <!-- SEARCH ENGINE BAR -->
                 <div class="filter-engine-box">
                     <div class="filter-engine-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter Engine
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter Engine
                     </div>
                     <div class="search-input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -825,16 +927,15 @@
                         <label>Numeric Order Code</label>
                         <input type="number" id="level-code" class="app-input" placeholder="e.g. 100">
                     </div>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-level-btn" onclick="saveLevel()">Save Level</button>
                         <button class="app-btn app-btn-secondary" id="cancel-level-btn" onclick="resetLevelForm()" style="display:none;">Cancel</button>
                     </div>
                 </div>
 
-                <!-- SEARCH ENGINE BAR -->
                 <div class="filter-engine-box">
                     <div class="filter-engine-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter Engine
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter Engine
                     </div>
                     <div class="search-input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -866,16 +967,15 @@
                         <label>Course Code</label>
                         <input type="text" id="course-code" class="app-input" placeholder="e.g. CSC 101">
                     </div>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-course-btn" onclick="saveCourse()">Save Course</button>
                         <button class="app-btn app-btn-secondary" id="cancel-course-btn" onclick="resetCourseForm()" style="display:none;">Cancel</button>
                     </div>
                 </div>
 
-                <!-- MULTI-FILTER ENGINE -->
                 <div class="filter-engine-box">
                     <div class="filter-engine-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Course Filter Engine
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Course Filter Engine
                     </div>
                     <div class="search-input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -899,16 +999,15 @@
                     <div class="form-group"><label>Level Filter</label><select id="topic-level-select" onchange="filterTopicCascading()"></select></div>
                     <div class="form-group"><label>Course</label><select id="topic-course-select"></select></div>
                     <div class="form-group"><label>Topic Name</label><input type="text" id="topic-name" class="app-input" placeholder="e.g. Data Structures & Algorithms"></div>
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-topic-btn" onclick="saveTopic()">Save Topic</button>
                         <button class="app-btn app-btn-secondary" id="cancel-topic-btn" onclick="resetTopicForm()" style="display:none;">Cancel</button>
                     </div>
                 </div>
 
-                <!-- DEEP MULTI-FILTER ENGINE FOR TOPICS -->
                 <div class="filter-engine-box">
                     <div class="filter-engine-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Topic Filter Engine
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Topic Filter Engine
                     </div>
                     <div class="search-input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -936,21 +1035,20 @@
                     <div class="form-group"><label>Topic</label><select id="q-topic-select"></select></div>
 
                     <div class="form-group">
-                        <label>Question Text (supports HTML tags like &lt;b&gt;, &lt;i&gt;, &lt;sub&gt;, &lt;sup&gt;)</label>
+                        <label>Question Text (supports HTML formatting)</label>
                         <textarea id="q-text" rows="3" class="app-input" placeholder="Type question text..."></textarea>
                     </div>
 
-                    <!-- REDESIGNED LARGE IMAGE DROPZONE -->
                     <div class="form-group">
                         <label>Question Diagram / Image (Optional)</label>
                         <div class="image-upload-dropzone" onclick="openCloudinaryUploader()">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                            <span style="font-weight:700; font-size:0.9rem; color:var(--text-main);" id="image-dropzone-label">Click to upload image</span>
-                            <span style="font-size:0.75rem; color:var(--text-sub);">Supports PNG, JPG, WEBP via Cloudinary</span>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <span style="font-weight:700; font-size:0.82rem; color:var(--text-main);" id="image-dropzone-label">Click to upload image</span>
+                            <span style="font-size:0.72rem; color:var(--text-sub);">Supports PNG, JPG, WEBP via Cloudinary</span>
                         </div>
                         <input type="hidden" id="q-image-url">
                         <div id="image-preview-wrapper" class="image-preview-container">
-                            <img id="image-preview-tag" src="" alt="Uploaded Diagram">
+                            <img id="image-preview-tag" src="" alt="Uploaded Diagram" onerror="this.style.display='none'">
                             <button type="button" class="remove-image-btn" onclick="clearUploadedImage(event)" title="Remove Image">&times;</button>
                         </div>
                     </div>
@@ -975,16 +1073,15 @@
                         <textarea id="q-exp" rows="2" class="app-input" placeholder="Detailed explanation..."></textarea>
                     </div>
 
-                    <div style="display:flex; gap:8px;">
+                    <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-q-btn" onclick="saveQuestion()">Save Question</button>
                         <button class="app-btn app-btn-secondary" id="cancel-q-btn" onclick="resetQuestionForm()" style="display:none;">Cancel</button>
                     </div>
                 </div>
 
-                <!-- DEEP MULTI-FILTER ENGINE FOR QUESTIONS -->
                 <div class="filter-engine-box">
                     <div class="filter-engine-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Question Search Engine
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Question Search Engine
                     </div>
                     <div class="search-input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1005,36 +1102,34 @@
 
         </main>
 
-        <!-- BOTTOM NAVIGATION TAB BAR WITH MODERN SVG ICONS -->
         <nav class="bottom-nav">
             <div class="nav-tab active" id="tab-dashboard" onclick="showSection('dashboard', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 <span>Home</span>
             </div>
             <div class="nav-tab" id="tab-courses" onclick="showSection('courses', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                 <span>Courses</span>
             </div>
             <div class="nav-tab" id="tab-questions" onclick="showSection('questions', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span>Questions</span>
             </div>
             <div class="nav-tab" id="tab-topics" onclick="showSection('topics', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 <span>Topics</span>
             </div>
             <div class="nav-tab" id="tab-departments" onclick="showSection('departments', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/></svg>
                 <span>Depts</span>
             </div>
         </nav>
 
-        <!-- MODAL -->
         <div class="modal-overlay" id="confirm-modal">
             <div class="modal-body">
-                <h3 id="modal-title" style="margin-bottom:8px; font-weight:800;">Confirm Action</h3>
-                <p id="modal-message" style="font-size:0.85rem; color:var(--text-sub); margin-bottom:16px;"></p>
-                <div style="display:flex; gap:8px;">
+                <h3 id="modal-title" style="margin-bottom:6px; font-weight:800;">Confirm Action</h3>
+                <p id="modal-message" style="font-size:0.8rem; color:var(--text-sub); margin-bottom:14px;"></p>
+                <div style="display:flex; gap:6px;">
                     <button class="app-btn app-btn-secondary" onclick="closeModal()">Cancel</button>
                     <button class="app-btn app-btn-danger" id="modal-confirm-btn">Confirm</button>
                 </div>
@@ -1043,7 +1138,6 @@
 
     </div>
 
-    <!-- LINK SEPARATE JAVASCRIPT LOGIC FILE -->
     <script type="module" src="./admin-logic.js"></script>
 </body>
 </html>

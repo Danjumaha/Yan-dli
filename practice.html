@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#7C3AED">
   <title>Yan-Dli | Exam Interface</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -436,6 +441,19 @@
 
     async function fetchCourseDetails() {
       if (!queryParams.courseId) return;
+      
+      // Try offline cache first
+      const offlineBundle = localStorage.getItem(`yan_offline_course_${queryParams.courseId}`);
+      if (!navigator.onLine && offlineBundle) {
+        try {
+          const parsed = JSON.parse(offlineBundle);
+          if (parsed && parsed.title) {
+            courseDetails.title = parsed.title;
+            return;
+          }
+        } catch (e) {}
+      }
+
       try {
         const courseDocRef = doc(db, 'courses', queryParams.courseId);
         const courseSnap = await getDoc(courseDocRef);
@@ -447,7 +465,21 @@
       } catch (error) {}
     }
 
+    // OFFLINE-AWARE QUESTION FETCHING
     async function fetchExamQuestions() {
+      const offlineBundleKey = `yan_offline_course_${queryParams.courseId}`;
+      const localBundle = localStorage.getItem(offlineBundleKey);
+
+      // 1. If offline, return downloaded bundle immediately
+      if (!navigator.onLine && localBundle) {
+        const parsed = safeParse(localBundle);
+        if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+          showToast('📱 Running in Offline Mode using cached questions.', 'info');
+          return parsed.questions;
+        }
+      }
+
+      // 2. Try fetching live from Firestore if online
       try {
         const qRef = collection(db, 'questions');
         let qQuery = qRef;
@@ -456,9 +488,29 @@
         }
         const qSnap = await getDocs(qQuery);
         if (!qSnap.empty) {
-          return qSnap.docs.map(questionDoc => ({ id: questionDoc.id, ...questionDoc.data() }));
+          const fetched = qSnap.docs.map(questionDoc => ({ id: questionDoc.id, ...questionDoc.data() }));
+          
+          // Auto-cache this course for future offline practice
+          localStorage.setItem(offlineBundleKey, JSON.stringify({
+            title: courseDetails.title || queryParams.courseTitle,
+            downloadedAt: new Date().toISOString(),
+            questions: fetched
+          }));
+
+          return fetched;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.warn("Firestore fetch failed, checking offline storage...", error);
+      }
+
+      // 3. Fallback to local storage bundle if online failed
+      if (localBundle) {
+        const parsed = safeParse(localBundle);
+        if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+          return parsed.questions;
+        }
+      }
+
       return [];
     }
 

@@ -4,11 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yan-Dli | Premium Exam Preparation</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+    authDomain: "yan-dli.firebaseapp.com",
+    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+    projectId: "yan-dli",
+    storageBucket: "yan-dli.firebasestorage.app",
+    messagingSenderId: "538794949165",
+    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Instantly check if user is already logged in, skip login gate and go to dashboard!
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.replace("dashboard.html");
+    }
+  });
+</script>
+
+
+
+
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 
   <style>
-    /* DESIGN SYSTEM VARIABLES */
     :root {
       --primary: #7C3AED;
       --primary-hover: #6D28D9;
@@ -59,7 +90,168 @@
       min-height: 640px;
     }
 
-    /* CAROUSEL / SLIDER SECTION */
+    .lamp-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--card-bg);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .lamp-overlay.active {
+      display: flex;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .lamp-back-btn {
+      position: absolute;
+      top: 1.25rem;
+      left: 1.25rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.3s ease;
+    }
+
+    .lamp-back-btn:hover { color: var(--primary); }
+
+    .lamp-animation-container {
+      position: relative;
+      width: 100%;
+      max-width: 220px;
+      height: 140px;
+      margin: 0.25rem 0 0 0;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    .lamp-svg {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 105px;
+      height: 105px;
+      filter: drop-shadow(0 10px 14px rgba(124, 58, 237, 0.3));
+      animation: continuousBounce 2.5s ease-in-out infinite;
+      transform-origin: top center;
+    }
+
+    .lamp-svg.bouncing {
+      animation: clickBounce 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
+    }
+
+    @keyframes continuousBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0) scale(1, 1); }
+      50% { transform: translateX(-50%) translateY(14px) scale(0.96, 1.05); }
+    }
+
+    @keyframes clickBounce {
+      0% { transform: translateX(-50%) scale(1) translateY(0); }
+      25% { transform: translateX(-50%) scale(0.88, 1.15) translateY(18px); }
+      50% { transform: translateX(-50%) scale(1.08, 0.92) translateY(-8px); }
+      75% { transform: translateX(-50%) scale(0.96, 1.04) translateY(4px); }
+      100% { transform: translateX(-50%) scale(1) translateY(0); }
+    }
+
+    .light-beam {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(124, 58, 237, 0.18), rgba(243, 232, 255, 0.02), transparent);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .lamp-overlay.lit .light-beam { opacity: 1; }
+
+    .lamp-pull-hint {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 115px;
+      animation: pulseHint 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    .lamp-welcome-text {
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      width: 100%;
+    }
+
+    .lamp-overlay.lit .lamp-welcome-text {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      max-height: 120px;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .lamp-welcome-text h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.15rem;
+      line-height: 1.3;
+    }
+
+    .lamp-welcome-text p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .lamp-form-container {
+      width: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .lamp-overlay.lit .lamp-form-container {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      max-height: none;
+      overflow: visible;
+      padding-bottom: 2.5rem;
+    }
+
     .slider-wrapper {
       flex: 1;
       display: flex;
@@ -70,11 +262,6 @@
       text-align: center;
       touch-action: pan-y;
       user-select: none;
-      cursor: grab;
-    }
-
-    .slider-wrapper:active {
-      cursor: grabbing;
     }
 
     .slide {
@@ -85,26 +272,26 @@
       width: 100%;
     }
 
-    .slide.active {
-      display: flex;
-    }
+    .slide.active { display: flex; }
 
     .slide-img-container {
-      width: 220px;
-      height: 180px;
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 4 / 3;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       border-radius: var(--radius);
-      background-color: var(--primary-light);
+      background: var(--primary-light);
     }
 
     .slide-img-container img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      border-radius: var(--radius);
     }
 
     .slide-title {
@@ -141,13 +328,13 @@
       border-radius: 4px;
     }
 
-    /* ACTION BUTTONS */
     .action-group {
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
+
     .btn {
       width: 100%;
       padding: 0.85rem;
@@ -160,89 +347,14 @@
       text-align: center;
     }
 
-    .btn-primary {
-      background-color: var(--primary);
-      color: #FFFFFF;
-    }
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-outline { background-color: transparent; border-color: var(--primary); color: var(--primary); }
+    .btn-outline:hover { background-color: var(--primary-light); }
 
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .btn-outline:hover {
-      background-color: var(--primary-light);
-    }
-
-    /* MODAL / VIEW PANELS */
-    .view-panel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--card-bg);
-      z-index: 10;
-      display: none;
-      flex-direction: column;
-      padding: 1.5rem;
-      overflow-y: auto;
-    }
-
-    .view-panel.active {
-      display: flex;
-      animation: slideUp 0.3s ease-out;
-    }
-
-    .back-btn {
-      background: none;
-      border: none;
-      color: var(--text-dark);
-      font-size: 1.25rem;
-      cursor: pointer;
-      align-self: flex-start;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .panel-header h2 {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--text-dark);
-    }
-
-    .panel-header p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* FORM STYLES */
-    .form-group {
-      margin-bottom: 1.1rem;
-      position: relative;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 0.35rem;
-      color: var(--text-dark);
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
+    .form-group { margin-bottom: 1.1rem; position: relative; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text-dark); }
+    .input-wrapper { position: relative; display: flex; align-items: center; }
 
     .form-control {
       width: 100%;
@@ -255,10 +367,10 @@
       background: #FFFFFF;
       color: var(--text-dark);
     }
+    .form-control:focus { border-color: var(--primary); }
 
-    .form-control:focus {
-      border-color: var(--primary);
-    }
+    /* For inputs without eye icons */
+    .form-control.no-icon { padding-right: 1rem; }
 
     .eye-icon {
       position: absolute;
@@ -271,76 +383,18 @@
       justify-content: center;
       color: var(--text-muted);
     }
+    .eye-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-    .eye-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* SLIM PASSWORD STRENGTH LINE & CHECKLIST */
-    .password-meta {
-      margin-top: 0.35rem;
-    }
-
-    .slim-strength-bar {
-      height: 3px;
-      width: 100%;
-      background-color: var(--border-color);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 0.4rem;
-    }
-
-    .slim-strength-fill {
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s ease, background-color 0.3s ease;
-    }
-
-    .password-status-text {
-      font-size: 0.75rem;
-      font-weight: 600;
-      display: inline-block;
-      margin-bottom: 0.3rem;
-    }
-
-    .criteria-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px 8px;
-      list-style: none;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .criteria-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: color 0.2s ease;
-    }
-
-    .criteria-item.valid {
-      color: var(--accent-green);
-      font-weight: 500;
-    }
-
-    .criteria-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background-color: var(--border-color);
-      transition: background-color 0.2s ease;
-    }
-
-    .criteria-item.valid .criteria-dot {
-      background-color: var(--accent-green);
-    }
+    .password-meta { margin-top: 0.35rem; }
+    .slim-strength-bar { height: 3px; width: 100%; background-color: var(--border-color); border-radius: 2px; overflow: hidden; margin-bottom: 0.4rem; }
+    .slim-strength-fill { height: 100%; width: 0%; transition: width 0.3s ease, background-color 0.3s ease; }
+    .password-status-text { font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.3rem; }
+    .criteria-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; list-style: none; font-size: 0.72rem; color: var(--text-muted); }
+    .criteria-item { display: flex; align-items: center; gap: 4px; transition: color 0.2s ease; }
+    .criteria-item.valid { color: var(--accent-green); font-weight: 500; }
+    .criteria-dot { width: 5px; height: 5px; border-radius: 50%; background-color: var(--border-color); transition: background-color 0.2s ease; }
+    .criteria-item.valid .criteria-dot { background-color: var(--accent-green); }
+    .match-status-text { font-size: 0.75rem; font-weight: 600; margin-top: 0.3rem; display: block; }
 
     .remember-row {
       display: flex;
@@ -350,155 +404,112 @@
       font-size: 0.85rem;
     }
 
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
+    .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted); font-weight: 500; }
+    .checkbox-label input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
 
-    .checkbox-label input {
-      accent-color: var(--primary);
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
+    .text-link { color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer; }
+    .form-footer { text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
 
-    .text-link {
-      color: var(--primary);
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .form-footer {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* OVERLAY LOADER */
     .loader-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.85);
-      z-index: 20;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.85); z-index: 300;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
     }
+    .loader-overlay.active { display: flex; }
+    .spinner { width: 40px; height: 40px; border: 4px solid var(--primary-light); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .loader-text { margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
 
-    .loader-overlay.active {
-      display: flex;
+    .popup-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(4px); z-index: 400;
+      display: none; justify-content: center; align-items: center; padding: 1.5rem;
     }
+    .popup-overlay.active { display: flex; animation: fadeIn 0.25s ease-out; }
+    .popup-card { background: #FFFFFF; width: 100%; max-width: 360px; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; gap: 1rem; }
+    .popup-icon-box { width: 56px; height: 56px; background: #FEE2E2; color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+    .popup-icon-box svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .popup-title { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); }
+    .popup-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .popup-btn { background-color: var(--primary); color: #FFFFFF; border: none; padding: 0.75rem; border-radius: 25px; font-weight: 600; font-size: 0.9rem; cursor: pointer; width: 100%; }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid var(--primary-light);
-      border-top: 4px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .loader-text {
-      margin-top: 0.75rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
-
-    /* CUSTOM TOAST NOTIFICATION STYLES */
     .toast-container {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      width: 90%;
-      max-width: 400px;
-      background: var(--text-dark);
-      color: #FFFFFF;
-      padding: 12px 16px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      z-index: 30;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+      width: 90%; max-width: 400px; background: var(--text-dark); color: #FFFFFF;
+      padding: 12px 16px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 350; display: flex; align-items: center; justify-content: space-between;
+      opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
+    .toast-container.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast-content { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 500; }
+    .toast-container.error { background: #7F1D1D; border-left: 4px solid var(--accent-red); }
+    .toast-container.success { background: #064E3B; border-left: 4px solid var(--accent-green); }
+    .toast-close { background: none; border: none; color: #FFFFFF; cursor: pointer; font-size: 1rem; opacity: 0.7; }
 
-    .toast-container.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast-content {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .toast-container.error {
-      background: #7F1D1D;
-      border-left: 4px solid var(--accent-red);
-    }
-
-    .toast-container.success {
-      background: #064E3B;
-      border-left: 4px solid var(--accent-green);
-    }
-
-    .toast-close {
-      background: none;
-      border: none;
-      color: #FFFFFF;
-      cursor: pointer;
-      font-size: 1rem;
-      opacity: 0.7;
-    }
-
-    .toast-close:hover {
-      opacity: 1;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes glow3D { 0%, 100% { filter: drop-shadow(0 0 10px rgba(253, 230, 138,  0.8)); } 50% { filter: drop-shadow(0 0 22px rgba(253, 230, 138, 1)); } }
+    .lamp-glow-3d { animation: glow3D 2s ease-in-out infinite; }
   </style>
 </head>
 <body>
 
   <div class="app-container">
     
+    <!-- LAMP ANIMATION OVERLAY -->
+    <div class="lamp-overlay" id="lampOverlay">
+      <button class="lamp-back-btn" onclick="closeLampAnimation()">&#8592;</button>
+      
+      <div class="lamp-animation-container" id="lampPullTrigger" onclick="toggleLampPull()">
+        <svg class="lamp-svg" id="lampSvg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 42 C22 36 98 36 98 42 L112 78 C115 86 108 92 98 92 L22 92 C12 92 5 86 8 78 Z" fill="url(#shadeGrad)" stroke="#5B21B6" stroke-width="1.5"/>
+          <ellipse cx="60" cy="42" rx="38" ry="6" fill="#8B5CF6"/>
+          <path d="M28 45 C28 41 92 41 92 45 L102 75 C104 80 98 85 92 85 L28 85 C22 85 16 80 18 75 Z" fill="url(#innerShade)" opacity="0.6"/>
+          <ellipse cx="60" cy="38" rx="14" ry="4" fill="#3B0764"/>
+          <path d="M48 92 C48 84 72 84 72 92 L76 102 C77 106 73 110 68 110 L52 110 C47 110 43 106 44 102 Z" fill="url(#baseGrad)"/>
+          <ellipse cx="60" cy="110" rx="26" ry="6" fill="url(#baseGrad)" stroke="#4C1D95" stroke-width="1"/>
+          <line x1="72" y1="65" x2="72" y2="82" stroke="#4C1D95" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="72" cy="85" r="4" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
+          <circle cx="60" cy="80" rx="9" ry="9" fill="#FDE68A" class="lamp-glow-3d"/>
+          <ellipse cx="60" cy="80" rx="5" ry="5" fill="#F59E0B"/>
+          <defs>
+            <linearGradient id="shadeGrad" x1="10" y1="36" x2="110" y2="92" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#C084FC"/><stop offset="40%" stop-color="#7C3AED"/><stop offset="80%" stop-color="#5B21B6"/><stop offset="100%" stop-color="#3B0764"/>
+            </linearGradient>
+            <linearGradient id="innerShade" x1="18" y1="45" x2="102" y2="85" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#DDD6FE"/><stop offset="100%" stop-color="#6D28D9"/>
+            </linearGradient>
+            <linearGradient id="baseGrad" x1="34" y1="92" x2="86" y2="110" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#A78BFA"/><stop offset="50%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#4C1D95"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="light-beam"></div>
+        <div class="lamp-pull-hint" id="lampPullHint">Pull cord to switch on</div>
+      </div>
+
+      <div class="lamp-welcome-text">
+        <h2 id="lampTitle">Welcome Back</h2>
+        <p>Illuminate your path to exam success</p>
+      </div>
+
+      <div class="lamp-form-container" id="lampFormContainer"></div>
+    </div>
+
+    <!-- CUSTOM POP-UP DIALOG MODAL -->
+    <div id="popup-modal" class="popup-overlay">
+      <div class="popup-card">
+        <div class="popup-icon-box">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h3 id="popup-title" class="popup-title">Security Alert</h3>
+        <p id="popup-desc" class="popup-desc">Message description...</p>
+        <button class="popup-btn" onclick="closePopupModal()">I Understand</button>
+      </div>
+    </div>
+
     <!-- CUSTOM TOAST NOTIFICATION -->
     <div id="toast" class="toast-container">
-      <div class="toast-content">
-        <span id="toast-message">Notification message</span>
-      </div>
+      <div class="toast-content"><span id="toast-message">Notification message</span></div>
       <button class="toast-close" onclick="hideToast()">&times;</button>
     </div>
 
@@ -511,29 +522,20 @@
     <!-- ONBOARDING CAROUSEL -->
     <div class="slider-wrapper" id="slider-wrapper">
       <div class="slide active">
-        <div class="slide-img-container">
-          <img src="https://via.placeholder.com/220x180?text=Exam+Simulation" alt="Exam Simulation">
-        </div>
+        <div class="slide-img-container"><img src="exam-sim.png" alt="Exam Simulation"></div>
         <h2 class="slide-title">Exam Simulation</h2>
         <p class="slide-desc">More than 112,000 standardized practice questions available across several national examinations.</p>
       </div>
-
       <div class="slide">
-        <div class="slide-img-container">
-          <img src="https://via.placeholder.com/220x180?text=Practice+Anywhere" alt="Practice Anywhere">
-        </div>
+        <div class="slide-img-container"><img src="practice-anywhere.png" alt="Practice Anywhere"></div>
         <h2 class="slide-title">Practice Anywhere</h2>
         <p class="slide-desc">Practice online or offline easily, regardless of network connectivity or where you are.</p>
       </div>
-
       <div class="slide">
-        <div class="slide-img-container">
-          <img src="https://via.placeholder.com/220x180?text=Detailed+Solutions" alt="Detailed Solutions">
-        </div>
+        <div class="slide-img-container"><img src="detailed-solutions.png" alt="Detailed Solutions"></div>
         <h2 class="slide-title">Detailed Solutions</h2>
         <p class="slide-desc">Get comprehensive step-by-step explanations and study notes for every question.</p>
       </div>
-
       <div class="dots-container">
         <div class="dot active" onclick="goToSlide(0)"></div>
         <div class="dot" onclick="goToSlide(1)"></div>
@@ -543,113 +545,16 @@
 
     <!-- MAIN ACTION BUTTONS -->
     <div class="action-group">
-      <button class="btn btn-primary" onclick="openView('register-view')">REGISTER</button>
-      <button class="btn btn-outline" onclick="openView('login-view')">LOG IN</button>
+      <button class="btn btn-primary" onclick="openLampAnimation('register')">REGISTER</button>
+      <button class="btn btn-outline" onclick="openLampAnimation('login')">LOG IN</button>
     </div>
 
-    <!-- REGISTER VIEW -->
-    <div id="register-view" class="view-panel">
-      <button class="back-btn" onclick="closeView('register-view')">&#8592;</button>
-      <div class="panel-header">
-        <h2>We'd love to know you</h2>
-        <p>Create an account below and start preparing for your exams.</p>
-      </div>
-      <form id="register-form">
-        <div class="form-group">
-          <label>First name*</label>
-          <input type="text" id="reg-firstname" class="form-control" placeholder="Type your firstname" required>
-        </div>
-        <div class="form-group">
-          <label>Last name*</label>
-          <input type="text" id="reg-lastname" class="form-control" placeholder="Type your lastname" required>
-        </div>
-        <div class="form-group">
-          <label>Phone number*</label>
-          <input type="tel" id="reg-phone" class="form-control" placeholder="e.g. 08012345678" required>
-        </div>
-        <div class="form-group">
-          <label>Email address*</label>
-          <input type="email" id="reg-email" class="form-control" placeholder="Type your email address" required>
-        </div>
-        
-        <div class="form-group">
-          <label>Password*</label>
-          <div class="input-wrapper">
-            <input type="password" id="reg-password" class="form-control" placeholder="Type your password" required>
-            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('reg-password', this)">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-          </div>
-          <div class="password-meta">
-            <div class="slim-strength-bar"><div id="slim-strength-fill" class="slim-strength-fill"></div></div>
-            <span id="password-status" class="password-status-text"></span>
-            <ul class="criteria-list">
-              <li id="crit-length" class="criteria-item"><span class="criteria-dot"></span> 8 digit character</li>
-              <li id="crit-special" class="criteria-item"><span class="criteria-dot"></span> Special letter</li>
-              <li id="crit-upper" class="criteria-item"><span class="criteria-dot"></span> Uppercase</li>
-              <li id="crit-number" class="criteria-item"><span class="criteria-dot"></span> Number</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Confirm Password*</label>
-          <div class="input-wrapper">
-            <input type="password" id="reg-confirm-password" class="form-control" placeholder="Confirm your password" required>
-            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('reg-confirm-password', this)">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">REGISTER</button>
-      </form>
-      <div class="form-footer">
-        Already have an account? <span class="text-link" onclick="switchView('register-view', 'login-view')">Log in</span>
-      </div>
-    </div>
-
-    <!-- LOGIN VIEW -->
-    <div id="login-view" class="view-panel">
-      <button class="back-btn" onclick="closeView('login-view')">&#8592;</button>
-      <div class="panel-header">
-        <h2>Welcome back</h2>
-        <p>Log in with your email credentials to continue.</p>
-      </div>
-      <form id="login-form">
-        <div class="form-group">
-          <label>Email*</label>
-          <input type="email" id="login-id" class="form-control" placeholder="example@gmail.com" required>
-        </div>
-        <div class="form-group">
-          <label>Password*</label>
-          <div class="input-wrapper">
-            <input type="password" id="login-password" class="form-control" placeholder="Provide your password" required>
-            <button type="button" class="eye-icon" onclick="togglePasswordVisibility('login-password', this)">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-          </div>
-        </div>
-        
-        <div class="remember-row">
-          <label class="checkbox-label">
-            <input type="checkbox" id="remember-me" checked> Remember me
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">LOG IN</button>
-      </form>
-      <div class="form-footer">
-        Are you a new user? <span class="text-link" onclick="switchView('login-view', 'register-view')">Create account</span>
-      </div>
-    </div>
   </div>
 
-  <!-- FIREBASE MODULAR SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -665,7 +570,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Toast & Loader Utilities
     window.showToast = function(message, type = 'error') {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toast-message');
@@ -674,62 +578,56 @@
       setTimeout(() => { hideToast(); }, 4000);
     };
 
-    window.hideToast = function() {
-      document.getElementById('toast').classList.remove('show');
+    window.hideToast = function() { document.getElementById('toast').classList.remove('show'); };
+    window.showPopupModal = function(title, description) {
+      document.getElementById('popup-title').innerText = title;
+      document.getElementById('popup-desc').innerText = description;
+      document.getElementById('popup-modal').classList.add('active');
     };
-
-    window.showLoader = function(text = "Processing...") { 
-      document.getElementById('loader-label').innerText = text;
-      document.getElementById('loader').classList.add('active'); 
-    };
-    
-    window.hideLoader = function() { 
-      document.getElementById('loader').classList.remove('active'); 
-    };
+    window.closePopupModal = function() { document.getElementById('popup-modal').classList.remove('active'); };
+    window.showLoader = function(text = "Processing...") { document.getElementById('loader-label').innerText = text; document.getElementById('loader').classList.add('active'); };
+    window.hideLoader = function() { document.getElementById('loader').classList.remove('active'); };
 
     function getFriendlyErrorMessage(errorCode) {
       switch (errorCode) {
         case 'auth/invalid-credential':
         case 'auth/wrong-password':
-        case 'auth/user-not-found':
-          return "Incorrect email or password. Please try again.";
-        case 'auth/email-already-in-use':
-          return "An account with this email already exists.";
-        case 'auth/weak-password':
-          return "Password is too weak. Please choose a stronger password.";
-        case 'auth/invalid-email':
-          return "Please enter a valid email address.";
-        case 'auth/network-request-failed':
-          return "Network error. Please check your internet connection.";
-        case 'auth/too-many-requests':
-          return "Too many failed attempts. Please try again later.";
-        default:
-          return "An unexpected error occurred. Please try again later.";
+        case 'auth/user-not-found': return "Incorrect email or password. Please try again.";
+        case 'auth/email-already-in-use': return "An account with this email already exists.";
+        case 'auth/weak-password': return "Password is too weak. Please choose a stronger password.";
+        case 'auth/invalid-email': return "Please enter a valid email address.";
+        case 'auth/network-request-failed': return "Network error. Please check your internet connection.";
+        default: return "An unexpected error occurred. Please try again later.";
       }
     }
 
-    // Generate or fetch a unique browser session identifier stored locally on this specific phone/browser
     function getDeviceSessionId() {
       let sessionId = localStorage.getItem('yandli_device_session');
       if (!sessionId) {
-        sessionId = 'sess_' + Math.random().toString(36.2) + Date.now().toString(36);
+        sessionId = 'sess_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
         localStorage.setItem('yandli_device_session', sessionId);
       }
       return sessionId;
     }
 
-    // Register Form Handler
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
+    window.handleRegisterSubmit = async function(e) {
       e.preventDefault();
-      const firstName = document.getElementById('reg-firstname').value.trim();
-      const lastName = document.getElementById('reg-lastname').value.trim();
-      const phone = document.getElementById('reg-phone').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const password = document.getElementById('reg-password').value.trim();
-      const confirmPassword = document.getElementById('reg-confirm-password').value.trim();
+      const firstName = document.getElementById('lamp-reg-firstname').value.trim();
+      const lastName = document.getElementById('lamp-reg-lastname').value.trim();
+      const phone = document.getElementById('lamp-reg-phone').value.trim();
+      const email = document.getElementById('lamp-reg-email').value.trim();
+      const secretPin = document.getElementById('lamp-reg-pin').value.trim();
+      const password = document.getElementById('lamp-reg-password').value.trim();
+      const confirmPassword = document.getElementById('lamp-reg-confirm-password').value.trim();
 
       if (password !== confirmPassword) {
         showToast("Passwords do not match!", "error");
+        return;
+      }
+
+      // Strictly 3 to 4 digits numbers only validation
+      if (!/^\d{3,4}$/.test(secretPin)) {
+        showToast("Secret PIN must be strictly 3 or 4 digits numbers only.", "error");
         return;
       }
 
@@ -739,15 +637,17 @@
         const user = userCredential.user;
         const currentSession = getDeviceSessionId();
 
-        // Save new user profile (not activated by default)
         await setDoc(doc(db, "Users", user.uid), {
           uid: user.uid,
           Firstname: firstName,
           Lastname: lastName,
           PhoneNumber: phone,
           Email: email,
+          SecretPin: secretPin, // Stored securely in Firestore
           isActivated: false,
-          currentSessionId: currentSession,
+          isAccountLocked: false,
+          isBanned: false,
+          allowedSessions: [currentSession],
           createdAt: new Date().toISOString()
         });
 
@@ -758,24 +658,49 @@
         hideLoader();
         showToast(error.code ? getFriendlyErrorMessage(error.code) : error.message, "error");
       }
-    });
+    };
 
-    // Login Form Handler with Single-Device Enforcement for Activated Accounts
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
+    window.handleLoginSubmit = async function(e) {
       e.preventDefault();
-      const email = document.getElementById('login-id').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-      const rememberMe = document.getElementById('remember-me').checked;
+      const email = document.getElementById('lamp-login-email').value.trim();
+      const password = document.getElementById('lamp-login-password').value.trim();
+      const rememberMe = document.getElementById('lamp-remember-me').checked;
 
       showLoader("Logging in...");
       try {
         const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
         await setPersistence(auth, persistenceType);
 
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        let user;
+        let loginSuccessful = false;
 
-        // Fetch user data to check activation status and session lock
+        try {
+          // 1. Try standard Firebase Auth login first
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          user = userCredential.user;
+          loginSuccessful = true;
+        } catch (authError) {
+          // 2. If standard password fails, check if a Temporary Password matches in Firestore
+          if (authError.code === 'auth/wrong-password' || authError.code === 'auth/invalid-credential') {
+            const q = query(collection(db, "Users"), where("Email", "==", email));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+              const userDocSnap = querySnapshot.docs[0];
+              const userData = userDocSnap.data();
+
+              // Check if user entered the exact temporary password set by admin
+              if (userData.tempPassword && userData.tempPassword === password) {
+                user = { uid: userDocSnap.id, email: email };
+                loginSuccessful = true;
+              }
+            }
+          }
+          if (!loginSuccessful) {
+            throw authError;
+          }
+        }
+
         const userDocRef = doc(db, "Users", user.uid);
         const userSnap = await getDoc(userDocRef);
         const browserSession = getDeviceSessionId();
@@ -783,20 +708,41 @@
         if (userSnap.exists()) {
           const userData = userSnap.data();
 
-          // Check if account is activated
-          if (userData.isActivated === true) {
-            // Check if another device session is already registered
-            if (userData.currentSessionId && userData.currentSessionId !== browserSession) {
-              // Sign out immediately so they aren't authenticated
-              await signOut(auth);
-              hideLoader();
-              showToast("⚠️ Active account already logged in on another device/browser. Security policy allows 1 device per activated account.", "error");
-              return;
-            }
+          // 🛑 CHECK IF USER IS BANNED
+          if (userData.isBanned === true) {
+            await signOut(auth);
+            hideLoader();
+            showPopupModal("Account Banned 🚫", "Your account has been suspended or banned by the administrator. Please contact support.");
+            return;
           }
 
-          // If not activated or session matches, update/set current session ID
-          await setDoc(userDocRef, { currentSessionId: browserSession }, { merge: true });
+          // If they logged in using the temporary password, clear it immediately upon success!
+          if (userData.tempPassword && userData.tempPassword === password) {
+            await setDoc(userDocRef, { tempPassword: deleteField() }, { merge: true });
+            showToast("Logged in with temporary password. Please update your password!", "success");
+          }
+
+          if (userData.isAccountLocked === true) {
+            await signOut(auth);
+            hideLoader();
+            showPopupModal("Account Locked 🚫", "Your account has been locked due to an unauthorized device limit violation. Contact admin support.");
+            return;
+          }
+          if (userData.isActivated === true) {
+            let allowedSessions = userData.allowedSessions || [];
+            if (!allowedSessions.includes(browserSession)) {
+              if (allowedSessions.length >= 2) {
+                await setDoc(userDocRef, { isAccountLocked: true }, { merge: true });
+                await signOut(auth);
+                hideLoader();
+                showPopupModal("Security Lock Triggered 🔒", "Maximum device limit (2 devices) reached. Account locked.");
+                return;
+              } else {
+                allowedSessions.push(browserSession);
+                await setDoc(userDocRef, { allowedSessions: allowedSessions }, { merge: true });
+              }
+            }
+          }
         }
 
         hideLoader();
@@ -806,15 +752,13 @@
         hideLoader();
         showToast(error.code ? getFriendlyErrorMessage(error.code) : error.message, "error");
       }
-    });
+    };
   </script>
 
-  <!-- UI & INTERACTION CONTROLS -->
   <script>
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
-    const sliderWrapper = document.getElementById('slider-wrapper');
 
     function showSlide(index) {
       slides.forEach((slide, i) => {
@@ -824,86 +768,199 @@
       currentSlide = index;
     }
 
-    function goToSlide(index) { showSlide(index); }
+    function goToSlide(index) { showSlide(index); resetAutoSlide(); }
 
-    let startX = 0;
-    let endX = 0;
-
-    sliderWrapper.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-    sliderWrapper.addEventListener('touchend', (e) => { endX = e.changedTouches[0].clientX; handleSwipe(); }, { passive: true });
-    sliderWrapper.addEventListener('mousedown', (e) => { startX = e.clientX; });
-    sliderWrapper.addEventListener('mouseup', (e) => { endX = e.clientX; handleSwipe(); });
-
-    function handleSwipe() {
-      const threshold = 40;
-      if (startX - endX > threshold) {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-      } else if (endX - startX > threshold) {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-      }
+    let autoSlideInterval = setInterval(nextSlide, 5000);
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
     }
+    function resetAutoSlide() { clearInterval(autoSlideInterval); autoSlideInterval = setInterval(nextSlide, 5000); }
 
-    function openView(id) { document.getElementById(id).classList.add('active'); }
-    function closeView(id) { document.getElementById(id).classList.remove('active'); }
-    function switchView(fromId, toId) { closeView(fromId); openView(toId); }
+    window.openLampAnimation = function(mode) {
+      const overlay = document.getElementById('lampOverlay');
+      const title = document.getElementById('lampTitle');
+      const formContainer = document.getElementById('lampFormContainer');
+      const lampSvg = document.getElementById('lampSvg');
+      const hint = document.getElementById('lampPullHint');
+      
+      title.textContent = mode === 'register' ? "We'd love to know you" : "Welcome Back";
+      overlay.classList.remove('lit');
+      lampSvg.classList.remove('bouncing');
+      hint.innerText = "Pull cord to switch on";
 
-    function togglePasswordVisibility(inputId, button) {
+      if (mode === 'login') {
+        formContainer.innerHTML = `
+          <form onsubmit="handleLoginSubmit(event)">
+            <div class="form-group">
+              <label>Email*</label>
+              <input type="email" id="lamp-login-email" class="form-control no-icon" placeholder="example@gmail.com" required>
+            </div>
+            <div class="form-group">
+              <label>Password*</label>
+              <div class="input-wrapper">
+                <input type="password" id="lamp-login-password" class="form-control" placeholder="Provide your password" required>
+                <button type="button" class="eye-icon" onclick="togglePasswordVisibility('lamp-login-password', this)">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
+            </div>
+            <div class="remember-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="lamp-remember-me" checked> Remember me
+              </label>
+              <a href="forget.html" class="text-link" style="font-size: 0.82rem;">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">LOG IN</button>
+          </form>
+          <div class="form-footer">
+            Are you a new user? <span class="text-link" onclick="openLampAnimation('register')">Create account</span>
+          </div>
+        `;
+      } else {
+        formContainer.innerHTML = `
+          <form onsubmit="handleRegisterSubmit(event)">
+            <div class="form-group">
+              <label>First name*</label>
+              <input type="text" id="lamp-reg-firstname" class="form-control no-icon" placeholder="Type your firstname" required>
+            </div>
+            <div class="form-group">
+              <label>Last name*</label>
+              <input type="text" id="lamp-reg-lastname" class="form-control no-icon" placeholder="Type your lastname" required>
+            </div>
+            <div class="form-group">
+              <label>Phone number*</label>
+              <input type="tel" id="lamp-reg-phone" class="form-control no-icon" placeholder="00000000000" required>
+            </div>
+            <div class="form-group">
+              <label>Email address*</label>
+              <input type="email" id="lamp-reg-email" class="form-control no-icon" placeholder="Type your email address" required>
+            </div>
+            <div class="form-group">
+              <label>Secret Recovery PIN* (4 digits)</label>
+              <input type="text" id="lamp-reg-pin" class="form-control no-icon" placeholder="e.g. 1234" maxlength="4" pattern="\\d{3,4}" inputmode="numeric" title="Please enter 3 or 4 digits numbers only" required>
+            </div>
+            <div class="form-group">
+              <label>Password*</label>
+              <div class="input-wrapper">
+                <input type="password" id="lamp-reg-password" class="form-control" placeholder="Type your password" required>
+                <button type="button" class="eye-icon" onclick="togglePasswordVisibility('lamp-reg-password', this)">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
+              <div class="password-meta">
+                <div class="slim-strength-bar"><div id="lamp-slim-strength-fill" class="slim-strength-fill"></div></div>
+                <span id="lamp-password-status" class="password-status-text"></span>
+                <ul class="criteria-list">
+                  <li id="lamp-crit-length" class="criteria-item"><span class="criteria-dot"></span> 8 characters</li>
+                  <li id="lamp-crit-special" class="criteria-item"><span class="criteria-dot"></span> Special letter</li>
+                  <li id="lamp-crit-upper" class="criteria-item"><span class="criteria-dot"></span> Uppercase</li>
+                  <li id="lamp-crit-number" class="criteria-item"><span class="criteria-dot"></span> Number</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password*</label>
+              <div class="input-wrapper">
+                <input type="password" id="lamp-reg-confirm-password" class="form-control" placeholder="Confirm your password" required>
+                <button type="button" class="eye-icon" onclick="togglePasswordVisibility('lamp-reg-confirm-password', this)">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
+              <span id="lamp-match-status" class="match-status-text"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">REGISTER</button>
+          </form>
+          <div class="form-footer">
+            Already have an account? <span class="text-link" onclick="openLampAnimation('login')">Log in</span>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const pwdInput = document.getElementById('lamp-reg-password');
+          const confirmPwdInput = document.getElementById('lamp-reg-confirm-password');
+          const matchStatus = document.getElementById('lamp-match-status');
+
+          if (pwdInput) {
+            pwdInput.addEventListener('input', () => {
+              const val = pwdInput.value;
+              const slimFill = document.getElementById('lamp-slim-strength-fill');
+              const statusText = document.getElementById('lamp-password-status');
+              const cLen = document.getElementById('lamp-crit-length');
+              const cSpec = document.getElementById('lamp-crit-special');
+              const cUp = document.getElementById('lamp-crit-upper');
+              const cNum = document.getElementById('lamp-crit-number');
+
+              if (!val) {
+                slimFill.style.width = '0%';
+                statusText.innerText = '';
+                [cLen, cSpec, cUp, cNum].forEach(el => el.classList.remove('valid'));
+                return;
+              }
+
+              const hasLength = val.length >= 8;
+              const hasSpecial = /[^A-Za-z0-9]/.test(val);
+              const hasUpper = /[A-Z]/.test(val);
+              const hasNumber = /[0-9]/.test(val);
+
+              cLen.classList.toggle('valid', hasLength);
+              cSpec.classList.toggle('valid', hasSpecial);
+              cUp.classList.toggle('valid', hasUpper);
+              cNum.classList.toggle('valid', hasNumber);
+
+              let passed = [hasLength, hasSpecial, hasUpper, hasNumber].filter(Boolean).length;
+              if (passed <= 1) {
+                slimFill.style.width = '25%'; slimFill.style.backgroundColor = '#EF4444'; statusText.style.color = '#EF4444'; statusText.innerText = 'Weak';
+              } else if (passed <= 3) {
+                slimFill.style.width = '65%'; slimFill.style.backgroundColor = '#3B82F6'; statusText.style.color = '#3B82F6'; statusText.innerText = 'Good';
+              } else {
+                slimFill.style.width = '100%'; slimFill.style.backgroundColor = '#10B981'; statusText.style.color = '#10B981'; statusText.innerText = 'Strong';
+              }
+              checkMatch();
+            });
+          }
+
+          if (confirmPwdInput) confirmPwdInput.addEventListener('input', checkMatch);
+
+          function checkMatch() {
+            if (!confirmPwdInput || !pwdInput) return;
+            const p1 = pwdInput.value;
+            const p2 = confirmPwdInput.value;
+            if (!p2) { matchStatus.innerText = ''; return; }
+            if (p1 === p2) { matchStatus.style.color = '#10B981'; matchStatus.innerText = 'Passwords match ✓'; }
+            else { matchStatus.style.color = '#EF4444'; matchStatus.innerText = 'Passwords do not match ✕'; }
+          }
+        }, 50);
+      }
+      
+      overlay.classList.add('active');
+    };
+
+    window.toggleLampPull = function() {
+      const overlay = document.getElementById('lampOverlay');
+      const lampSvg = document.getElementById('lampSvg');
+      const hint = document.getElementById('lampPullHint');
+      const isLit = overlay.classList.contains('lit');
+
+      lampSvg.classList.add('bouncing');
+      setTimeout(() => { lampSvg.classList.remove('bouncing'); }, 500);
+
+      setTimeout(() => {
+        if (!isLit) { overlay.classList.add('lit'); hint.innerText = "Pull cord to switch off"; }
+        else { overlay.classList.remove('lit'); hint.innerText = "Pull cord to switch on"; }
+      }, 150);
+    };
+
+    window.closeLampAnimation = function() { document.getElementById('lampOverlay').classList.remove('active'); };
+
+    window.togglePasswordVisibility = function(inputId, button) {
       const input = document.getElementById(inputId);
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
       button.innerHTML = isPassword 
         ? `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
         : `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
-    }
-
-    /* REAL-TIME PASSWORD STRENGTH LINE & CHECKLIST */
-    const passwordInput = document.getElementById('reg-password');
-    const slimFill = document.getElementById('slim-strength-fill');
-    const statusText = document.getElementById('password-status');
-    const critLength = document.getElementById('crit-length');
-    const critSpecial = document.getElementById('crit-special');
-    const critUpper = document.getElementById('crit-upper');
-    const critNumber = document.getElementById('crit-number');
-
-    passwordInput.addEventListener('input', () => {
-      const val = passwordInput.value;
-      if (!val) {
-        slimFill.style.width = '0%';
-        statusText.innerText = '';
-        [critLength, critSpecial, critUpper, critNumber].forEach(el => el.classList.remove('valid'));
-        return;
-      }
-
-      const hasLength = val.length >= 8;
-      const hasSpecial = /[^A-Za-z0-9]/.test(val);
-      const hasUpper = /[A-Z]/.test(val);
-      const hasNumber = /[0-9]/.test(val);
-
-      critLength.classList.toggle('valid', hasLength);
-      critSpecial.classList.toggle('valid', hasSpecial);
-      critUpper.classList.toggle('valid', hasUpper);
-      critNumber.classList.toggle('valid', hasNumber);
-      let passedCount = [hasLength, hasSpecial, hasUpper, hasNumber].filter(Boolean).length;
-
-      if (passedCount <= 1) {
-        slimFill.style.width = '25%';
-        slimFill.style.backgroundColor = '#EF4444';
-        statusText.style.color = '#EF4444';
-        statusText.innerText = 'Weak';
-      } else if (passedCount <= 3) {
-        slimFill.style.width = '65%';
-        slimFill.style.backgroundColor = '#3B82F6';
-        statusText.style.color = '#3B82F6';
-        statusText.innerText = 'Good';
-      } else {
-        slimFill.style.width = '100%';
-        slimFill.style.backgroundColor = '#10B981';
-        statusText.style.color = '#10B981';
-        statusText.innerText = 'Strong';
-      }
-    });
+    };
   </script>
 </body>
 </html>

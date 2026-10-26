@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Practice Selection</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -56,7 +58,7 @@
     }
 
     .app-header {
-      padding: 14px 16px 12px;
+      padding: 16px;
       background: #FFFFFF;
       border-bottom: 1px solid #F1F5F9;
       display: flex;
@@ -65,25 +67,51 @@
       z-index: 10;
     }
 
-    .header-left-group { display: flex; align-items: center; gap: 10px; }
+    .header-left-group { display: flex; align-items: center; gap: 12px; }
+    
     .back-btn {
-      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-main);
+      border: 1px solid var(--border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
+    .back-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
     .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
 
     .app-content {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 16px 90px;
+      padding: 16px;
       scroll-behavior: smooth;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
-    /* SEARCH BAR */
     .search-bar-wrapper {
       position: relative;
       display: flex;
@@ -123,8 +151,7 @@
     .page-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); }
     .page-subtitle { font-size: 0.75rem; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
 
-    /* ITEM CARDS */
-    .item-list { display: flex; flex-direction: column; gap: 8px; }
+    .item-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px; }
     .selection-card {
       background: var(--card-bg); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center;
       justify-content: space-between; border: 1px solid var(--border); text-decoration: none; color: inherit;
@@ -133,7 +160,9 @@
     .selection-card:hover { border-color: var(--primary); transform: translateY(-1px); }
     .selection-card.locked { opacity: 0.7; background: #F8FAFC; border-style: dashed; }
 
-    .card-left { display: flex; align-items: center; gap: 12px; }
+    .card-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .card-right-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
     .icon-box {
       width: 38px; height: 38px; border-radius: 10px; background: var(--primary-light); color: var(--primary);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -147,23 +176,30 @@
     .arrow-icon svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.5; }
     .lock-badge { font-size: 0.68rem; font-weight: 800; color: var(--warning); background: var(--warning-light); padding: 3px 8px; border-radius: 20px; }
 
-    /* TOAST NOTIFICATION */
+    /* OFFLINE DOWNLOAD BUTTON */
+    .download-btn {
+      background: var(--primary-light);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--primary);
+      transition: all 0.2s ease;
+    }
+    .download-btn:hover { background: var(--primary); color: white; }
+    .download-btn.downloaded { background: var(--success-light); color: var(--success); border-color: var(--success); }
+    .download-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
     .toast-notification {
       position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
       padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
     }
     .toast-notification.show { transform: translateX(-50%) translateY(0); }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
-      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
-    }
-    .nav-tab {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
-    }
-    .nav-tab.active { color: var(--primary); }
   </style>
 </head>
 <body>
@@ -174,11 +210,11 @@
     <header class="app-header">
       <div class="header-left-group">
         <button class="back-btn" id="back-btn" onclick="handleBackAction()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <div>
           <h1 class="app-header-title" id="header-main-title">Practice Catalog</h1>
-          <p class="app-header-subtitle">Yan-Dli CBT Suite</p>
+          <p class="app-header-subtitle">Yan-Dli University Suite</p>
         </div>
       </div>
     </header>
@@ -199,34 +235,11 @@
         <div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading database...</div>
       </div>
     </main>
-
-    <nav class="bottom-nav">
-      <a href="dashboard.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        <span>Home</span>
-      </a>
-      <a href="exams.html" class="nav-tab active">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Exams</span>
-      </a>
-      <a href="classroom.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Classroom</span>
-      </a>
-      <a href="activate.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Activation</span>
-      </a>
-      <a href="account.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Account</span>
-      </a>
-    </nav>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -268,12 +281,10 @@
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
 
-    // HELPER FUNCTION: Clean string comparisons for Department & Level checks
     function cleanString(str) {
       return (str || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
-    // HELPER FUNCTION: Check if the user's active pin matches the currently selected Department & Level
     function isScopeUnlocked() {
       if (!isUserActivated || !userPinData) return false;
       
@@ -289,6 +300,47 @@
       return deptMatches && levelMatches;
     }
 
+    // OFFLINE DOWNLOAD FUNCTION
+    window.downloadCourseForOffline = async function(event, courseId, courseTitle) {
+      event.stopPropagation(); // Prevent card click navigation
+      try {
+        showToast(`⬇️ Downloading ${courseTitle} for offline practice...`, 'info');
+
+        const qRef = collection(db, 'questions');
+        const qQuery = query(qRef, where('courseId', '==', courseId));
+        const qSnap = await getDocs(qQuery);
+
+        let questionsList = [];
+        qSnap.forEach(docSnap => {
+          questionsList.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        if (questionsList.length === 0) {
+          showToast('⚠️ No questions found for this course yet.', 'warning');
+          return;
+        }
+
+        localStorage.setItem(`yan_offline_course_${courseId}`, JSON.stringify({
+          title: courseTitle,
+          downloadedAt: new Date().toISOString(),
+          questions: questionsList
+        }));
+
+        showToast(`✅ Successfully downloaded ${courseTitle} for offline use!`, 'success');
+        
+        // Update button visual state immediately
+        const btn = document.getElementById(`dl-btn-${courseId}`);
+        if (btn) {
+          btn.classList.add('downloaded');
+          btn.title = "Downloaded (Available Offline)";
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+        }
+      } catch (err) {
+        console.error("Offline download error:", err);
+        showToast('❌ Download failed. Check your internet connection.', 'error');
+      }
+    };
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -296,7 +348,6 @@
           if (userDoc.exists()) {
             const userData = userDoc.data();
             
-            // Check expiry date
             let isExpired = false;
             if (userData.expiresAt && new Date(userData.expiresAt) < new Date()) {
               isExpired = true;
@@ -418,20 +469,19 @@
           }
         });
 
-        // STRICT LOCKING CHECK: Is this specific Dept + Level unlocked by user's pin?
         const scopeUnlocked = isScopeUnlocked();
 
         rawItemsData = courses.map((c, index) => {
-          // If Scope is unlocked, all courses under it are accessible.
-          // Otherwise, only index 0 (Free Preview) is unlocked.
           const isLocked = !scopeUnlocked && index > 0;
+          const isDownloaded = !!localStorage.getItem(`yan_offline_course_${c.id}`);
           return {
             id: c.id,
             code: c.code,
             title: c.title,
             name: `[${c.code}] ${c.title}`,
-            sub: isLocked ? 'Locked (Activate scope to unlock)' : 'Available to practice',
+            sub: isLocked ? 'Locked (Activate scope to unlock)' : (isDownloaded ? '✅ Available Offline' : 'Available to practice'),
             locked: isLocked,
+            isDownloaded: isDownloaded,
             searchText: `${c.code} ${c.title}`
           };
         });
@@ -510,9 +560,27 @@
         }
 
         let clickAction = '';
+        let rightActionHtml = `<span class="arrow-icon"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></span>`;
+
         if (currentStep === 'department') clickAction = `selectDepartment('${item.id}', '${escapeJs(item.name)}')`;
         else if (currentStep === 'level') clickAction = `selectLevel('${item.id}', '${escapeJs(item.name)}')`;
-        else if (currentStep === 'course') clickAction = `selectCourse('${item.id}', '${escapeJs(item.title)}', '${escapeJs(item.code)}')`;
+        else if (currentStep === 'course') {
+          clickAction = `selectCourse('${item.id}', '${escapeJs(item.title)}', '${escapeJs(item.code)}')`;
+          const downloadedClass = item.isDownloaded ? 'downloaded' : '';
+          const downloadedTitle = item.isDownloaded ? 'Downloaded (Available Offline)' : 'Download for Offline Practice';
+          const downloadedSvg = item.isDownloaded 
+            ? `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>` 
+            : `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+          rightActionHtml = `
+            <div class="card-right-actions">
+              <button class="download-btn ${downloadedClass}" id="dl-btn-${item.id}" onclick="downloadCourseForOffline(event, '${item.id}', '${escapeJs(item.title)}')" title="${downloadedTitle}">
+                ${downloadedSvg}
+              </button>
+              <span class="arrow-icon"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+          `;
+        }
         else if (currentStep === 'topic') clickAction = `proceedToSetup('${item.id}', '${escapeJs(item.name)}')`;
 
         const isSpecialAll = item.id === 'all';
@@ -525,12 +593,12 @@
               <div class="icon-box" style="${iconStyle}">
                 <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               </div>
-              <div>
+              <div style="min-width:0; flex:1;">
                 <div class="card-title" style="${isSpecialAll ? 'color: var(--primary-dark); font-weight:800;' : ''}">${item.name}</div>
                 <div class="card-sub" style="${isSpecialAll ? 'color: var(--primary);' : ''}">${item.sub}</div>
               </div>
             </div>
-            <span class="arrow-icon"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></span>
+            ${rightActionHtml}
           </div>
         `;
       }).join('');
@@ -559,5 +627,18 @@
 
     loadDepartments();
   </script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then((reg) => console.log('Yan-Dli ServiceWorker registered successfully:', reg.scope))
+        .catch((err) => console.error('ServiceWorker registration failed:', err));
+    });
+  }
+</script>
+
+
 </body>
 </html>

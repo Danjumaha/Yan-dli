@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Admin Command Center</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -33,13 +38,14 @@
     .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
 
     .card { background: var(--card-bg); border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.75rem; box-shadow: var(--shadow-sm); }
-    .section-title { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+    .section-title { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
 
     .user-list-item { background: var(--bg-gray); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; gap: 8px; }
     .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; }
     .badge.active { background: #D1FAE5; color: #065F46; }
     .badge.free { background: #FEF3C7; color: #92400E; }
     .badge.banned { background: #FEE2E2; color: #991B1B; }
+    .badge.locked { background: #FEE2E2; color: #991B1B; border: 1px solid var(--danger); }
     .badge.used { background: #FEE2E2; color: #991B1B; }
     .badge.unused { background: #D1FAE5; color: #065F46; }
 
@@ -57,12 +63,10 @@
     .form-input { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.8rem; background: #FFF; outline: none; transition: border-color 0.2s; }
     .form-input:focus { border-color: var(--primary); }
 
-    /* Plan Selection Grid for Admin Generator */
     .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .plan-option { border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px; text-align: center; cursor: pointer; background: #FFF; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); transition: all 0.2s; }
     .plan-option.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 
-    /* Custom Selection Trigger Boxes */
     .selector-box {
       width: 100%;
       padding: 0.65rem 0.75rem;
@@ -79,7 +83,6 @@
     }
     .selector-box:hover { border-color: var(--primary); }
 
-    /* Modal Styling */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -137,7 +140,6 @@
       color: var(--primary);
     }
 
-    /* User Detail Card Styles inside Modal */
     .detail-group {
       background: var(--bg-gray);
       border: 1px solid var(--border-color);
@@ -159,7 +161,6 @@
       font-weight: 600;
     }
 
-    /* MODERN TOAST NOTIFICATION SYSTEM */
     .toast-container {
       position: fixed;
       top: 1rem;
@@ -195,7 +196,6 @@
     .toast-icon { width: 20px; height: 20px; flex-shrink: 0; }
     .toast-content { flex: 1; font-size: 0.8rem; font-weight: 500; color: var(--text-dark); line-height: 1.3; }
 
-    /* CONFIRMATION DIALOG MODAL */
     .confirm-card {
       background: #FFF;
       border-radius: var(--radius-md);
@@ -212,7 +212,6 @@
 </head>
 <body>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <div class="app-container">
@@ -275,6 +274,20 @@
         </div>
       </div>
 
+      <!-- Transactions & Revenue Control -->
+      <div class="card">
+        <div class="section-title">
+          <span>💰 Revenue & Transactions Log</span>
+          <button class="btn-action btn-danger" style="padding: 3px 8px; font-size: 0.65rem;" onclick="clearAllRevenueLogs()">Clear All Revenue</button>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <input type="text" id="transaction-search" class="form-input" placeholder="Search transactions by reference, email..." oninput="renderTransactionsList()">
+        </div>
+        <div id="admin-transactions-list" style="display:flex; flex-direction:column; gap:6px; max-height: 220px; overflow-y:auto;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
       <!-- Generated Pins Registry -->
       <div class="card">
         <div class="section-title">🎫 Access Pins Registry</div>
@@ -290,7 +303,7 @@
       <div class="card">
         <div class="section-title">👥 User Directory</div>
         <div style="margin-bottom: 4px;">
-          <input type="text" id="user-search" class="form-input" placeholder="Search by ID (e.g. YAN-...), name, email, phone..." oninput="renderUsersList()">
+          <input type="text" id="user-search" class="form-input" placeholder="Search by ID, name, email, phone..." oninput="renderUsersList()">
         </div>
         <div id="admin-users-list" style="display:flex; flex-direction:column; gap:6px; max-height: 280px; overflow-y:auto;">
           <!-- Dynamically populated -->
@@ -299,7 +312,7 @@
     </main>
   </div>
 
-  <!-- Custom Bottom Selection Modal (Room Selector) -->
+  <!-- Custom Selection Modal -->
   <div class="modal-overlay" id="selection-modal" onclick="closeSelectionModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -309,22 +322,18 @@
       <div style="padding: 0 1rem 0.5rem 1rem;">
         <input type="text" id="modal-search" class="form-input" placeholder="Search items..." oninput="filterModalOptions()">
       </div>
-      <div class="modal-body" id="modal-options-container">
-        <!-- Dynamically populated room options -->
-      </div>
+      <div class="modal-body" id="modal-options-container"></div>
     </div>
   </div>
 
-  <!-- User Details Modal (Eye Toggle View) -->
+  <!-- User Details Modal -->
   <div class="modal-overlay" id="user-detail-modal" onclick="closeUserDetailModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
       <div class="modal-header">
         <span style="font-weight:700; font-size:0.95rem; color:var(--primary);">👤 Comprehensive User Profile</span>
         <button onclick="closeUserDetailModal()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-muted);">✕</button>
       </div>
-      <div class="modal-body" id="user-detail-content">
-        <!-- Dynamically populated comprehensive user details & multi-pin history -->
-      </div>
+      <div class="modal-body" id="user-detail-content"></div>
     </div>
   </div>
 
@@ -342,7 +351,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -361,6 +370,7 @@
     let cachedLevels = [];
     let cachedUsers = [];
     let cachedPins = [];
+    let cachedTransactions = [];
 
     let selectedAdminPlanName = "Semester 4 months";
     let selectedAdminPlanAmount = 3500;
@@ -370,7 +380,6 @@
     let currentModalType = "";
     let confirmResolver = null;
 
-    // Toast Notification System
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -459,7 +468,6 @@
         });
         document.getElementById('total-users-count').innerText = totalUsers;
         renderUsersList();
-        renderPinsList();
       });
 
       onSnapshot(collection(db, "Pins"), (snapshot) => {
@@ -471,11 +479,15 @@
       });
 
       onSnapshot(collection(db, "Transactions"), (snapshot) => {
+        cachedTransactions = [];
         let totalRevenue = 0;
         snapshot.forEach(t => {
-          totalRevenue += (t.data().amount || 0);
+          const data = { id: t.id, ...t.data() };
+          cachedTransactions.push(data);
+          totalRevenue += (data.amount || 0);
         });
         document.getElementById('total-income-count').innerText = `₦${totalRevenue.toLocaleString()}`;
+        renderTransactionsList();
       });
     }
 
@@ -576,14 +588,14 @@
 
       filtered.forEach(u => {
         const isBanned = !!u.isBanned;
+        const isAccountLocked = !!u.isAccountLocked;
         let isPro = !!u.isActivated;
         if (isPro && u.expiresAt && new Date(u.expiresAt) < new Date()) {
           isPro = false;
         }
 
-        const statusClass = isBanned ? 'banned' : (isPro ? 'active' : 'free');
-        const statusText = isBanned ? 'Banned' : (isPro ? 'Pro Active' : 'Free Tier');
-        const isLocked = !!u.currentSessionId;
+        let statusClass = isBanned ? 'banned' : (isAccountLocked ? 'locked' : (isPro ? 'active' : 'free'));
+        let statusText = isBanned ? 'Banned' : (isAccountLocked ? 'Locked 🚫' : (isPro ? 'Pro Active' : 'Free Tier'));
 
         const firstName = u.Firstname || u.name || '';
         const lastName = u.Lastname || '';
@@ -600,10 +612,10 @@
           </div>
           <div style="display:flex; align-items:center; gap:4px; flex-shrink: 0;">
             <span class="badge ${statusClass}">${statusText}</span>
-            <button class="icon-btn" title="View Details" onclick="openUserDetailModal('${u.id}')">
+            <button class="icon-btn" title="View Comprehensive Profile" onclick="openUserDetailModal('${u.id}')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
-            ${isLocked ? `<button class="btn-action btn-warning" style="padding: 4px 6px; font-size: 0.62rem;" onclick="resetUserSession('${u.id}', '${displayName}')" title="Unlock device session">Unlock</button>` : ''}
+            ${isAccountLocked ? `<button class="btn-action btn-warning" style="padding: 4px 6px; font-size: 0.62rem;" onclick="unlockUserAccount('${u.id}', '${displayName}')" title="Unlock account">Unlock</button>` : ''}
             <button class="btn-action ${isBanned ? '' : 'btn-danger'}" style="padding: 4px 6px; font-size: 0.62rem;" onclick="toggleUserBan('${u.id}', ${!isBanned})">${isBanned ? 'Unban' : 'Ban'}</button>
           </div>
         `;
@@ -623,9 +635,8 @@
       
       let isPro = !!u.isActivated;
       if (isPro && u.expiresAt && new Date(u.expiresAt) < new Date()) isPro = false;
-      const status = u.isBanned ? 'Banned (Blocked Access)' : (isPro ? 'Pro Active' : 'Free Tier / Expired');
+      const status = u.isBanned ? 'Banned' : (u.isAccountLocked ? 'Locked (3rd Device Violation)' : (isPro ? 'Pro Active' : 'Free Tier / Expired'));
 
-      // Fetch all pins used by this user
       const userPins = cachedPins.filter(p => p.usedBy === uid || p.purchasedBy === uid);
 
       let pinsHtml = '';
@@ -647,6 +658,25 @@
       } else {
         pinsHtml = `<span style="font-size:0.8rem; color:var(--text-muted);">No activation pins recorded for this account.</span>`;
       }
+
+      // Temporary password display section
+      const hasTempPass = !!u.tempPassword;
+      const tempPassDisplayHtml = hasTempPass ? `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#FFF; padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:8px;">
+          <div>
+            <span style="font-size:0.7rem; color:var(--text-muted); display:block;">Active Temporary Password:</span>
+            <code style="font-size:0.85rem; font-weight:700; color:var(--primary);">${u.tempPassword}</code>
+          </div>
+          <div style="display:flex; gap:4px;">
+            <button class="icon-btn" title="Edit Temporary Password" onclick="populateTempPasswordEdit('${u.id}', '${u.tempPassword}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="icon-btn danger" title="Delete Temporary Password" onclick="deleteTemporaryPassword('${u.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </div>
+      ` : '';
 
       const container = document.getElementById('user-detail-content');
       container.innerHTML = `
@@ -671,9 +701,26 @@
           <span class="detail-value" style="color:var(--primary);">${status}</span>
         </div>
         <div class="detail-group">
-          <span class="detail-label">Device Lock Status (Single-Device Policy)</span>
-          <span class="detail-value">${u.currentSessionId ? 'Locked to 1 active device/browser' : 'Unlocked / No active session lock'}</span>
+          <span class="detail-label">Allowed Devices / Sessions</span>
+          <span class="detail-value">${(u.allowedSessions || []).length} / 2 Devices Registered</span>
         </div>
+
+        <!-- TEMPORARY PASSWORD RECOVERY BOX -->
+        <div style="background:var(--primary-light); border:1px dashed var(--primary); padding:10px; border-radius:var(--radius-sm); margin-top:4px;">
+          <span class="detail-label" style="color:var(--primary);">Set / Manage Temporary Password</span>
+          <p style="font-size:0.7rem; color:var(--text-dark); margin: 4px 0 8px 0;">If the user forgot their password, set or update a temporary password here.</p>
+          ${tempPassDisplayHtml}
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="temp-pass-input-${u.id}" class="form-input" placeholder="Type temporary password..." style="font-size:0.75rem;">
+            <button class="btn-action" style="white-space:nowrap;" onclick="setTemporaryPassword('${u.id}')">${hasTempPass ? 'Update Temp' : 'Set Temp Password'}</button>
+          </div>
+        </div>
+
+        ${u.isAccountLocked ? `
+          <button class="btn-action btn-warning" style="padding:0.6rem; font-weight:700; font-size:0.8rem;" onclick="unlockUserAccount('${u.id}', '${firstName}${lastName}')">
+            🔓 Unlock Account Now
+          </button>
+        ` : ''}
         <div class="detail-group">
           <span class="detail-label">Activated Pins & Department History</span>
           ${pinsHtml}
@@ -686,6 +733,138 @@
     window.closeUserDetailModal = function(e) {
       if (!e || e.target.id === 'user-detail-modal' || e.target.tagName === 'BUTTON') {
         document.getElementById('user-detail-modal').classList.remove('active');
+      }
+    };
+
+    window.setTemporaryPassword = async function(uid) {
+      const inputEl = document.getElementById(`temp-pass-input-${uid}`);
+      const tempPassword = inputEl ? inputEl.value.trim() : '';
+
+      if (!tempPassword) {
+        showToast('Please type a temporary password first', 'error');
+        return;
+      }
+
+      const confirmed = await showConfirmDialog('Set Temporary Password', 'This will set a temporary password for this user. Proceed?');
+      if (!confirmed) return;
+
+      try {
+        await setDoc(doc(db, "Users", uid), {
+          tempPassword: tempPassword
+        }, { merge: true });
+
+        showToast(`Temporary password saved: "${tempPassword}"`, 'success');
+        inputEl.value = '';
+        openUserDetailModal(uid); // Refresh modal view
+      } catch (e) {
+        console.error(e);
+        showToast('Failed to set temporary password', 'error');
+      }
+    };
+
+    window.populateTempPasswordEdit = function(uid, currentPass) {
+      const inputEl = document.getElementById(`temp-pass-input-${uid}`);
+      if (inputEl) {
+        inputEl.value = currentPass;
+        inputEl.focus();
+      }
+    };
+
+    window.deleteTemporaryPassword = async function(uid) {
+      const confirmed = await showConfirmDialog('Remove Temporary Password', 'Are you sure you want to delete this temporary password?');
+      if (!confirmed) return;
+
+      try {
+        await setDoc(doc(db, "Users", uid), {
+          tempPassword: null
+        }, { merge: true });
+
+        showToast('Temporary password removed successfully', 'success');
+        openUserDetailModal(uid); // Refresh modal view
+      } catch (e) {
+        console.error(e);
+        showToast('Failed to remove temporary password', 'error');
+      }
+    };
+
+    window.unlockUserAccount = async function(uid, name) {
+      const confirmed = await showConfirmDialog('Unlock Account', `Unlock account for ${name}? This will clear the device restriction lock and reset their allowed sessions list.`);
+      if (!confirmed) return;
+
+      try {
+        await setDoc(doc(db, "Users", uid), { 
+          isAccountLocked: false, 
+          allowedSessions: [] 
+        }, { merge: true });
+        showToast(`Account successfully unlocked for ${name}`, 'success');
+        closeUserDetailModal();
+      } catch (e) {
+        console.error(e);
+        showToast('Error unlocking account', 'error');
+      }
+    };
+
+    window.renderTransactionsList = function() {
+      const query = (document.getElementById('transaction-search').value || '').toLowerCase();
+      const container = document.getElementById('admin-transactions-list');
+      container.innerHTML = '';
+
+      const filtered = cachedTransactions.filter(t => 
+        (t.reference || '').toLowerCase().includes(query) || 
+        (t.email || '').toLowerCase().includes(query) || 
+        (t.plan || '').toLowerCase().includes(query) ||
+        (t.pinGenerated || '').toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.75rem;">No revenue transactions found</div>`;
+        return;
+      }
+
+      filtered.forEach(t => {
+        const dateStr = t.createdAt ? new Date(t.createdAt).toLocaleString() : 'N/A';
+        const div = document.createElement('div');
+        div.className = 'user-list-item';
+        div.innerHTML = `
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight:700; color:var(--success);">₦${(t.amount || 0).toLocaleString()} • <span style="color:var(--text-dark);">${t.plan || 'Subscription'}</span></div>
+            <div style="font-size:0.65rem; color:#6B7280; font-family:monospace;">Ref: ${t.reference || 'N/A'}</div>
+            <div style="font-size:0.63rem; color:#9CA3AF;">User: ${t.email || t.uid} | Pin: ${t.pinGenerated || 'N/A'} (${dateStr})</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px; flex-shrink: 0;">
+            <button class="icon-btn danger" title="Delete Transaction Log" onclick="deleteTransaction('${t.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    };
+
+    window.deleteTransaction = async function(txId) {
+      const confirmed = await showConfirmDialog('Delete Transaction Log', 'Permanently delete this payment revenue record?');
+      if (!confirmed) return;
+      try {
+        await deleteDoc(doc(db, "Transactions", txId));
+        showToast('Transaction record deleted successfully', 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Failed to delete transaction', 'error');
+      }
+    };
+
+    window.clearAllRevenueLogs = async function() {
+      const confirmed = await showConfirmDialog('Clear All Revenue History', 'Are you sure you want to wipe all transaction history and reset total revenue to ₦0?');
+      if (!confirmed) return;
+
+      try {
+        const snapshot = await getDocs(collection(db, "Transactions"));
+        const deletePromises = snapshot.docs.map(d => deleteDoc(d.ref));
+        await Promise.all(deletePromises);
+        showToast('All revenue history cleared successfully', 'success');
+      } catch (e) {
+        console.error(e);
+        showToast('Failed to clear revenue logs', 'error');
       }
     };
 
@@ -718,7 +897,7 @@
             const userName = `${matchedUser.Firstname || matchedUser.name || ''} ${matchedUser.Lastname || ''}`.trim();
             assignedUserText = `<div style="font-size:0.63rem; color:var(--primary); margin-top:2px;">Used by: ${userName || matchedUser.Email || p.usedBy}</div>`;
           } else {
-            assignedUserText = `<div style="font-size:0.63rem; color:var(--danger); margin-top:2px;">Used by: Account Deleted (User Removed)</div>`;
+            assignedUserText = `<div style="font-size:0.63rem; color:var(--danger); margin-top:2px;">Used by: Account Deleted</div>`;
           }
         }
 
@@ -737,7 +916,7 @@
           <div style="display:flex; align-items:center; gap:8px; flex-shrink: 0;">
             <span class="badge ${badgeClass}">${badgeText}</span>
             <button class="icon-btn danger" title="Delete Pin" onclick="deletePin('${p.id}', '${p.pin}')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                 <line x1="10" y1="11" x2="10" y2="17"></line>
@@ -751,7 +930,7 @@
     };
 
     window.toggleUserBan = async function(uid, shouldBan) {
-      const confirmed = await showConfirmDialog('Update User Access', `Are you sure you want to ${shouldBan ? 'ban' : 'unban'} this user? ${shouldBan ? 'They will be completely blocked from logging in.' : 'They will regain access.'}`);
+      const confirmed = await showConfirmDialog('Update User Access', `Are you sure you want to ${shouldBan ? 'ban' : 'unban'} this user?`);
       if (!confirmed) return;
 
       try {
@@ -760,19 +939,6 @@
       } catch (e) {
         console.error(e);
         showToast('Error updating user status', 'error');
-      }
-    };
-
-    window.resetUserSession = async function(uid, name) {
-      const confirmed = await showConfirmDialog('Unlock Device Session', `Clear active device lock for ${name}? This frees them from the single-device restriction so they can log into a new phone/browser.`);
-      if (!confirmed) return;
-
-      try {
-        await setDoc(doc(db, "Users", uid), { currentSessionId: null }, { merge: true });
-        showToast(`Device session unlocked for ${name}`, 'success');
-      } catch (e) {
-        console.error(e);
-        showToast('Error unlocking device session', 'error');
       }
     };
 

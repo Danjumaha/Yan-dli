@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Notifications</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -56,7 +58,7 @@
     }
 
     .app-header {
-      padding: 14px 16px 12px;
+      padding: 12px 16px;
       background: #FFFFFF;
       border-bottom: 1px solid #F1F5F9;
       display: flex;
@@ -66,27 +68,111 @@
     }
 
     .header-left-group { display: flex; align-items: center; gap: 10px; }
-    .back-btn {
-      width: 36px; height: 36px; border-radius: 10px; background: var(--bg-body); color: var(--text-main);
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;
-    }
-    .app-header-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
-    .app-header-subtitle { font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
 
-    .clear-all-btn {
-      background: none; border: none; color: var(--danger); font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+    .back-btn {
+      width: 36px; 
+      height: 36px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-main);
+      border: 1px solid var(--border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
     }
-    .clear-all-btn:active { background: var(--danger-light); }
+    .back-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-dark);
+      color: var(--primary-dark);
+    }
+    .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    .app-header-title { font-size: 0.9rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+    .app-header-subtitle { font-size: 0.65rem; color: var(--text-sub); font-weight: 600; margin-top: 1px; }
+
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+
+    .header-action-btn {
+      background: #F8FAFC; border: 1px solid var(--border); font-size: 0.68rem; font-weight: 700; cursor: pointer; padding: 6px 10px; border-radius: 8px; color: var(--text-main);
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .header-action-btn.mark-read { color: var(--primary-dark); background: var(--primary-light); border-color: rgba(139,92,246,0.2); }
+    .header-action-btn.clear-date { color: var(--danger); background: var(--danger-light); border-color: rgba(239,68,68,0.2); }
+    .header-action-btn:active { transform: scale(0.96); }
+
+    /* VIEW HEADER BAR (When inside a specific date) */
+    .view-control-bar {
+      padding: 8px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .active-date-label { font-size: 0.82rem; font-weight: 800; color: var(--text-main); }
+    
+    .change-date-btn {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .change-date-btn:hover { background: #EDE9FE; }
+    .change-date-btn svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
     .app-content {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 16px 90px;
+      padding: 12px 16px 20px;
       scroll-behavior: smooth;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+
+    /* DATE FOLDER CARDS */
+    .date-folder-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .date-folder-card:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .folder-left { display: flex; align-items: center; gap: 10px; }
+    .folder-icon-box {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--primary-light); color: var(--primary-dark);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .date-folder-card:hover .folder-icon-box { background: #FFFFFF; }
+    .folder-title { font-size: 0.82rem; font-weight: 800; color: var(--text-main); }
+    .folder-sub { font-size: 0.65rem; color: var(--text-sub); font-weight: 600; }
+    
+    .folder-badges-group { display: flex; align-items: center; gap: 5px; }
+    .folder-badge {
+      background: #E2E8F0; color: var(--text-main); font-size: 0.62rem; font-weight: 800; padding: 3px 7px; border-radius: 20px;
+    }
+    .folder-badge.unread-badge { background: var(--primary); color: #FFFFFF; }
 
     /* NOTIFICATION CARD STYLING */
     .notif-card {
@@ -95,23 +181,23 @@
       border-radius: 14px;
       padding: 12px;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       position: relative;
       transition: all 0.2s ease;
       box-shadow: var(--shadow-card);
     }
 
     .notif-card.unread {
-      border-left: 4px solid var(--primary);
+      border-left: 4px solid var(--primary-dark);
       background: #FAF5FF;
     }
 
     .notif-icon-box {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
       background: var(--primary-light);
-      color: var(--primary);
+      color: var(--primary-dark);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -125,84 +211,106 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
+      min-width: 0;
     }
 
     .notif-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    .notif-title {
-      font-size: 0.82rem;
+    .notif-title-wrap { display: flex; flex-direction: column; }
+    .notif-title { font-size: 0.78rem; font-weight: 800; color: var(--text-main); line-height: 1.3; }
+    .notif-time { font-size: 0.6rem; color: var(--text-sub); font-weight: 600; }
+    .notif-message { font-size: 0.72rem; color: var(--text-sub); line-height: 1.35; font-weight: 500; margin-top: 2px; word-break: break-word; }
+
+    /* ACTION BUTTONS */
+    .notif-action-btn {
+      margin-top: 8px;
+      align-self: flex-start;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.68rem;
       font-weight: 800;
-      color: var(--text-main);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
     }
+    .notif-action-btn:hover {
+      background: var(--primary-dark);
+      color: #FFFFFF;
+    }
+    .notif-action-btn svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
-    .notif-time {
-      font-size: 0.65rem;
-      color: var(--text-sub);
-      font-weight: 600;
+    /* THREE-DOT MENU SYSTEM */
+    .menu-container { position: relative; flex-shrink: 0; }
+    .three-dots-btn {
+      background: none; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-sub); transition: background 0.2s;
     }
+    .three-dots-btn:hover { background: #F1F5F9; color: var(--text-main); }
+    .three-dots-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-    .notif-message {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      line-height: 1.35;
-      font-weight: 500;
+    .dropdown-menu {
+      position: absolute; right: 0; top: 32px; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(15,23,42,0.1); width: 145px; z-index: 50; display: none; flex-direction: column; padding: 4px;
     }
-
-    .notif-delete-btn {
-      background: none;
-      border: none;
-      color: var(--text-sub);
-      cursor: pointer;
-      padding: 2px;
-      opacity: 0.6;
-      transition: opacity 0.2s;
+    .dropdown-menu.active { display: flex; }
+    .dropdown-item {
+      background: none; border: none; text-align: left; padding: 8px 10px; font-size: 0.72rem; font-weight: 700; color: var(--text-main);
+      border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; width: 100%; transition: background 0.15s;
     }
-    .notif-delete-btn:hover { opacity: 1; color: var(--danger); }
+    .dropdown-item:hover { background: var(--bg-body); }
+    .dropdown-item.delete-item { color: var(--danger); }
+    .dropdown-item.delete-item:hover { background: var(--danger-light); }
+    .dropdown-item svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
     /* EMPTY STATE */
     .empty-notif-box {
-      text-align: center;
-      padding: 3rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-sub);
+      text-align: center; padding: 3rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-sub);
     }
     .empty-notif-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 4px;
+      width: 42px; height: 42px; border-radius: 50%; background: var(--primary-light); color: var(--primary-dark);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 2px;
     }
 
-    /* TOAST NOTIFICATION */
+    /* CUSTOM CONFIRMATION MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.5); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--card-bg); width: 100%; max-width: 340px; border-radius: var(--radius-app); padding: 1.25rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 10px;
+    }
+    .modal-title { font-size: 0.9rem; font-weight: 800; color: var(--text-main); }
+    .modal-desc { font-size: 0.76rem; color: var(--text-sub); line-height: 1.4; font-weight: 500; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .btn-secondary {
+      flex: 1; background: var(--bg-body); border: 1.5px solid var(--border); color: var(--text-main);
+      padding: 10px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; font-size: 0.78rem;
+    }
+    .btn-danger {
+      flex: 1; background: var(--danger); border: none; color: #FFF;
+      padding: 10px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; font-size: 0.78rem;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
     .toast-notification {
       position: absolute; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #FFFFFF;
-      padding: 10px 18px; border-radius: 30px; font-size: 0.78rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      padding: 10px 18px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
     }
     .toast-notification.show { transform: translateX(-50%) translateY(0); }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F1F5F9;
-      display: flex; align-items: center; justify-content: space-around; padding: 0 4px; z-index: 100;
-    }
-    .nav-tab {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94A3B8; font-size: 0.62rem; font-weight: 700; cursor: pointer; width: 20%; height: 100%; gap: 2px; text-decoration: none; transition: all 0.2s ease;
-    }
-    .nav-tab.active { color: var(--primary); }
   </style>
 </head>
 <body>
@@ -210,53 +318,53 @@
   <div class="app-shell">
     <div id="app-toast" class="toast-notification">Notification message</div>
 
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title" id="confirm-modal-title">Confirm Action</div>
+        <div class="modal-desc" id="confirm-modal-desc">Are you sure you want to proceed?</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button type="button" class="btn-danger" id="confirm-modal-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
     <!-- APP HEADER -->
     <header class="app-header">
       <div class="header-left-group">
-        <a href="dashboard.html" class="back-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <a href="dashboard.html" class="back-btn" title="Back to Dashboard">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
         <div>
           <h1 class="app-header-title">Notifications</h1>
-          <p class="app-header-subtitle" id="unread-count-text">Loading alerts...</p>
+          <p class="app-header-subtitle" id="unread-count-text">Loading stored dates...</p>
         </div>
       </div>
-      <button type="button" class="clear-all-btn" onclick="clearAllNotifications()">Clear All</button>
+      <div class="header-actions">
+        <button type="button" class="header-action-btn mark-read" id="header-mark-all-btn" style="display: none;" onclick="markAllCurrentDateRead()">Mark All Read</button>
+        <button type="button" class="header-action-btn clear-date" id="header-clear-btn" style="display: none;" onclick="confirmClearCurrentDateLogs()">Clear Date</button>
+      </div>
     </header>
 
-    <!-- CONTENT LIST -->
+    <!-- DYNAMIC SUB-HEADER BAR (Appears only when viewing a specific date) -->
+    <div id="view-control-bar" class="view-control-bar" style="display: none;">
+      <span class="active-date-label" id="active-date-title">October 20, 2026</span>
+      <button type="button" class="change-date-btn" onclick="backToDateFolders()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Change Date
+      </button>
+    </div>
+
+    <!-- CONTENT CONTAINER -->
     <main class="app-content" id="notification-list-container">
       <div class="empty-notif-box">
         <div class="empty-notif-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </div>
-        <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">Checking notifications...</div>
+        <div style="font-weight: 800; font-size: 0.82rem; color: var(--text-main);">Checking notification logs...</div>
       </div>
     </main>
-
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav">
-      <a href="dashboard.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        <span>Home</span>
-      </a>
-      <a href="exams.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Exams</span>
-      </a>
-      <a href="classroom.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Classroom</span>
-      </a>
-      <a href="activate.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Activation</span>
-      </a>
-      <a href="account.html" class="nav-tab">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Account</span>
-      </a>
-    </nav>
   </div>
 
   <script type="module">
@@ -279,7 +387,9 @@
     const auth = getAuth(app);
 
     let currentUser = null;
-    let notifDocsList = [];
+    let allNotifDocs = [];
+    let currentSelectedDate = null; // null = showing date folders list
+    let pendingConfirmAction = null;
 
     function showToast(message) {
       const toast = document.getElementById('app-toast');
@@ -287,6 +397,29 @@
       toast.classList.add('show');
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
+
+    window.openConfirmModal = function(title, description, onConfirmCallback) {
+      document.getElementById('confirm-modal-title').innerText = title;
+      document.getElementById('confirm-modal-desc').innerText = description;
+      pendingConfirmAction = onConfirmCallback;
+      document.getElementById('confirm-modal').classList.add('active');
+    };
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      pendingConfirmAction = null;
+    };
+
+    document.getElementById('confirm-modal-btn').onclick = function() {
+      if (pendingConfirmAction) pendingConfirmAction();
+      closeConfirmModal();
+    };
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('.menu-container')) {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+      }
+    });
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -298,61 +431,185 @@
     });
 
     function initRealtimeNotifications(uid) {
-      const q = query(
-        collection(db, "Notifications"),
-        where("userId", "==", uid)
-      );
+      const q = query(collection(db, "Notifications"), where("userId", "==", uid));
 
       onSnapshot(q, (snapshot) => {
-        notifDocsList = [];
+        allNotifDocs = [];
         snapshot.forEach(docSnap => {
-          notifDocsList.push({ id: docSnap.id, ...docSnap.data() });
+          allNotifDocs.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        // Sort client-side by date newest first
-        notifDocsList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        allNotifDocs.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
-        renderNotifications(notifDocsList);
-        markAllAsRead(notifDocsList);
+        updateDashboardBadgeCount();
+
+        if (currentSelectedDate) {
+          renderNotificationsForDate(currentSelectedDate);
+        } else {
+          renderDateFolders();
+        }
       });
     }
 
-    function formatTime(isoStr) {
-      if (!isoStr) return 'Just now';
-      const d = new Date(isoStr);
-      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' • ' + d.toLocaleDateString();
+    function updateDashboardBadgeCount() {
+      const unreadItems = allNotifDocs.filter(i => !i.isRead);
+      const count = unreadItems.length;
+      window.updateYanDliNotificationBadge?.(count);
     }
 
-    function renderNotifications(items) {
+    window.updateYanDliNotificationBadge = function(count) {
+      document.querySelectorAll('.yan-notif-badge, #dashboard-notif-badge').forEach(el => {
+        el.textContent = count > 0 ? count : '';
+        el.style.display = count > 0 ? 'inline-block' : 'none';
+      });
+    };
+
+    // GROUP NOTIFICATIONS BY DATE (YYYY-MM-DD)
+    function renderDateFolders() {
+      document.getElementById('view-control-bar').style.display = 'none';
+      document.getElementById('header-clear-btn').style.display = 'none';
+      document.getElementById('header-mark-all-btn').style.display = 'none';
+
       const container = document.getElementById('notification-list-container');
-      const unreadText = document.getElementById('unread-count-text');
+      const subtitle = document.getElementById('unread-count-text');
 
-      const unreadCount = items.filter(i => !i.isRead).length;
-      unreadText.textContent = unreadCount > 0 ? `${unreadCount} unread alert${unreadCount > 1 ? 's' : ''}` : 'All caught up';
+      const dateMap = {};
+      allNotifDocs.forEach(item => {
+        if (!item.createdAt) return;
+        const dateKey = item.createdAt.split('T')[0]; // YYYY-MM-DD
+        if (!dateMap[dateKey]) dateMap[dateKey] = [];
+        dateMap[dateKey].push(item);
+      });
 
-      if (items.length === 0) {
+      const availableDates = Object.keys(dateMap).sort().reverse();
+      const totalUnread = allNotifDocs.filter(i => !i.isRead).length;
+      subtitle.textContent = totalUnread > 0 ? `${totalUnread} unread alert${totalUnread > 1 ? 's' : ''}` : 'All caught up';
+
+      if (availableDates.length === 0) {
         container.innerHTML = `
           <div class="empty-notif-box">
             <div class="empty-notif-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </div>
-            <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">No notifications yet</div>
-            <div style="font-size: 0.75rem;">Your scope activations, key records, and exam updates will show here.</div>
+            <div style="font-weight: 800; font-size: 0.82rem; color: var(--text-main);">No notification logs found</div>
+            <div style="font-size: 0.68rem;">Notifications will be stored under dates automatically.</div>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = items.map(item => {
+      container.innerHTML = availableDates.map(dateStr => {
+        const items = dateMap[dateStr];
+        const count = items.length;
+        const unreadCount = items.filter(i => !i.isRead).length;
+        const formattedDateName = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+        return `
+          <div class="date-folder-card" onclick="openDateFolder('${dateStr}')">
+            <div class="folder-left">
+              <div class="folder-icon-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div>
+                <div class="folder-title">${formattedDateName}</div>
+                <div class="folder-sub">${count} notification${count > 1 ? 's' : ''} stored</div>
+              </div>
+            </div>
+            <div class="folder-badges-group">
+              ${unreadCount > 0 ? `<div class="folder-badge unread-badge">${unreadCount} unread</div>` : ''}
+              <div class="folder-badge">${count} total</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.openDateFolder = function(dateStr) {
+      currentSelectedDate = dateStr;
+      renderNotificationsForDate(dateStr);
+    };
+
+    window.backToDateFolders = function() {
+      currentSelectedDate = null;
+      renderDateFolders();
+    };
+
+    function renderNotificationsForDate(dateStr) {
+      document.getElementById('view-control-bar').style.display = 'flex';
+      document.getElementById('header-clear-btn').style.display = 'block';
+      document.getElementById('header-mark-all-btn').style.display = 'block';
+
+      const container = document.getElementById('notification-list-container');
+      const subtitle = document.getElementById('unread-count-text');
+      const activeDateTitle = document.getElementById('active-date-title');
+
+      const formattedHeaderDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      activeDateTitle.textContent = formattedHeaderDate;
+
+      const filtered = allNotifDocs.filter(i => (i.createdAt || '').startsWith(dateStr));
+      const unreadOnDate = filtered.filter(i => !i.isRead).length;
+      subtitle.textContent = unreadOnDate > 0 ? `${unreadOnDate} unread on this date` : 'All caught up';
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-notif-box">
+            <div class="empty-notif-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div style="font-weight: 800; font-size: 0.82rem; color: var(--text-main);">No alerts stored for this date</div>
+            <div style="font-size: 0.68rem;">Click "Change Date" above to select another date.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
         const typeClass = item.type || 'info';
         const unreadClass = item.isRead ? '' : 'unread';
-        const formattedDate = formatTime(item.createdAt);
+        const formattedTime = new Date(item.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        let iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+        let iconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
         if (typeClass === 'success') {
-          iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+          iconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
         } else if (typeClass === 'warning') {
-          iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+          iconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+        }
+
+        const readActionLabel = item.isRead ? 'Mark Unread' : 'Mark Read';
+        const readActionIcon = item.isRead 
+          ? `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+          : `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+
+        const itemDateStr = (item.targetDate || item.createdAt || '').split('T')[0];
+        const titleText = (item.title || '');
+
+        // STRICT ACCURATE ROUTING ACCORDING TO NOTIFICATION SOURCE
+        let actionButtonHtml = '';
+        if (titleText.includes('Leaderboard') || titleText.includes('Top 50') || titleText.includes('Rank')) {
+          actionButtonHtml = `
+            <a href="leaderboard.html" class="notif-action-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> View Leaderboard
+            </a>
+          `;
+        } else if (titleText.includes('Performance') || titleText.includes('Mastery')) {
+          actionButtonHtml = `
+            <a href="analytics.html?date=${encodeURIComponent(itemDateStr)}" class="notif-action-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> View Analytics Report
+            </a>
+          `;
+        } else if (titleText.includes('Activation') || titleText.includes('PIN') || titleText.includes('Scope')) {
+          actionButtonHtml = `
+            <a href="activate.html" class="notif-action-btn">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> View Account
+            </a>
+          `;
+        } else {
+          // Standard Practice History / Subject Improvement
+          actionButtonHtml = `
+            <a href="history.html?date=${encodeURIComponent(itemDateStr)}" class="notif-action-btn">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> View Practice History
+            </a>
+          `;
         }
 
         return `
@@ -362,60 +619,111 @@
             </div>
             <div class="notif-content">
               <div class="notif-header">
-                <span class="notif-title">${item.title || 'System Notification'}</span>
-                <span class="notif-time">${formattedDate}</span>
+                <div class="notif-title-wrap">
+                  <span class="notif-title">${item.title || 'System Notification'}</span>
+                  <span class="notif-time">${formattedTime}</span>
+                </div>
+                <div class="menu-container">
+                  <button type="button" class="three-dots-btn" onclick="toggleDropdown(event, '${item.id}')" title="Options">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                  </button>
+                  <div class="dropdown-menu" id="menu-${item.id}">
+                    <button type="button" class="dropdown-item" onclick="toggleReadStatus('${item.id}', ${!item.isRead})">
+                      ${readActionIcon} ${readActionLabel}
+                    </button>
+                    <button type="button" class="dropdown-item delete-item" onclick="promptDeleteNotification('${item.id}', '${(item.title || 'Notification').replace(/'/g, "\\'")}')">
+                      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Delete
+                    </button>
+                  </div>
+                </div>
               </div>
               <div class="notif-message">${item.message || ''}</div>
+              ${actionButtonHtml}
             </div>
-            <button type="button" class="notif-delete-btn" onclick="deleteNotification('${item.id}')" title="Delete Notification">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
           </div>
         `;
       }).join('');
     }
 
-    async function markAllAsRead(items) {
-      const unread = items.filter(i => !i.isRead);
-      if (unread.length === 0) return;
-
-      const batch = writeBatch(db);
-      unread.forEach(i => {
-        const docRef = doc(db, "Notifications", i.id);
-        batch.update(docRef, { isRead: true });
+    window.toggleDropdown = function(event, id) {
+      event.stopPropagation();
+      const menu = document.getElementById(`menu-${id}`);
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        if (m !== menu) m.classList.remove('active');
       });
-      try {
-        await batch.commit();
-      } catch(e) {
-        console.error("Error marking read:", e);
-      }
-    }
+      menu.classList.toggle('active');
+    };
 
-    window.deleteNotification = async function(docId) {
+    window.toggleReadStatus = async function(docId, newReadStatus) {
       try {
-        await deleteDoc(doc(db, "Notifications", docId));
-        showToast("🗑️ Notification removed.");
+        await updateDoc(doc(db, "Notifications", docId), { isRead: newReadStatus });
+        showToast(newReadStatus ? "✓ Marked as read" : "ℹ️ Marked as unread");
       } catch(e) {
-        console.error("Delete error", e);
-        showToast("❌ Could not delete notification.");
+        console.error("Error updating status:", e);
+        showToast("❌ Could not update status.");
       }
     };
 
-    window.clearAllNotifications = async function() {
-      if (notifDocsList.length === 0) return;
-      if (!confirm("Are you sure you want to clear all notifications?")) return;
+    window.markAllCurrentDateRead = async function() {
+      if (!currentSelectedDate) return;
+      const filtered = allNotifDocs.filter(i => (i.createdAt || '').startsWith(currentSelectedDate) && !i.isRead);
+      if (filtered.length === 0) {
+        showToast("All items on this date are already read.");
+        return;
+      }
 
       try {
         const batch = writeBatch(db);
-        notifDocsList.forEach(i => {
-          batch.delete(doc(db, "Notifications", i.id));
+        filtered.forEach(i => {
+          batch.update(doc(db, "Notifications", i.id), { isRead: true });
         });
         await batch.commit();
-        showToast("🗑️ All notifications cleared.");
+        showToast("✓ All notifications on this date marked as read.");
       } catch(e) {
-        console.error("Clear all error", e);
-        showToast("❌ Could not clear notifications.");
+        console.error("Mark all read error:", e);
+        showToast("❌ Could not mark all as read.");
       }
+    };
+
+    window.promptDeleteNotification = function(docId, title) {
+      openConfirmModal(
+        "Delete Notification",
+        `Are you sure you want to delete "${title}"?`,
+        async function() {
+          try {
+            await deleteDoc(doc(db, "Notifications", docId));
+            showToast("🗑️ Notification removed.");
+          } catch(e) {
+            console.error("Delete error", e);
+            showToast("❌ Could not delete notification.");
+          }
+        }
+      );
+    };
+
+    window.confirmClearCurrentDateLogs = function() {
+      if (!currentSelectedDate) return;
+      const filtered = allNotifDocs.filter(i => (i.createdAt || '').startsWith(currentSelectedDate));
+      if (filtered.length === 0) return;
+
+      openConfirmModal(
+        "Clear Date Logs",
+        `Are you sure you want to clear all notifications stored on ${currentSelectedDate}?`,
+        async function() {
+          try {
+            const batch = writeBatch(db);
+            filtered.forEach(i => {
+              batch.delete(doc(db, "Notifications", i.id));
+            });
+            await batch.commit();
+            showToast("🗑️ Logs cleared for this date.");
+            backToDateFolders();
+          } catch(e) {
+            console.error("Clear error", e);
+            showToast("❌ Could not clear logs.");
+          }
+        }
+      );
     };
   </script>
 </body>

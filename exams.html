@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yan-Dli | All Faculties</title>
-  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +49,8 @@
 
     /* RESPONSIVE LAYOUT CONTAINER */
     .app-container {
-      width: 100%;      max-width: 480px;
+      width: 100%;
+      max-width: 480px;
       background: var(--bg-gray);
       min-height: 100vh;
       position: relative;
@@ -69,15 +72,44 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    .icon-btn {
-      background: none;
-      border: none;
+    /* OPay-Style Rounded Back Arrow Button */
+    .back-arrow-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--text-dark);
+      position: relative;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .back-arrow-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
       color: var(--primary);
-      padding: 4px;
+    }
+
+    .back-arrow-btn:active, .back-arrow-btn.animating {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2);
+    }
+
+    .back-arrow-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .chat-btn-group {
@@ -96,50 +128,9 @@
       fill: #25D366;
     }
 
-    .user-avatar-btn {      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      border: 1px solid rgba(124, 58, 237, 0.2);
-    }
-
-    .user-avatar-btn svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--primary);
-      fill: none;
-      stroke-width: 2;
-    }
-
     /* MAIN CONTENT AREA */
     .content-body {
       padding: 1rem;
-    }
-
-    /* BACK BUTTON & HEADER */
-    .back-btn-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.82rem;
-      margin-bottom: 0.85rem;
-    }
-
-    .back-btn-link svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--primary);
-      fill: none;
-      stroke-width: 2.5;
     }
 
     .page-header {
@@ -216,115 +207,6 @@
       font-weight: 500;
     }
 
-    /* DRAWER OVERLAY & SIDE NAVIGATION */
-    .drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 100;
-      display: none;
-      backdrop-filter: blur(2px);
-    }
-
-    .drawer-overlay.active {
-      display: block;
-    }
-
-    .drawer {
-      position: fixed;
-      top: 0;
-      left: -280px;
-      width: 280px;
-      height: 100vh;
-      background: var(--card-bg);
-      z-index: 101;
-      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;    }
-
-    .drawer.active {
-      left: 0;
-    }
-
-    .drawer-header {
-      background: var(--primary-light);
-      padding: 1.5rem 1.25rem 1.25rem;
-      position: relative;
-    }
-
-    .drawer-close-btn {
-      position: absolute;
-      top: 0.85rem;
-      right: 0.85rem;
-      background: none;
-      border: none;
-      font-size: 1.25rem;
-      color: var(--primary);
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .drawer-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #CBD5E1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 0.5rem;
-      color: #64748B;
-    }
-
-    .drawer-user-name {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--primary-hover);
-      line-height: 1.2;
-    }
-
-    .drawer-edit-link {
-      font-size: 0.78rem;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-block;
-      margin-top: 4px;    }
-
-    .drawer-menu {
-      padding: 0.75rem 0;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .drawer-item {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      padding: 0.75rem 1.25rem;
-      color: var(--text-dark);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: background 0.15s ease;
-    }
-
-    .drawer-item svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--primary);
-      fill: none;
-      stroke-width: 2;
-      flex-shrink: 0;
-    }
-
-    .drawer-item:hover {
-      background: var(--bg-gray);
-    }
-
     /* BOTTOM BAR */
     .bottom-nav {
       position: fixed;
@@ -341,7 +223,8 @@
       z-index: 30;
     }
 
-    .nav-item {      display: flex;
+    .nav-item {
+      display: flex;
       flex-direction: column;
       align-items: center;
       text-decoration: none;
@@ -371,26 +254,16 @@
 
     <!-- TOP HEADER -->
     <header class="top-bar">
-      <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Open Drawer Navigation">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="16" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
+      <button class="back-arrow-btn" id="back-dashboard-btn" title="Go to Dashboard" aria-label="Go to Dashboard">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
       <a href="https://wa.me/2348000000000" class="chat-btn-group" target="_blank">
         <span>Chat with us</span>
         <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.758.459 3.474 1.33 4.982l-1.413 5.161 5.282-1.385a9.923 9.923 0 004.79 1.228h.005c5.505 0 9.988-4.477 9.989-9.983A9.922 9.922 0 0012.012 2z"/></svg>
       </a>
-
-      <a href="account.html" class="user-avatar-btn" title="Account">
-        <svg viewBox="0 0 24 24">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </a>
     </header>
+
     <!-- CONTENT BODY -->
     <main class="content-body">
 
@@ -439,7 +312,8 @@
         <!-- GENERAL COURSES (GST) -->
         <a href="departments.html?faculty=gst" class="faculty-card">
           <div class="faculty-icon-box" style="background: #ECFDF5;">
-            <svg viewBox="0 0 24 24" style="stroke: #059669;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>          </div>
+            <svg viewBox="0 0 24 24" style="stroke: #059669;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
           <div>
             <div class="faculty-title">GST Courses</div>
             <div class="faculty-sub">General Practice</div>
@@ -449,58 +323,6 @@
       </div>
 
     </main>
-
-    <!-- SIDE DRAWER BACKDROP -->
-    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
-
-    <!-- SIDE NAVIGATION DRAWER -->
-    <aside id="drawer" class="drawer">
-      <div class="drawer-header">
-        <button class="drawer-close-btn" onclick="toggleDrawer(false)">&times;</button>
-        <div class="drawer-avatar">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </div>
-        <div class="drawer-user-name" id="drawer-user-name">User</div>
-        <a href="profile.html" class="drawer-edit-link">Edit Profile</a>
-      </div>
-
-      <nav class="drawer-menu">
-        <a href="dashboard.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Home
-        </a>
-        <a href="novels.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          Recommended Novels
-        </a>
-        <a href="results.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Practice History
-        </a>
-        <a href="analysis.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Performance Analysis
-        </a>
-        <a href="leaderboard.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-          Leaderboard
-        </a>
-        <a href="activate.html" class="drawer-item">          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Activation
-        </a>
-        <a href="https://wa.me/2348000000000" target="_blank" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          Chat with us
-        </a>
-        <a href="#" id="logout-btn" class="drawer-item" style="color: #EF4444;">
-          <svg viewBox="0 0 24 24" style="stroke: #EF4444;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Log out
-        </a>
-      </nav>
-    </aside>
 
     <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
@@ -537,11 +359,12 @@
     </nav>
 
   </div>
+
   <!-- FIREBASE ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -556,52 +379,22 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const userDocRef = doc(db, "Users", user.uid);
-          const docSnap = await getDoc(userDocRef);
-
-          let fullUserName = "";
-          if (docSnap.exists() && docSnap.data().name) {
-            fullUserName = docSnap.data().name;
-          } else if (user.displayName) {
-            fullUserName = user.displayName;
-          } else if (user.email) {
-            fullUserName = user.email.split('@')[0];
-          } else {
-            fullUserName = "User";
-          }
-
-          document.getElementById('drawer-user-name').innerText = fullUserName;
-        } catch (error) {
-          console.error("Error retrieving user profile:", error);
-        }
-      } else {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
         window.location.href = "index.html";
       }
     });
-
-    document.getElementById('logout-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });    });
   </script>
 
-  <!-- DRAWER TOGGLE FUNCTION -->
+  <!-- BACK ARROW NAVIGATION SCRIPT -->
   <script>
-    function toggleDrawer(open) {
-      const drawer = document.getElementById('drawer');
-      const overlay = document.getElementById('drawer-overlay');
-      if (open) {
-        drawer.classList.add('active');
-        overlay.classList.add('active');
-      } else {
-        drawer.classList.remove('active');
-        overlay.classList.remove('active');
-      }
-    }
+    document.getElementById('back-dashboard-btn').addEventListener('click', function() {
+      const btn = this;
+      btn.classList.add('animating');
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 180);
+    });
   </script>
 </body>
 </html>

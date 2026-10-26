@@ -4,182 +4,198 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Performance Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{--primary:#7C3AED;--primary-hover:#6D28D9;--primary-light:#F3E8FF;--bg-gray:#F8FAFC;--card-bg:#FFFFFF;--text-dark:#0F172A;--text-body:#334155;--text-muted:#64748B;--border-color:#E2E8F0;--border-light:#F1F5F9;--success:#10B981;--success-light:#ECFDF5;--danger:#EF4444;--danger-light:#FEF2F2;--warning:#F59E0B;--warning-light:#FFFBEB;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--shadow-sm:0 1px 2px rgba(0,0,0,0.03);--shadow-md:0 4px 12px -2px rgba(124,58,237,0.08);}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;letter-spacing:0.1px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
-    body{background:#EEF2F7;color:var(--text-body);}
-    .app-container{width:100%;max-width:480px;background:var(--bg-gray);min-height:100vh;position:relative;padding-bottom:90px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);margin:0 auto;}
-    .header{background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.9rem 1.1rem;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;}
-    .header-brand{display:flex;align-items:center;gap:10px;}
-    .btn-icon{background:var(--bg-gray);color:var(--text-dark);border:1px solid var(--border-color);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s ease;}
-    .btn-icon:active{transform:scale(0.95);background:var(--primary-light);color:var(--primary);}
-    .btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .header-title{font-size:0.98rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
-    .header-badge{background:var(--primary-light);color:var(--primary);font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.3px;}
-    .content-body{padding:1.1rem 1rem;}
-    
-    .loading-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted);}
-    .loading-spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;margin:0 auto 1rem;animation:spin 0.8s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg);}}
+    :root {
+      --primary: #8B5CF6;
+      --primary-dark: #7C3AED;
+      --primary-light: #F3E8FF;
+      --bg-body: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --warning: #F59E0B;
+      --warning-light: #FEF3C7;
+      --radius-app: 20px;
+      --radius-btn: 12px;
+      --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
 
-    .analytics-hero{background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);color:white;border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.1rem;box-shadow:var(--shadow-md);position:relative;overflow:hidden;}
-    .analytics-hero::after{content:'';position:absolute;right:-20px;bottom:-20px;width:120px;height:120px;background:rgba(255,255,255,0.08);border-radius:50%;pointer-events:none;}
-    .hero-subtitle{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;opacity:0.85;margin-bottom:2px;}
-    .hero-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;}
-    .hero-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15);}
-    .hero-stat-cell{display:flex;flex-direction:column;}
-    .hero-stat-lbl{font-size:0.62rem;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
-    .hero-stat-val{font-size:1rem;font-weight:700;margin-top:1px;}
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-    .section-title{font-size:0.85rem;font-weight:700;color:var(--text-dark);margin-bottom:0.65rem;display:flex;align-items:center;justify-content:space-between;}
-    
-    .stats-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem;}
-    .stat-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;box-shadow:var(--shadow-sm);}
-    .stat-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
-    .stat-card-icon.purple{background:var(--primary-light);color:var(--primary);}
-    .stat-card-icon.green{background:var(--success-light);color:var(--success);}
-    .stat-card-icon.orange{background:var(--warning-light);color:var(--warning);}
-    .stat-card-icon.blue{background:#EFF6FF;color:#3B82F6;}
-    .stat-card-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .stat-card-lbl{font-size:0.7rem;color:var(--text-muted);font-weight:600;margin-bottom:2px;}
-    .stat-card-val{font-size:1.15rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 930px;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
 
-    .analytics-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1.1rem;box-shadow:var(--shadow-sm);margin-bottom:1.25rem;}
-    
-    .breakdown-list{display:flex;flex-direction:column;gap:10px;}
-    .breakdown-item{display:flex;flex-direction:column;gap:4px;}
-    .breakdown-info{display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;}
-    .breakdown-name{font-weight:600;color:var(--text-dark);}
-    .breakdown-score{font-weight:700;color:var(--primary);}
-    .progress-bar-bg{width:100%;height:8px;background:var(--border-light);border-radius:4px;overflow:hidden;}
-    .progress-bar-fill{height:100%;background:var(--primary);border-radius:4px;transition:width 0.6s ease;}
-    .progress-bar-fill.green{background:var(--success);}
-    .progress-bar-fill.orange{background:var(--warning);}
-    .progress-bar-fill.red{background:var(--danger);}
+    @media (min-width: 500px) {
+      .app-shell {
+        height: 92vh;
+        border-radius: 32px;
+        border: 6px solid #0F172A;
+      }
+    }
 
-    .empty-state{text-align:center;padding:3.5rem 1.5rem;background:var(--card-bg);border-radius:var(--radius-md);border:1px dashed var(--border-color);margin-top:0.5rem;}
-    .empty-state svg{width:40px;height:40px;stroke:var(--text-muted);margin-bottom:0.85rem;stroke-width:1.6;}
-    .empty-state h4{font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-bottom:0.3rem;}
-    .empty-state p{font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.45;}
-    .btn-start-first{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 1.25rem;background:var(--primary);color:white;text-decoration:none;font-weight:600;font-size:0.78rem;border-radius:8px;border:none;cursor:pointer;}
+    /* HEADER */
+    .app-header {
+      padding: 14px 16px 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .header-left-group { display: flex; align-items: center; gap: 10px; }
 
-    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border-color);padding:10px 16px;display:flex;align-items:center;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,0.04);}
-    .btn-bottom-cta{width:100%;height:42px;border-radius:10px;background:var(--primary);color:white;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;}
-    .btn-bottom-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+    .back-btn {
+      width: 38px; height: 38px; border-radius: 50%; background: #F8FAFC; color: var(--text-main);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: all 0.2s ease;
+    }
+    .back-btn:hover { background: var(--primary-light); border-color: var(--primary-dark); color: var(--primary-dark); }
+    .back-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    .app-header-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
+    .app-header-subtitle { font-size: 0.68rem; color: var(--text-sub); font-weight: 600; }
+
+    /* VIEW CONTROL BAR (When inside a date folder) */
+    .view-control-bar {
+      padding: 10px 16px; background: #FFFFFF; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+    }
+    .active-date-label { font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
+    .change-date-btn {
+      background: var(--primary-light); color: var(--primary-dark); border: 1px solid rgba(139,92,246,0.2);
+      padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;
+    }
+    .change-date-btn:hover { background: #EDE9FE; }
+    .change-date-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+    .app-content {
+      flex: 1; overflow-y: auto; padding: 12px 16px 80px; scroll-behavior: smooth; display: flex; flex-direction: column; gap: 12px;
+    }
+
+    /* DATE FOLDER CARDS */
+    .date-folder-card {
+      background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 16px;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow-card);
+    }
+    .date-folder-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .folder-left { display: flex; align-items: center; gap: 12px; }
+    .folder-icon-box {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--primary-light); color: var(--primary-dark);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .date-folder-card:hover .folder-icon-box { background: #FFFFFF; }
+    .folder-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
+    .folder-sub { font-size: 0.68rem; color: var(--text-sub); font-weight: 600; }
+    .folder-badge { background: var(--primary); color: #FFFFFF; font-size: 0.68rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; }
+
+    /* ANALYTICS HERO CARD */
+    .analytics-hero {
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color: white; border-radius: 16px; padding: 1.15rem; box-shadow: 0 8px 20px -4px rgba(124,58,237,0.25); position: relative; overflow: hidden;
+    }
+    .hero-subtitle { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
+    .hero-title { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 6px; }
+    .hero-desc { font-size: 0.74rem; opacity: 0.95; font-weight: 500; line-height: 1.35; }
+    .hero-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.18); }
+    .hero-stat-cell { display: flex; flex-direction: column; }
+    .hero-stat-lbl { font-size: 0.6rem; opacity: 0.85; font-weight: 700; text-transform: uppercase; }
+    .hero-stat-val { font-size: 0.95rem; font-weight: 800; margin-top: 1px; }
+
+    /* METRICS GRID */
+    .stats-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 4px; }
+    .stat-card-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+    .stat-card-icon.purple { background: var(--primary-light); color: var(--primary-dark); }
+    .stat-card-icon.green { background: var(--success-light); color: var(--success); }
+    .stat-card-icon.orange { background: var(--warning-light); color: var(--warning); }
+    .stat-card-icon.blue { background: #EFF6FF; color: #2563EB; }
+    .stat-card-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    .stat-card-lbl { font-size: 0.68rem; color: var(--text-sub); font-weight: 700; }
+    .stat-card-val { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+
+    /* BREAKDOWN CARD */
+    .section-title { font-size: 0.82rem; font-weight: 800; color: var(--text-main); margin-top: 4px; display: flex; align-items: center; justify-content: space-between; }
+    .analytics-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: var(--shadow-card); }
+    .breakdown-list { display: flex; flex-direction: column; gap: 10px; }
+    .breakdown-item { display: flex; flex-direction: column; gap: 4px; }
+    .breakdown-info { display: flex; align-items: center; justify-content: space-between; font-size: 0.74rem; }
+    .breakdown-name { font-weight: 800; color: var(--text-main); }
+    .breakdown-score { font-weight: 800; color: var(--primary-dark); }
+    .progress-bar-bg { width: 100%; height: 7px; background: #F1F5F9; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--primary-dark); border-radius: 4px; transition: width 0.5s ease; }
+    .progress-bar-fill.green { background: var(--success); }
+    .progress-bar-fill.orange { background: var(--warning); }
+    .progress-bar-fill.red { background: var(--danger); }
+
+    /* EMPTY & LOADING STATES */
+    .empty-state { text-align: center; padding: 3rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-sub); }
+    .empty-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+    .loading-spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 10px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #FFFFFF; border-top: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; z-index: 30; }
+    .btn-bottom-cta { width: 100%; height: 40px; border-radius: var(--radius-btn); background: var(--primary); color: white; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; box-shadow: 0 4px 12px rgba(139,92,246,0.25); }
+    .btn-bottom-cta svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
   </style>
 </head>
 <body>
-<div class="app-container">
-  <header class="header">
-    <div class="header-brand">
-      <a href="dashboard.html" class="btn-icon" title="Back to Dashboard">
-        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+<div class="app-shell">
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-left-group">
+      <a href="dashboard.html" class="back-btn" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
-      <span class="header-title">Performance Analytics</span>
+      <div>
+        <h1 class="app-header-title">Performance Analytics</h1>
+        <p class="app-header-subtitle" id="header-subtitle">Loading metrics...</p>
+      </div>
     </div>
-    <span class="header-badge" id="analytics-badge">0 TESTS</span>
   </header>
 
-  <div class="content-body">
-    <div id="loading-state" class="loading-state">
-      <div class="loading-spinner"></div>
-      <div>Analyzing your exam metrics...</div>
-    </div>
-
-    <div id="analytics-content" style="display:none;">
-      <!-- Hero Overview Card -->
-      <div class="analytics-hero">
-        <div class="hero-subtitle">Overall Academic Standing</div>
-        <div class="hero-title" id="hero-avg-score">0%</div>
-        <div style="font-size:0.76rem;opacity:0.9;" id="hero-standing-text">Complete more practice tests to build your proficiency profile.</div>
-        <div class="hero-stats-row">
-          <div class="hero-stat-cell">
-            <span class="hero-stat-lbl">Exams Taken</span>
-            <span class="hero-stat-val" id="hero-total-exams">0</span>
-          </div>
-          <div class="hero-stat-cell">
-            <span class="hero-stat-lbl">Questions Solved</span>
-            <span class="hero-stat-val" id="hero-total-questions">0</span>
-          </div>
-          <div class="hero-stat-cell">
-            <span class="hero-stat-lbl">Pass Rate</span>
-            <span class="hero-stat-val" id="hero-pass-rate">0%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Metrics Grid -->
-      <div class="stats-grid-2">
-        <div class="stat-card">
-          <div class="stat-card-icon green">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-          <div class="stat-card-lbl">Best Score</div>
-          <div class="stat-card-val" id="stat-best-score">0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon orange">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          </div>
-          <div class="stat-card-lbl">Avg. Pace</div>
-          <div class="stat-card-val" id="stat-avg-pace">0s / q</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon purple">
-            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          </div>
-          <div class="stat-card-lbl">Total Time Spent</div>
-          <div class="stat-card-val" id="stat-total-time">0m</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon blue">
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          </div>
-          <div class="stat-card-lbl">Accuracy Rate</div>
-          <div class="stat-card-val" id="stat-accuracy">0%</div>
-        </div>
-      </div>
-
-      <!-- Subject Breakdown Section -->
-      <div class="section-title">
-        <span>Performance by Subject / Course</span>
-        <span style="font-size:0.72rem;color:var(--text-muted);font-weight:500;" id="subject-count-lbl">0 Subjects</span>
-      </div>
-      <div class="analytics-card">
-        <div class="breakdown-list" id="subject-breakdown-list">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
-
-      <!-- Score Distribution Section -->
-      <div class="section-title">
-        <span>Score Band Distribution</span>
-      </div>
-      <div class="analytics-card">
-        <div class="breakdown-list" id="score-distribution-list">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div id="empty-state" class="empty-state" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 20V10M12 20V4M6 20v-6"></path>
-      </svg>
-      <h4>No Analytics Data Yet</h4>
-      <p>Complete your first CBT practice test or exam simulation to generate performance metrics.</p>
-      <a href="exams.html" class="btn-start-first">Start Practice Exam</a>
-    </div>
+  <!-- VIEW CONTROL BAR (Appears inside a date folder) -->
+  <div id="view-control-bar" class="view-control-bar" style="display: none;">
+    <span class="active-date-label" id="active-date-title">October 20, 2026</span>
+    <button type="button" class="change-date-btn" onclick="backToDateFolders()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Change Date
+    </button>
   </div>
 
+  <!-- CONTENT CONTAINER -->
+  <main class="app-content" id="analytics-content-container">
+    <div class="empty-state">
+      <div class="loading-spinner"></div>
+      <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">Analyzing exam metrics...</div>
+    </div>
+  </main>
+
+  <!-- BOTTOM CTA NAV -->
   <nav class="bottom-nav">
     <a href="exams.html" class="btn-bottom-cta">
-      <svg viewBox="0 0 24 24">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Take New Practice Test
     </a>
   </nav>
@@ -188,7 +204,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -204,16 +220,17 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let historyRecords = [];
+let currentSelectedDate = null; // null = viewing date folders list
+let currentUserId = null;
 
 const getLocalHistoryKey = uid => `yan_exam_history_${uid}`;
-const getCanonicalSessionKey = (uid, sessionId) => `yan_exam_session_${uid}_${sessionId}`;
 
-function safeParse(value) { try { return JSON.parse(value); } catch { return null; } }
+function safeParse(val) { try { return JSON.parse(val); } catch { return null; } }
 function safeLocalGet(key) { try { return safeParse(localStorage.getItem(key)); } catch { return null; } }
 
-function escapeHTML(value) {
-  if (value == null) return "";
-  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+function escapeHTML(val) {
+  if (val == null) return "";
+  return String(val).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function getQuestions(record) {
@@ -228,14 +245,8 @@ function getRecordTime(record) {
   const values = [record.submittedAt, record.completedAt, record.finishedAt, record.timestamp, record.createdAt, record.updatedAt];
   for (const v of values) {
     if (!v) continue;
-    if (typeof v === "object" && typeof v.toDate === "function") {
-      const t = v.toDate().getTime();
-      if (!Number.isNaN(t)) return t;
-    }
-    if (typeof v === "object" && v.seconds != null) {
-      const t = Number(v.seconds) * 1000;
-      if (!Number.isNaN(t)) return t;
-    }
+    if (typeof v === "object" && typeof v.toDate === "function") return v.toDate().getTime();
+    if (typeof v === "object" && v.seconds != null) return Number(v.seconds) * 1000;
     if (typeof v === "number") return v > 10000000000 ? v : v * 1000;
     if (typeof v === "string") {
       const t = new Date(v).getTime();
@@ -250,8 +261,7 @@ function getStableRecordId(record) {
   const possibleIds = [record.sessionId, record.examSessionId, record.attemptId, record.historyId, record.recordId, record.id];
   for (const v of possibleIds) if (v !== undefined && v !== null && String(v).trim()) return String(v);
   const t = getRecordTime(record);
-  if (t) return `session_${t}`;
-  return `session_${Date.now()}`;
+  return t ? `session_${t}` : `session_${Date.now()}`;
 }
 
 function normalizeSession(record) {
@@ -259,9 +269,8 @@ function normalizeSession(record) {
   const qs = getQuestions(record);
   const total = Number(record.totalQuestions ?? record.total ?? qs.length ?? 0);
   const correct = Number(record.correctAnswersCount ?? record.correctCount ?? 0);
-  const wrong = Number(record.wrongAnswersCount ?? record.wrongCount ?? 0);
   const score = record.scorePercentage !== undefined ? Number(record.scorePercentage) : record.score !== undefined ? Number(record.score) : total > 0 ? Math.round((correct / total) * 100) : 0;
-  return { ...record, totalQuestions: total, correctCount: correct, wrongCount: wrong, score, scorePercentage: score };
+  return { ...record, totalQuestions: total, correctCount: correct, score, scorePercentage: score };
 }
 
 function collectAllLocalRecords(uid) {
@@ -278,7 +287,7 @@ function collectAllLocalRecords(uid) {
       const data = safeLocalGet(key);
       if (data && typeof data === "object") records.push(normalizeSession(data));
     }
-  } catch (e) { console.warn("Local scan error:", e); }
+  } catch (e) {}
   return records.filter(Boolean);
 }
 
@@ -288,14 +297,44 @@ async function fetchFirestoreHistory(uid) {
     const q = query(collection(db, "ExamHistory"), where("userId", "==", uid));
     const snap = await getDocs(q);
     snap.forEach(docSnap => {
-      const data = docSnap.data();
-      records.push(normalizeSession({ ...data, id: docSnap.id }));
+      records.push(normalizeSession({ ...docSnap.data(), id: docSnap.id }));
     });
-  } catch (e) { console.warn("Remote fetch error:", e); }
+  } catch (e) {}
   return records;
 }
 
+/**
+ * AUTOMATIC MILESTONE DISPATCHER FOR ANALYTICS
+ */
+async function evaluateAnalyticsMilestones(uid, records) {
+  if (!uid || !records || records.length === 0) return;
+
+  const totalExams = records.length;
+  const avgScore = Math.round(records.reduce((sum, r) => sum + (r.scorePercentage ?? 0), 0) / totalExams);
+  const todayDateStr = new Date().toISOString().split('T')[0];
+
+  // Milestone: 5+ tests completed with 70%+ high mastery
+  if (totalExams >= 3 && avgScore >= 70) {
+    const cooldownKey = `yan_notif_mastery_${uid}_${todayDateStr}`;
+    if (!localStorage.getItem(cooldownKey)) {
+      try {
+        await addDoc(collection(db, "Notifications"), {
+          userId: uid,
+          title: "🎯 Outstanding Performance Level!",
+          message: `Impressive mastery! You've completed ${totalExams} practice tests with an overall average score of ${avgScore}%.`,
+          type: "success",
+          targetDate: todayDateStr,
+          isRead: false,
+          createdAt: new Date().toISOString()
+        });
+        localStorage.setItem(cooldownKey, "true");
+      } catch(e) {}
+    }
+  }
+}
+
 async function loadAnalyticsData(userId) {
+  currentUserId = userId;
   const local = collectAllLocalRecords(userId);
   const map = new Map();
   local.forEach(r => map.set(getStableRecordId(r), r));
@@ -307,38 +346,135 @@ async function loadAnalyticsData(userId) {
 
   historyRecords = Array.from(map.values()).sort((a, b) => getRecordTime(b) - getRecordTime(a));
   
-  document.getElementById("loading-state").style.display = "none";
-  if (!historyRecords.length) {
-    document.getElementById("empty-state").style.display = "block";
-    document.getElementById("analytics-content").style.display = "none";
-    document.getElementById("analytics-badge").innerText = "0 TESTS";
+  evaluateAnalyticsMilestones(userId, historyRecords);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetDateParam = urlParams.get('date');
+  if (targetDateParam && !currentSelectedDate) {
+    currentSelectedDate = targetDateParam;
+  }
+
+  renderCurrentState();
+}
+
+function renderCurrentState() {
+  if (currentSelectedDate) {
+    renderAnalyticsForDate(currentSelectedDate);
+  } else {
+    renderDateFolders();
+  }
+}
+
+// GROUP ANALYTICS BY STORED DATES (YYYY-MM-DD)
+function renderDateFolders() {
+  document.getElementById('view-control-bar').style.display = 'none';
+  const container = document.getElementById('analytics-content-container');
+  const subtitle = document.getElementById('header-subtitle');
+
+  const dateMap = {};
+  historyRecords.forEach(item => {
+    const time = getRecordTime(item) || Date.now();
+    const d = new Date(time);
+    const dateKey = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+    if (!dateMap[dateKey]) dateMap[dateKey] = [];
+    dateMap[dateKey].push(item);
+  });
+
+  const availableDates = Object.keys(dateMap).sort().reverse();
+  subtitle.textContent = availableDates.length > 0 ? `${availableDates.length} stored date${availableDates.length > 1 ? 's' : ''}` : 'No analytics logs';
+
+  if (availableDates.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">No Analytics Data Yet</div>
+        <div style="font-size: 0.72rem;">Complete a practice exam to generate performance metrics.</div>
+      </div>
+    `;
     return;
   }
 
-  document.getElementById("empty-state").style.display = "none";
-  document.getElementById("analytics-content").style.display = "block";
-  document.getElementById("analytics-badge").innerText = `${historyRecords.length} TEST${historyRecords.length === 1 ? "" : "S"}`;
-  
-  computeAndRenderAnalytics();
+  container.innerHTML = availableDates.map(dateStr => {
+    const count = dateMap[dateStr].length;
+    const formattedDateName = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+    return `
+      <div class="date-folder-card" onclick="openDateFolder('${dateStr}')">
+        <div class="folder-left">
+          <div class="folder-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="folder-title">${formattedDateName}</div>
+            <div class="folder-sub">${count} test attempt${count > 1 ? 's' : ''} analyzed</div>
+          </div>
+        </div>
+        <div class="folder-badge">${count}</div>
+      </div>
+    `;
+  }).join('');
 }
 
-function computeAndRenderAnalytics() {
-  const totalExams = historyRecords.length;
+window.openDateFolder = function(dateStr) {
+  currentSelectedDate = dateStr;
+  renderAnalyticsForDate(dateStr);
+};
+
+window.backToDateFolders = function() {
+  currentSelectedDate = null;
+  if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.pathname);
+  }
+  renderDateFolders();
+};
+
+function renderAnalyticsForDate(dateStr) {
+  document.getElementById('view-control-bar').style.display = 'flex';
+  const container = document.getElementById('analytics-content-container');
+  const subtitle = document.getElementById('header-subtitle');
+  const activeDateTitle = document.getElementById('active-date-title');
+
+  const formattedHeaderDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  activeDateTitle.textContent = formattedHeaderDate;
+
+  const filtered = historyRecords.filter(item => {
+    const time = getRecordTime(item) || Date.now();
+    const d = new Date(time);
+    const itemDateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+    return itemDateStr === dateStr;
+  });
+
+  subtitle.textContent = `${filtered.length} attempt${filtered.length !== 1 ? 's' : ''} on this date`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">No logs found for this date</div>
+        <div style="font-size: 0.72rem;">Click "Change Date" above to select another date.</div>
+      </div>
+    `;
+    return;
+  }
+
+  // Calculate Metrics for this specific date
+  const totalExams = filtered.length;
   let totalQuestionsSolved = 0;
   let totalCorrectAnswers = 0;
-  let totalWrongAnswers = 0;
   let totalTimeSeconds = 0;
   let bestScore = 0;
   let passingExams = 0;
   let scoreSum = 0;
-
   const subjectMap = {};
 
-  historyRecords.forEach(rec => {
+  filtered.forEach(rec => {
     const score = Number(rec.scorePercentage ?? rec.score ?? 0);
     const totalQ = Number(rec.totalQuestions || getQuestions(rec).length || 0);
     const correctQ = Number(rec.correctCount ?? rec.correctAnswersCount ?? 0);
-    const wrongQ = Number(rec.wrongCount ?? rec.wrongAnswersCount ?? 0);
     const timeSpent = Number(rec.timeSpentSeconds ?? rec.durationSeconds ?? rec.timeSpent ?? 0);
     const course = rec.courseCode || rec.courseTitle || rec.courseName || rec.subject || rec.examTitle || "General Practice";
 
@@ -348,7 +484,6 @@ function computeAndRenderAnalytics() {
 
     totalQuestionsSolved += totalQ;
     totalCorrectAnswers += correctQ;
-    totalWrongAnswers += wrongQ;
     totalTimeSeconds += timeSpent;
 
     if (!subjectMap[course]) subjectMap[course] = { count: 0, totalScore: 0 };
@@ -362,73 +497,91 @@ function computeAndRenderAnalytics() {
   const avgPace = totalQuestionsSolved > 0 ? Math.round(totalTimeSeconds / totalQuestionsSolved) : 0;
   const totalMins = Math.round(totalTimeSeconds / 60);
 
-  // Render Hero
-  document.getElementById("hero-avg-score").innerText = `${avgScore}%`;
-  document.getElementById("hero-total-exams").innerText = totalExams;
-  document.getElementById("hero-total-questions").innerText = totalQuestionsSolved;
-  document.getElementById("hero-pass-rate").innerText = `${passRate}%`;
+  let standingMsg = "Good consistency. Keep taking tests regularly to improve performance.";
+  if (avgScore >= 75) standingMsg = "Top tier daily standing! Excellent accuracy and course mastery.";
+  else if (avgScore >= 50) standingMsg = "Solid progress made on this date. Review incorrect answers to boost scores.";
 
-  let standingMsg = "Keep practicing regularly to master your examination subjects.";
-  if (avgScore >= 75) standingMsg = "Excellent performance level! You are well prepared for top exam scores.";
-  else if (avgScore >= 50) standingMsg = "Good progress. Focus on reviewing incorrect answers to boost mastery.";
-  document.getElementById("hero-standing-text").innerText = standingMsg;
+  const subjectEntries = Object.entries(subjectMap);
 
-  // Render Stats Cards
-  document.getElementById("stat-best-score").innerText = `${bestScore}%`;
-  document.getElementById("stat-avg-pace").innerText = `${avgPace}s / q`;
-  document.getElementById("stat-total-time").innerText = totalMins > 60 ? `${(totalMins/60).toFixed(1)}h` : `${totalMins}m`;
-  document.getElementById("stat-accuracy").innerText = `${accuracyRate}%`;
-
-  // Render Subject Breakdown
-  const subjectListEl = document.getElementById("subject-breakdown-list");
-  subjectListEl.innerHTML = "";
-  const subjects = Object.entries(subjectMap);
-  document.getElementById("subject-count-lbl").innerText = `${subjects.length} Subject${subjects.length === 1 ? "" : "s"}`;
-
-  subjects.forEach(([name, data]) => {
-    const avgSubScore = Math.round(data.totalScore / data.count);
-    const fillClass = avgSubScore >= 70 ? "" : avgSubScore >= 50 ? "orange" : "red";
-    const item = document.createElement("div");
-    item.className = "breakdown-item";
-    item.innerHTML = `
-      <div class="breakdown-info">
-        <span class="breakdown-name">${escapeHTML(name)}</span>
-        <span class="breakdown-score">${avgSubScore}% avg (${data.count} test${data.count === 1 ? "" : "s"})</span>
+  container.innerHTML = `
+    <!-- HERO STANDING CARD -->
+    <div class="analytics-hero">
+      <div class="hero-subtitle">Daily Academic Standing</div>
+      <div class="hero-title">${avgScore}%</div>
+      <div class="hero-desc">${standingMsg}</div>
+      <div class="hero-stats-row">
+        <div class="hero-stat-cell">
+          <span class="hero-stat-lbl">Exams Taken</span>
+          <span class="hero-stat-val">${totalExams}</span>
+        </div>
+        <div class="hero-stat-cell">
+          <span class="hero-stat-lbl">Questions</span>
+          <span class="hero-stat-val">${totalQuestionsSolved}</span>
+        </div>
+        <div class="hero-stat-cell">
+          <span class="hero-stat-lbl">Pass Rate</span>
+          <span class="hero-stat-val">${passRate}%</span>
+        </div>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill ${fillClass}" style="width: ${Math.min(100, Math.max(5, avgSubScore))}%"></div>
-      </div>
-    `;
-    subjectListEl.appendChild(item);
-  });
+    </div>
 
-  // Render Score Distribution Bands
-  const bands = { "Distinction (70% - 100%)": 0, "Credit (50% - 69%)": 0, "Pass (40% - 49%)": 0, "Needs Improvement (<40%)": 0 };
-  historyRecords.forEach(rec => {
-    const s = Number(rec.scorePercentage ?? rec.score ?? 0);
-    if (s >= 70) bands["Distinction (70% - 100%)"]++;
-    else if (s >= 50) bands["Credit (50% - 69%)"]++;
-    else if (s >= 40) bands["Pass (40% - 49%)"]++;
-    else bands["Needs Improvement (<40%)"]++;
-  });
+    <!-- QUICK METRICS GRID -->
+    <div class="stats-grid-2">
+      <div class="stat-card">
+        <div class="stat-card-icon green">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="stat-card-lbl">Best Daily Score</div>
+        <div class="stat-card-val">${bestScore}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon orange">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="stat-card-lbl">Avg Pace</div>
+        <div class="stat-card-val">${avgPace}s / q</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon purple">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="stat-card-lbl">Time Spent</div>
+        <div class="stat-card-val">${totalMins > 60 ? `${(totalMins/60).toFixed(1)}h` : `${totalMins}m`}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon blue">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="stat-card-lbl">Accuracy Rate</div>
+        <div class="stat-card-val">${accuracyRate}%</div>
+      </div>
+    </div>
 
-  const distListEl = document.getElementById("score-distribution-list");
-  distListEl.innerHTML = "";
-  Object.entries(bands).forEach(([bandName, count]) => {
-    const pct = Math.round((count / totalExams) * 100);
-    const item = document.createElement("div");
-    item.className = "breakdown-item";
-    item.innerHTML = `
-      <div class="breakdown-info">
-        <span class="breakdown-name">${escapeHTML(bandName)}</span>
-        <span class="breakdown-score">${count} test${count === 1 ? "" : "s"} (${pct}%)</span>
+    <!-- SUBJECT BREAKDOWN -->
+    <div class="section-title">
+      <span>Subject Performance</span>
+      <span style="font-size:0.72rem;color:var(--text-sub);font-weight:600;">${subjectEntries.length} Subject${subjectEntries.length === 1 ? '' : 's'}</span>
+    </div>
+    <div class="analytics-card">
+      <div class="breakdown-list">
+        ${subjectEntries.map(([name, data]) => {
+          const avgSubScore = Math.round(data.totalScore / data.count);
+          const fillClass = avgSubScore >= 70 ? "green" : avgSubScore >= 50 ? "orange" : "red";
+          return `
+            <div class="breakdown-item">
+              <div class="breakdown-info">
+                <span class="breakdown-name">${escapeHTML(name)}</span>
+                <span class="breakdown-score">${avgSubScore}% avg (${data.count} test${data.count === 1 ? '' : 's'})</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill ${fillClass}" style="width: ${Math.min(100, Math.max(5, avgSubScore))}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('')}
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" style="width: ${Math.min(100, Math.max(0, pct))}%"></div>
-      </div>
-    `;
-    distListEl.appendChild(item);
-  });
+    </div>
+  `;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Dashboard</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7C3AED">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7C3AED; --primary-dark: #6D28D9; --primary-light: #F3E8FF;
+      --bg-gray: #F8FAFC; --card-bg: #FFFFFF; --text-dark: #0F172A; --text-muted: #64748B;
+      --border: #E2E8F0; --radius-lg: 16px; --radius-md: 12px;
+    }
+    *, html { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+    body { background: var(--bg-gray); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: var(--card-bg); min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 25px 50px rgba(0,0,0,0.1); }
+    
+    /* Header */
+    .header { padding: 1rem; background: white; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 30; }
+    .brand { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+
+    .content { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    /* INSTALL APP BANNER */
+    #install-app-container { display: none; background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: var(--radius-lg); padding: 14px; color: white; box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2); }
+    .install-flex { display: flex; align-items: center; gap: 12px; }
+    .install-icon { width: 42px; height: 42px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .install-title { font-size: 0.88rem; font-weight: 800; }
+    .install-sub { font-size: 0.7rem; opacity: 0.9; margin-top: 2px; }
+    #btn-install-trigger { width: 100%; margin-top: 10px; background: #FFFFFF; color: var(--primary); border: none; border-radius: 10px; padding: 10px; font-size: 0.78rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+    /* JUMIA-STYLE AUTO-SCROLLING ADS CAROUSEL */
+    .ads-carousel-wrapper { width: 100%; overflow: hidden; border-radius: var(--radius-lg); position: relative; background: #EDE9FE; border: 1px solid var(--border); }
+    .ads-track { display: flex; transition: transform 0.5s ease-in-out; width: 500%; }
+    .ad-slide { width: 20%; flex-shrink: 0; padding: 1.2rem; color: white; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; }
+    
+    /* 5 Unique Background Themes for the 5 Banners */
+    .ad-slide:nth-child(1) { background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%); }
+    .ad-slide:nth-child(2) { background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%); }
+    .ad-slide:nth-child(3) { background: linear-gradient(135deg, #059669 0%, #065F46 100%); }
+    .ad-slide:nth-child(4) { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); }
+    .ad-slide:nth-child(5) { background: linear-gradient(135deg, #DB2777 0%, #9D174D 100%); }
+
+    .ad-badge { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 20px; align-self: flex-start; margin-bottom: 6px; }
+    .ad-title { font-size: 0.95rem; font-weight: 800; line-height: 1.25; margin-bottom: 4px; }
+    .ad-desc { font-size: 0.72rem; opacity: 0.9; margin-bottom: 10px; }
+    .ad-btn { background: #FFFFFF; color: #0F172A; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer; align-self: flex-start; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+    /* Carousel Dots */
+    .carousel-dots { display: flex; justify-content: center; gap: 5px; margin-top: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #CBD5E1; cursor: pointer; transition: all 0.3s; }
+    .dot.active { width: 18px; border-radius: 4px; background: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header class="header">
+    <div class="brand">Yan-Dli Dashboard</div>
+  </header>
+
+  <main class="content">
+    
+    <!-- INSTALL APP BANNER -->
+    <div id="install-app-container">
+      <div class="install-flex">
+        <div class="install-icon">⭐</div>
+        <div>
+          <div class="install-title">Install Yan-Dli App</div>
+          <div class="install-sub">Access Nigeria's 1st distance learning platform offline.</div>
+        </div>
+      </div>
+      <button id="btn-install-trigger">Install App Now 🚀</button>
+    </div>
+
+    <!-- JUMIA-STYLE AUTO-SCROLLING AD BANNER (5 SLIDES) -->
+    <div>
+      <div class="ads-carousel-wrapper">
+        <div class="ads-track" id="adsTrack">
+          
+          <!-- Slide 1 -->
+          <div class="ad-slide">
+            <div>
+              <span class="ad-badge">Announcement</span>
+              <div class="ad-title">Thousands of Exams Ready Offline</div>
+              <div class="ad-desc">Practice anytime across faculties without using data.</div>
+            </div>
+            <a href="exams.html" class="ad-btn">Start Practicing →</a>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="ad-slide">
+            <div>
+              <span class="ad-badge">New Update</span>
+              <div class="ad-title">Distance Learning Portal 2.0</div>
+              <div class="ad-desc">Seamless course bundles & automated GPA calculators added.</div>
+            </div>
+            <a href="departments.html" class="ad-btn">Explore Courses →</a>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="ad-slide">
+            <div>
+              <span class="ad-badge">Featured Partner</span>
+              <div class="ad-title">Top-Made Realty Homes</div>
+              <div class="ad-desc">Explore verified student accommodations & luxury properties.</div>
+            </div>
+            <a href="support.html" class="ad-btn">Learn More →</a>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="ad-slide">
+            <div>
+              <span class="ad-badge">Exam Prep</span>
+              <div class="ad-title">Master Your CBT Practice</div>
+              <div class="ad-desc">Get detailed step-by-step solutions for difficult questions.</div>
+            </div>
+            <a href="exams.html" class="ad-btn">Take a Test →</a>
+          </div>
+
+          <!-- Slide 5 -->
+          <div class="ad-slide">
+            <div>
+              <span class="ad-badge">Support</span>
+              <div class="ad-title">Need Help or PIN Activation?</div>
+              <div class="ad-desc">Reach out to our student support desk instantly 24/7.</div>
+            </div>
+            <a href="support.html" class="ad-btn">Contact Us →</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Carousel Navigation Dots -->
+      <div class="carousel-dots" id="carouselDots">
+        <span class="dot active" onclick="currentSlide(0)"></span>
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  /* --- INSTALL PROMPT SCRIPT --- */
+  let deferredPrompt;
+  const installContainer = document.getElementById('install-app-container');
+  const installButton = document.getElementById('btn-install-trigger');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installContainer.style.display = 'block';
+  });
+
+  installButton.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('App installed successfully');
+    }
+    deferredPrompt = null;
+    installContainer.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installContainer.style.display = 'none';
+  });
+
+
+  /* --- JUMIA-STYLE AUTO-SCROLLING CAROUSEL SCRIPT --- */
+  let currentAdIndex = 0;
+  const totalSlides = 5;
+  const track = document.getElementById('adsTrack');
+  const dots = document.querySelectorAll('.dot');
+
+  function updateCarousel() {
+    track.style.transform = `translateX(-${currentAdIndex * (100 / totalSlides)}%)`;
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentAdIndex);
+    });
+  }
+
+  function nextSlide() {
+    currentAdIndex = (currentAdIndex + 1) % totalSlides;
+    updateCarousel();
+  }
+
+  function currentSlide(index) {
+    currentAdIndex = index;
+    updateCarousel();
+  }
+
+  // Auto-slide every 3.5 seconds
+  let adInterval = setInterval(nextSlide, 3500);
+
+  // Pause auto-slide when user touches/interacts with the banner
+  const wrapper = document.querySelector('.ads-carousel-wrapper');
+  wrapper.addEventListener('mouseenter', () => clearInterval(adInterval));
+  wrapper.addEventListener('mouseleave', () => adInterval = setInterval(nextSlide, 3500));
+</script>
+
+</body>
+</html>

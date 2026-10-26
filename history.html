@@ -4,161 +4,210 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Practice History</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{--primary:#7C3AED;--primary-hover:#6D28D9;--primary-light:#F3E8FF;--bg-gray:#F8FAFC;--card-bg:#FFFFFF;--text-dark:#0F172A;--text-body:#334155;--text-muted:#64748B;--border-color:#E2E8F0;--border-light:#F1F5F9;--success:#10B981;--success-light:#ECFDF5;--danger:#EF4444;--danger-light:#FEF2F2;--warning:#F59E0B;--warning-light:#FFFBEB;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--shadow-sm:0 1px 2px rgba(0,0,0,0.03);--shadow-md:0 4px 12px -2px rgba(124,58,237,0.08);}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;letter-spacing:0.1px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
-    body{background:#EEF2F7;}
-    .app-container{width:100%;max-width:480px;background:var(--bg-gray);min-height:100vh;position:relative;padding-bottom:90px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);margin:0 auto;}
-    .header{background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.9rem 1.1rem;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;}
-    .header-brand{display:flex;align-items:center;gap:10px;}
-    .btn-icon{background:var(--bg-gray);color:var(--text-dark);border:1px solid var(--border-color);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s ease;}
-    .btn-icon:active{transform:scale(0.95);background:var(--primary-light);color:var(--primary);}
-    .btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .header-title{font-size:0.98rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
-    .header-badge{background:var(--primary-light);color:var(--primary);font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.3px;}
-    .content-body{padding:1.1rem 1rem;}
-    .loading-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted);display:none;}
-    .loading-spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;margin:0 auto 1rem;animation:spin 0.8s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    .month-group{margin-bottom:1.5rem;}
-    .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;padding:0 2px;}
-    .month-title{font-size:0.82rem;font-weight:700;color:var(--text-dark);letter-spacing:-0.01em;}
-    .month-sub{font-size:0.75rem;color:var(--text-muted);font-weight:500;}
-    .dates-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-    .date-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.75rem 0.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s ease;box-shadow:var(--shadow-sm);}
-    .date-card:hover{border-color:var(--primary);}
-    .date-card:active{transform:scale(0.96);border-color:var(--primary);background:var(--primary-light);}
-    .date-card .day-number{font-size:1.1rem;font-weight:700;color:var(--text-dark);line-height:1.2;}
-    .date-card .attempt-count{font-size:0.65rem;font-weight:600;color:var(--text-muted);margin-top:3px;}
-    .drilldown-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);}
-    .back-btn-inline{display:flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:600;color:var(--primary);background:var(--primary-light);padding:6px 12px;border-radius:20px;border:none;cursor:pointer;transition:all 0.2s ease;}
-    .back-btn-inline:active{transform:scale(0.95);}
-    .back-btn-inline svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .drilldown-date-title{font-size:0.9rem;font-weight:700;color:var(--text-dark);}
-    .session-card{background:var(--card-bg);border-radius:var(--radius-md);padding:1rem;border:1px solid var(--border-color);box-shadow:var(--shadow-sm);margin-bottom:0.85rem;}
-    .session-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;gap:10px;}
-    .course-title{font-size:0.88rem;font-weight:700;color:var(--text-dark);line-height:1.3;word-break:break-word;}
-    .time-sub{font-size:0.7rem;color:var(--text-muted);margin-top:2px;}
+    :root{--primary:#8B5CF6;--primary-dark:#7C3AED;--primary-light:#F3E8FF;--bg-body:#F8FAFC;--card-bg:#FFFFFF;--text-main:#0F172A;--text-sub:#64748B;--border:#E2E8F0;--success:#10B981;--success-light:#D1FAE5;--danger:#EF4444;--danger-light:#FEE2E2;--warning:#F59E0B;--warning-light:#FEF3C7;--radius-app:20px;--radius-btn:12px;--shadow-card:0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);--font-family:'Plus Jakarta Sans',-apple-system,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-family);-webkit-tap-highlight-color:transparent;}
+    body{background-color:var(--bg-body);color:var(--text-main);min-height:100vh;display:flex;justify-content:center;align-items:center;}
+    
+    .app-shell{
+      width:100%;
+      max-width:480px;
+      height:100vh;
+      max-height:930px;
+      background-color:#FFFFFF;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 25px 50px -12px rgba(15,23,42,0.15);
+    }
+    @media (min-width: 500px) {
+      .app-shell{height:92vh;border-radius:32px;border:6px solid #0F172A;}
+    }
+
+    .app-header{
+      padding:14px 16px 12px;
+      background:#FFFFFF;
+      border-bottom:1px solid #F1F5F9;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:10;
+    }
+    .header-left-group{display:flex;align-items:center;gap:10px;}
+
+    .back-btn{
+      width:38px;height:38px;border-radius:50%;background:#F8FAFC;color:var(--text-main);
+      border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s ease;
+    }
+    .back-btn:hover{background:var(--primary-light);border-color:var(--primary-dark);color:var(--primary-dark);}
+    .back-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+    .app-header-title{font-size:0.95rem;font-weight:800;color:var(--text-main);}
+    .app-header-subtitle{font-size:0.68rem;color:var(--text-sub);font-weight:600;}
+
+    /* VIEW CONTROL BAR (When inside a specific date folder) */
+    .view-control-bar{
+      padding:10px 16px;background:#FFFFFF;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;
+    }
+    .active-date-label{font-size:0.85rem;font-weight:800;color:var(--text-main);}
+    .change-date-btn{
+      background:var(--primary-light);color:var(--primary-dark);border:1px solid rgba(139,92,246,0.2);
+      padding:5px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all 0.2s;
+    }
+    .change-date-btn:hover{background:#EDE9FE;}
+    .change-date-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.5;fill:none;}
+
+    .app-content{
+      flex:1;overflow-y:auto;padding:12px 16px 80px;scroll-behavior:smooth;display:flex;flex-direction:column;gap:10px;
+    }
+
+    /* DATE FOLDER CARDS */
+    .date-folder-card{
+      background:var(--card-bg);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;
+      display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s ease;box-shadow:var(--shadow-card);
+    }
+    .date-folder-card:hover{border-color:var(--primary);background:var(--primary-light);}
+    .folder-left{display:flex;align-items:center;gap:12px;}
+    .folder-icon-box{
+      width:38px;height:38px;border-radius:10px;background:var(--primary-light);color:var(--primary-dark);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .date-folder-card:hover .folder-icon-box{background:#FFFFFF;}
+    .folder-title{font-size:0.85rem;font-weight:800;color:var(--text-main);}
+    .folder-sub{font-size:0.68rem;color:var(--text-sub);font-weight:600;}
+    .folder-badge{background:var(--primary);color:#FFFFFF;font-size:0.68rem;font-weight:800;padding:3px 10px;border-radius:20px;}
+
+    /* SESSION CARD STYLING */
+    .session-card{
+      background:var(--card-bg);border-radius:14px;padding:12px;border:1px solid var(--border);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px;
+    }
+    .session-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+    .course-title{font-size:0.82rem;font-weight:800;color:var(--text-main);line-height:1.3;word-break:break-word;}
+    .time-sub{font-size:0.65rem;color:var(--text-sub);font-weight:600;margin-top:2px;}
     .session-head-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-    .score-pill{font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:0.2px;}
-    .score-pill.high{background:var(--success-light);color:#047857;}
-    .score-pill.mid{background:var(--warning-light);color:#B45309;}
-    .score-pill.low{background:var(--danger-light);color:#B91C1C;}
-    .btn-delete-card{background:var(--danger-light);color:var(--danger);border:none;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-    .btn-delete-card:active{transform:scale(0.92);}
-    .btn-delete-card svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .session-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-gray);border-radius:var(--radius-sm);padding:0.55rem;margin-bottom:0.85rem;border:1px solid var(--border-light);}
+    .score-pill{font-size:0.7rem;font-weight:800;padding:3px 8px;border-radius:8px;}
+    .score-pill.high{background:var(--success-light);color:var(--success);}
+    .score-pill.mid{background:var(--warning-light);color:var(--warning);}
+    .score-pill.low{background:var(--danger-light);color:var(--danger);}
+    
+    .btn-delete-card{background:none;border:none;color:var(--text-sub);cursor:pointer;padding:4px;opacity:0.7;transition:all 0.2s;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+    .btn-delete-card:hover{opacity:1;color:var(--danger);background:var(--danger-light);}
+    .btn-delete-card svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+
+    .session-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#F8FAFC;border-radius:10px;padding:8px;border:1px solid #EDF2F7;}
     .stat-cell{display:flex;flex-direction:column;align-items:center;}
-    .stat-cell-lbl{font-size:0.62rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
-    .stat-cell-val{font-size:0.82rem;font-weight:700;color:var(--text-dark);margin-top:1px;}
+    .stat-cell-lbl{font-size:0.6rem;color:var(--text-sub);font-weight:700;text-transform:uppercase;}
+    .stat-cell-val{font-size:0.78rem;font-weight:800;color:var(--text-main);margin-top:1px;}
+
     .session-actions{display:flex;gap:8px;}
-    .action-btn{flex:1;height:36px;border-radius:8px;font-size:0.76rem;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:all 0.2s ease;}
-    .btn-review{background:var(--primary-light);color:var(--primary);}
-    .btn-review:active{background:#E9D5FF;transform:scale(0.97);}
-    .btn-retry{background:var(--primary);color:white;}
-    .btn-retry:active{background:var(--primary-hover);transform:scale(0.97);}
+    .action-btn{flex:1;height:34px;border-radius:10px;font-size:0.74rem;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:all 0.2s ease;}
+    .btn-review{background:var(--primary-light);color:var(--primary-dark);}
+    .btn-review:active{transform:scale(0.97);}
+    .btn-retry{background:var(--primary);color:white;box-shadow:0 4px 12px rgba(139,92,246,0.2);}
+    .btn-retry:active{transform:scale(0.97);}
     .action-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;}
-    .empty-state,.error-state{text-align:center;padding:3.5rem 1.5rem;background:var(--card-bg);border-radius:var(--radius-md);border:1px dashed var(--border-color);margin-top:0.5rem;display:none;}
-    .error-state{border-style:solid;}
-    .empty-state svg{width:40px;height:40px;stroke:var(--text-muted);margin-bottom:0.85rem;stroke-width:1.6;}
-    .empty-state h4,.error-state h4{font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-bottom:0.3rem;}
-    .empty-state p,.error-state p{font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.45;}
-    .btn-start-first,.retry-load-btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 1.25rem;background:var(--primary);color:white;text-decoration:none;font-weight:600;font-size:0.78rem;border-radius:8px;border:none;cursor:pointer;}
-    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.2s ease;}
-    .modal-overlay.active{opacity:1;pointer-events:auto;}
-    .modal-card{background:var(--card-bg);width:90%;max-width:340px;border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);transform:scale(0.95);transition:transform 0.2s ease;}
-    .modal-overlay.active .modal-card{transform:scale(1);}
-    .modal-icon-wrap{width:48px;height:48px;background:var(--danger-light);color:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
-    .modal-icon-wrap svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;}
-    .modal-title{font-size:1rem;font-weight:700;color:var(--text-dark);margin-bottom:0.4rem;}
-    .modal-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.45;margin-bottom:1.25rem;}
-    .modal-actions{display:flex;gap:10px;}
-    .modal-btn{flex:1;height:40px;border-radius:10px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;}
-    .modal-btn-cancel{background:var(--bg-gray);color:var(--text-body);border:1px solid var(--border-color);}
-    .modal-btn-delete{background:var(--danger);color:white;}
-    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border-color);padding:10px 16px;display:flex;align-items:center;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,0.04);}
-    .btn-bottom-cta{width:100%;height:42px;border-radius:10px;background:var(--primary);color:white;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;}
+
+    /* EMPTY & LOADING STATES */
+    .empty-state{text-align:center;padding:3rem 1rem;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-sub);}
+    .empty-icon{
+      width:44px;height:44px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);
+      display:flex;align-items:center;justify-content:center;margin-bottom:2px;
+    }
+    .loading-spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 10px;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* CUSTOM CONFIRMATION MODAL */
+    .modal-overlay{
+      position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.5);z-index:200;
+      display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:1rem;
+    }
+    .modal-overlay.active{display:flex;}
+    .modal-box{
+      background:var(--card-bg);width:100%;max-width:340px;border-radius:var(--radius-app);padding:1.25rem;
+      box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);display:flex;flex-direction:column;gap:10px;
+    }
+    .modal-title{font-size:0.9rem;font-weight:800;color:var(--text-main);}
+    .modal-desc{font-size:0.76rem;color:var(--text-sub);line-height:1.4;font-weight:500;}
+    .modal-actions{display:flex;gap:8px;margin-top:8px;}
+    .btn-secondary{
+      flex:1;background:var(--bg-body);border:1.5px solid var(--border);color:var(--text-main);
+      padding:10px;border-radius:var(--radius-btn);font-weight:700;cursor:pointer;font-size:0.78rem;
+    }
+    .btn-danger{
+      flex:1;background:var(--danger);border:none;color:#FFF;
+      padding:10px;border-radius:var(--radius-btn);font-weight:700;cursor:pointer;font-size:0.78rem;
+      box-shadow:0 4px 12px rgba(239,68,68,0.25);
+    }
+
+    .bottom-nav{
+      position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#FFFFFF;
+      border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;z-index:30;
+    }
+    .btn-bottom-cta{
+      width:100%;height:40px;border-radius:var(--radius-btn);background:var(--primary);color:white;font-size:0.78rem;
+      font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+      box-shadow:0 4px 12px rgba(139,92,246,0.25);
+    }
     .btn-bottom-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
   </style>
 </head>
 <body>
-<div class="app-container">
-  <header class="header">
-    <div class="header-brand">
-      <a href="dashboard.html" class="btn-icon" title="Back to Dashboard">
-        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+<div class="app-shell">
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-left-group">
+      <a href="dashboard.html" class="back-btn" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
-      <span class="header-title">Practice History</span>
+      <div>
+        <h1 class="app-header-title">Practice History</h1>
+        <p class="app-header-subtitle" id="header-subtitle">Loading records...</p>
+      </div>
     </div>
-    <span class="header-badge" id="total-attempts-count">0 LOGS</span>
   </header>
 
-  <div class="content-body">
-    <div id="loading-state" class="loading-state">
-      <div class="loading-spinner"></div>
-      <div>Loading your practice history...</div>
-    </div>
-
-    <div id="dates-overview-container" style="display:none;"></div>
-
-    <div id="sessions-drilldown-container" style="display:none;">
-      <div class="drilldown-header">
-        <div>
-          <div class="drilldown-date-title" id="drilldown-date-title">--</div>
-          <div style="font-size:0.72rem;color:var(--text-muted);font-weight:500;" id="drilldown-attempt-count">0 Attempts</div>
-        </div>
-        <button class="back-btn-inline" id="btn-change-date">
-          <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Change Date
-        </button>
-      </div>
-      <div id="sessions-list"></div>
-    </div>
-
-    <div id="empty-state" class="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      <h4>No Practice Records Found</h4>
-      <p>You haven't completed any practice attempts yet. Take a test to build your history log.</p>
-      <a href="exams.html" class="btn-start-first">Start Practice Exam</a>
-    </div>
-
-    <div id="error-state" class="error-state">
-      <h4>Unable to Load History</h4>
-      <p id="error-message">We couldn't load your practice history right now.</p>
-      <button class="retry-load-btn" id="retry-load-btn">Try Again</button>
-    </div>
+  <!-- VIEW CONTROL BAR (Appears only when inside a date folder) -->
+  <div id="view-control-bar" class="view-control-bar" style="display: none;">
+    <span class="active-date-label" id="active-date-title">October 20, 2026</span>
+    <button type="button" class="change-date-btn" onclick="backToDateFolders()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Change Date
+    </button>
   </div>
 
+  <!-- CONTENT CONTAINER -->
+  <main class="app-content" id="history-content-container">
+    <div class="empty-state">
+      <div class="loading-spinner"></div>
+      <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">Loading practice logs...</div>
+    </div>
+  </main>
+
+  <!-- BOTTOM CTA NAV -->
   <nav class="bottom-nav">
     <a href="exams.html" class="btn-bottom-cta">
-      <svg viewBox="0 0 24 24">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Take New Practice Test
     </a>
   </nav>
 </div>
 
+<!-- CUSTOM DELETE CONFIRMATION MODAL -->
 <div class="modal-overlay" id="delete-modal">
-  <div class="modal-card">
-    <div class="modal-icon-wrap">
-      <svg viewBox="0 0 24 24">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        <line x1="10" y1="11" x2="10" y2="17"></line>
-        <line x1="14" y1="11" x2="14" y2="17"></line>
-      </svg>
-    </div>
+  <div class="modal-box">
     <div class="modal-title">Delete Exam Record?</div>
     <div class="modal-desc" id="modal-desc-text">Are you sure you want to delete this test attempt?</div>
     <div class="modal-actions">
-      <button class="modal-btn modal-btn-cancel" id="modal-cancel-btn">Cancel</button>
-      <button class="modal-btn modal-btn-delete" id="modal-confirm-delete-btn">Yes, Delete</button>
+      <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-danger" onclick="confirmDeleteSession()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -166,7 +215,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, setDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -182,7 +231,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let historyRecords = [], groupedData = {}, activeDateKey = null, sessionToDelete = null, currentUserId = null, isLoading = false, syncInProgress = false;
+let historyRecords = [];
+let currentSelectedDate = null; // null = viewing date folders list
+let sessionToDelete = null;
+let currentUserId = null;
 
 const getLocalHistoryKey = uid => `yan_exam_history_${uid}`;
 const getPendingSyncKey = uid => `yan_exam_pending_sync_${uid}`;
@@ -331,24 +383,6 @@ function calculateCorrect(session) {
   return correct;
 }
 
-function calculateWrong(session) {
-  const qs = getQuestions(session);
-  let wrong = 0;
-  qs.forEach((q, i) => {
-    const ans = getQuestionSelectedAnswer(session, q, i);
-    const corr = getQuestionCorrectAnswer(q);
-    if (ans !== null && corr !== null && !compareAnswers(ans, corr)) wrong++;
-  });
-  return wrong;
-}
-
-function calculateSkipped(session) {
-  const qs = getQuestions(session);
-  let skipped = 0;
-  qs.forEach((q, i) => { if (getQuestionSelectedAnswer(session, q, i) === null) skipped++; });
-  return skipped;
-}
-
 function normalizeSession(record) {
   if (!record || typeof record !== "object") return null;
   const qs = getQuestions(record);
@@ -357,15 +391,12 @@ function normalizeSession(record) {
   const hasPrecomputed = record.correctAnswersCount !== undefined || record.correctCount !== undefined;
   const preCorrect = Number(record.correctAnswersCount ?? record.correctCount ?? 0);
   const correct = (hasPrecomputed && preCorrect > 0) ? preCorrect : calculateCorrect(record);
-  const wrong = Number(record.wrongAnswersCount ?? record.wrongCount ?? calculateWrong(record));
-  const skipped = Number(record.unattemptedCount ?? record.skippedCount ?? calculateSkipped(record));
   const score = record.scorePercentage !== undefined ? Number(record.scorePercentage) : record.score !== undefined ? Number(record.score) : total > 0 ? Math.round((correct / total) * 100) : 0;
   const id = getStableRecordId(record);
   return {
     ...record, id, sessionId: record.sessionId || record.examSessionId || id, userId: record.userId || currentUserId,
     questionsData: qs, questions: qs, userAnswers: ans, selectedAnswers: ans, totalQuestions: total,
-    correctCount: correct, correctAnswersCount: correct, wrongCount: wrong, wrongAnswersCount: wrong,
-    skippedCount: skipped, unattemptedCount: skipped, score, scorePercentage: score, schemaVersion: Number(record.schemaVersion || 2)
+    correctCount: correct, correctAnswersCount: correct, score, scorePercentage: score
   };
 }
 
@@ -378,7 +409,7 @@ function isValidHistoryRecord(record) {
     if (record.userId && String(record.userId) !== String(currentUserId)) return false;
   }
   const qs = getQuestions(record);
-  return qs.length > 0 || record.scorePercentage !== undefined || record.score !== undefined || record.totalQuestions !== undefined || record.correctAnswersCount !== undefined;
+  return qs.length > 0 || record.scorePercentage !== undefined || record.score !== undefined;
 }
 
 function mergeSessionRecords(first, second) {
@@ -386,12 +417,6 @@ function mergeSessionRecords(first, second) {
   if (!second) return normalizeSession(first);
   const fNorm = normalizeSession(first), sNorm = normalizeSession(second);
   const base = sNorm > fNorm ? { ...fNorm, ...sNorm } : { ...sNorm, ...fNorm };
-  const fQs = getQuestions(fNorm), sQs = getQuestions(sNorm);
-  if (sQs.length > fQs.length) { base.questionsData = sQs; base.questions = sQs; }
-  else if (fQs.length) { base.questionsData = fQs; base.questions = fQs; }
-  const fAns = getAnswers(fNorm), sAns = getAnswers(sNorm);
-  if (Object.keys(sAns).length > Object.keys(fAns).length) { base.userAnswers = sAns; base.selectedAnswers = sAns; }
-  else if (Object.keys(fAns).length) { base.userAnswers = fAns; base.selectedAnswers = fAns; }
   base.id = getStableRecordId(fNorm) || getStableRecordId(sNorm);
   base.sessionId = fNorm.sessionId || sNorm.sessionId || base.id;
   base.userId = currentUserId;
@@ -443,106 +468,20 @@ function readCanonicalSessions(uid) {
   return records;
 }
 
-function saveLocalHistory(uid, records) {
-  const tombstones = getTombstones(uid);
-  const normalized = records.map(r => normalizeSession(r)).filter(Boolean).filter(r => !tombstones.has(String(getStableRecordId(r))) && (!r.userId || String(r.userId) === String(uid)));
-  safeLocalSet(getLocalHistoryKey(uid), normalized);
-  normalized.forEach(r => { safeLocalSet(getCanonicalSessionKey(uid, getStableRecordId(r)), r); });
-  broadcastHistoryUpdate(uid);
-}
-
-function broadcastHistoryUpdate(uid) {
-  try {
-    if ("BroadcastChannel" in window) {
-      const channel = new BroadcastChannel("yan-dli-history-sync");
-      channel.postMessage({ type: "history-updated", userId: uid, count: historyRecords.length });
-      channel.close();
-    }
-  } catch {}
-}
-
 function readPendingSync(uid) {
   const data = safeLocalGet(getPendingSyncKey(uid));
   const tombstones = getTombstones(uid);
   return Array.isArray(data) ? data.filter(r => !tombstones.has(String(getStableRecordId(r)))) : [];
 }
 
-function savePendingSync(uid, records) {
+function saveLocalHistory(uid, records) {
   const tombstones = getTombstones(uid);
-  const map = new Map();
-  records.forEach(r => {
-    if (!r) return;
-    const normalized = normalizeSession(r);
-    if (!normalized || tombstones.has(String(getStableRecordId(normalized)))) return;
-    const id = getStableRecordId(normalized);
-    const existing = map.get(id);
-    map.set(id, existing ? mergeSessionRecords(existing, normalized) : normalized);
-  });
-  safeLocalSet(getPendingSyncKey(uid), Array.from(map.values()));
-}
-
-function removeFromPendingSync(uid, sessionId) {
-  const remaining = readPendingSync(uid).filter(r => getStableRecordId(r) !== String(sessionId));
-  savePendingSync(uid, remaining);
-}
-
-function cleanForFirestore(value, seen = new WeakSet()) {
-  if (value === null || value === undefined) return value;
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value;
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === "object" && typeof value.toDate === "function") {
-    try { return value.toDate().toISOString(); } catch { return null; }
-  }
-  if (typeof value === "object") {
-    if (seen.has(value)) return null;
-    seen.add(value);
-    if (Array.isArray(value)) return value.map(item => cleanForFirestore(item, seen));
-    const output = {};
-    Object.keys(value).forEach(key => {
-      if (key === "syncStatus" || key === "syncError" || key === "localOnly") return;
-      output[key] = cleanForFirestore(value[key], seen);
-    });
-    return output;
-  }
-  return String(value);
-}
-
-async function uploadSession(session) {
-  if (!currentUserId || !navigator.onLine) return false;
-  const normalized = normalizeSession({ ...session, userId: currentUserId });
-  if (!normalized) return false;
-  const sessionId = getStableRecordId(normalized);
-  if (getTombstones(currentUserId).has(String(sessionId))) return false;
-  try {
-    const payload = cleanForFirestore(normalized);
-    payload.id = sessionId;
-    payload.sessionId = payload.sessionId || sessionId;
-    payload.userId = currentUserId;
-    payload.schemaVersion = 2;
-    payload.updatedAt = serverTimestamp();
-    await setDoc(doc(db, "ExamHistory", String(sessionId)), payload, { merge: true });
-    removeFromPendingSync(currentUserId, sessionId);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-async function syncPendingSessions() {
-  if (!currentUserId || !navigator.onLine || syncInProgress) return;
-  const pending = readPendingSync(currentUserId);
-  if (!pending.length) return;
-  syncInProgress = true;
-  const remaining = [];
-  for (const session of pending) {
-    const success = await uploadSession(session);
-    if (!success) remaining.push(session);
-  }
-  savePendingSync(currentUserId, remaining);
-  syncInProgress = false;
+  const normalized = records.map(r => normalizeSession(r)).filter(Boolean).filter(r => !tombstones.has(String(getStableRecordId(r))) && (!r.userId || String(r.userId) === String(uid)));
+  safeLocalSet(getLocalHistoryKey(uid), normalized);
 }
 
 async function fetchFirestoreHistory(uid) {
+  if (!navigator.onLine) return [];
   const records = [];
   const tombstones = getTombstones(uid);
   const historyQuery = query(collection(db, "ExamHistory"), where("userId", "==", uid));
@@ -552,36 +491,93 @@ async function fetchFirestoreHistory(uid) {
     const id = data.id || docSnap.id;
     if (tombstones.has(String(id))) return;
     if (data.userId && String(data.userId) !== String(uid)) return;
-    records.push({
-      ...data, id, sessionId: data.sessionId || data.examSessionId || id,
-      userId: uid, syncStatus: "synced", synced: true
-    });
+    records.push({ ...data, id, sessionId: data.sessionId || data.examSessionId || id, userId: uid });
   });
   return records;
 }
 
-function collectAllLocalRecords(uid) {
-  const records = [];
-  records.push(...readLocalHistory(uid));
-  records.push(...readCanonicalSessions(uid));
-  records.push(...readPendingSync(uid).map(r => ({ ...r, userId: r.userId || uid, syncStatus: "pending", synced: false })));
-  return records;
+/**
+ * AUTOMATIC SUBJECT IMPROVEMENT DETECTOR & NOTIFIER
+ * Calculates score diffs per course/topic and dispatches notifications to Firestore.
+ */
+async function evaluateAndNotifyImprovement(userId, allRecords) {
+  if (!userId || !allRecords || allRecords.length < 2 || !navigator.onLine) return;
+
+  const sortedChronologically = [...allRecords].sort((a, b) => getRecordTime(a) - getRecordTime(b));
+  
+  // Group score history by Course / Subject
+  const courseHistoryMap = {};
+  sortedChronologically.forEach(rec => {
+    const course = (rec.courseCode || rec.courseTitle || rec.courseName || rec.subject || rec.examTitle || "General Practice").toUpperCase().trim();
+    if (!courseHistoryMap[course]) courseHistoryMap[course] = [];
+    courseHistoryMap[course].push(rec);
+  });
+
+  for (const course in courseHistoryMap) {
+    const attempts = courseHistoryMap[course];
+    if (attempts.length < 2) continue; // Requires at least 2 attempts to detect improvement
+
+    const latestAttempt = attempts[attempts.length - 1];
+    const previousAttempts = attempts.slice(0, attempts.length - 1);
+
+    const latestScore = latestAttempt.scorePercentage ?? latestAttempt.score ?? 0;
+    const latestAttemptId = getStableRecordId(latestAttempt);
+    const attemptTime = getRecordTime(latestAttempt) || Date.now();
+    const dateKey = new Date(attemptTime).toISOString().split('T')[0];
+
+    // Calculate previous average & previous best score
+    const prevScores = previousAttempts.map(a => a.scorePercentage ?? a.score ?? 0);
+    const prevAverage = Math.round(prevScores.reduce((sum, s) => sum + s, 0) / prevScores.length);
+    const prevBest = Math.max(...prevScores);
+
+    const scoreDifference = latestScore - prevAverage;
+
+    // Trigger threshold: latest attempt must be at least 5 points above previous average
+    if (scoreDifference >= 5 && latestScore > prevBest) {
+      const cooldownKey = `yan_improv_notif_${userId}_${course}_${latestAttemptId}`;
+      if (localStorage.getItem(cooldownKey) === "true") continue; // Prevent double notifications
+
+      const title = `📈 Impressive Improvement in ${course}!`;
+      const message = `Awesome job! You scored ${latestScore}% in ${course}, which is ${scoreDifference}% higher than your previous average (${prevAverage}%). Keep pushing forward!`;
+
+      try {
+        await addDoc(collection(db, "Notifications"), {
+          userId: userId,
+          title: title,
+          message: message,
+          type: "success",
+          courseCode: course,
+          targetDate: dateKey,
+          scoreImprovement: scoreDifference,
+          newScore: latestScore,
+          isRead: false,
+          createdAt: new Date().toISOString()
+        });
+
+        localStorage.setItem(cooldownKey, "true");
+      } catch (err) {
+        console.warn("Could not dispatch improvement notification:", err);
+      }
+    }
+  }
 }
 
-async function loadAllRecords(userId, forceRemote = false) {
-  if (!userId || (isLoading && !forceRemote)) return;
-  isLoading = true;
+async function loadAllRecords(userId) {
+  if (!userId) return;
   try {
-    const localRecords = collectAllLocalRecords(userId);
+    const localRecords = [...readLocalHistory(userId), ...readCanonicalSessions(userId), ...readPendingSync(userId)];
     const localMap = new Map();
     localRecords.forEach(r => addRecordToMap(localMap, r));
     historyRecords = Array.from(localMap.values()).filter(isValidHistoryRecord).sort((a, b) => getRecordTime(b) - getRecordTime(a));
     
-    if (historyRecords.length > 0) {
-      processHistoryData();
-    } else {
-      showEmptyState();
+    // Check URL params if navigated directly from a notification (e.g. ?date=2026-10-20)
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetDateParam = urlParams.get('date');
+    if (targetDateParam && !currentSelectedDate) {
+      currentSelectedDate = targetDateParam;
     }
+
+    renderCurrentState();
 
     if (navigator.onLine) {
       try {
@@ -591,294 +587,230 @@ async function loadAllRecords(userId, forceRemote = false) {
         remoteRecords.forEach(r => addRecordToMap(mergedMap, r));
         historyRecords = Array.from(mergedMap.values()).filter(isValidHistoryRecord).sort((a, b) => getRecordTime(b) - getRecordTime(a));
         saveLocalHistory(userId, historyRecords);
-        await syncPendingSessions();
       } catch (e) {}
     }
 
-    if (historyRecords.length > 0) {
-      processHistoryData();
-    } else {
-      showEmptyState();
-    }
+    evaluateAndNotifyImprovement(userId, historyRecords);
+    renderCurrentState();
   } catch (e) {
     if (historyRecords.length === 0) {
-      showErrorState(e?.message || "Unable to load practice history.");
+      showEmptyState("Unable to load practice history.");
     }
-  }
-  isLoading = false;
-}
-
-function processHistoryData() {
-  document.getElementById("empty-state").style.display = "none";
-  document.getElementById("error-state").style.display = "none";
-  document.getElementById("loading-state").style.display = "none";
-  document.getElementById("dates-overview-container").style.display = "block";
-  document.getElementById("total-attempts-count").innerText = `${historyRecords.length} LOGS`;
-
-  groupedData = {};
-  historyRecords.forEach(record => {
-    const time = getRecordTime(record) || Date.now();
-    const date = new Date(time);
-    const monthYear = date.toLocaleString("en-US", { month: "long", year: "numeric" });
-    const dateKey = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
-    if (!groupedData[monthYear]) groupedData[monthYear] = {};
-    if (!groupedData[monthYear][dateKey]) groupedData[monthYear][dateKey] = [];
-    groupedData[monthYear][dateKey].push(record);
-  });
-  renderDatesGrid();
-
-  if (activeDateKey) {
-    for (const month in groupedData) {
-      if (groupedData[month][activeDateKey]) {
-        openDrilldown(activeDateKey, groupedData[month][activeDateKey]);
-        return;
-      }
-    }
-    activeDateKey = null;
-    showDatesOverview();
   }
 }
 
-function renderDatesGrid() {
-  const container = document.getElementById("dates-overview-container");
-  container.innerHTML = "";
-  const monthEntries = Object.entries(groupedData);
-  if (!monthEntries.length) { showEmptyState(); return; }
+function renderCurrentState() {
+  if (currentSelectedDate) {
+    renderSessionsForDate(currentSelectedDate);
+  } else {
+    renderDateFolders();
+  }
+}
 
-  monthEntries.sort((a, b) => {
-    const dateA = Object.keys(a[1]).sort().reverse()[0];
-    const dateB = Object.keys(b[1]).sort().reverse()[0];
-    return new Date(`${dateB}T00:00:00`) - new Date(`${dateA}T00:00:00`);
+// GROUP BY STORED DATES (YYYY-MM-DD)
+function renderDateFolders() {
+  document.getElementById('view-control-bar').style.display = 'none';
+  const container = document.getElementById('history-content-container');
+  const subtitle = document.getElementById('header-subtitle');
+
+  const dateMap = {};
+  historyRecords.forEach(item => {
+    const time = getRecordTime(item) || Date.now();
+    const d = new Date(time);
+    const dateKey = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+    if (!dateMap[dateKey]) dateMap[dateKey] = [];
+    dateMap[dateKey].push(item);
   });
 
-  monthEntries.forEach(([monthYear, dates]) => {
-    const monthGroup = document.createElement("div");
-    monthGroup.className = "month-group";
-    const total = Object.values(dates).reduce((sum, list) => sum + list.length, 0);
-    monthGroup.innerHTML = `
-      <div class="month-header">
-        <span class="month-title">${escapeHTML(monthYear)}</span>
-        <span class="month-sub">${total} Session${total === 1 ? "" : "s"}</span>
+  const availableDates = Object.keys(dateMap).sort().reverse();
+  subtitle.textContent = availableDates.length > 0 ? `${availableDates.length} stored date${availableDates.length > 1 ? 's' : ''}` : 'No history logs';
+
+  if (availableDates.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">No Practice Records Found</div>
+        <div style="font-size: 0.72rem;">Complete a practice test to build your history log.</div>
       </div>
-      <div class="dates-grid"></div>
     `;
-    const grid = monthGroup.querySelector(".dates-grid");
-    Object.keys(dates).sort().reverse().forEach(dateKey => {
-      const sessions = dates[dateKey];
-      const date = new Date(`${dateKey}T00:00:00`);
-      const card = document.createElement("div");
-      card.className = "date-card";
-      card.innerHTML = `
-        <span style="font-size:0.62rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;">${date.toLocaleString("en-US", { weekday: "short" })}</span>
-        <span class="day-number">${date.getDate()}</span>
-        <span class="attempt-count">${sessions.length} Test${sessions.length === 1 ? "" : "s"}</span>
-      `;
-      card.addEventListener("click", () => openDrilldown(dateKey, sessions));
-      grid.appendChild(card);
-    });
-    container.appendChild(monthGroup);
+    return;
+  }
+
+  container.innerHTML = availableDates.map(dateStr => {
+    const count = dateMap[dateStr].length;
+    const formattedDateName = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+    return `
+      <div class="date-folder-card" onclick="openDateFolder('${dateStr}')">
+        <div class="folder-left">
+          <div class="folder-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="folder-title">${formattedDateName}</div>
+            <div class="folder-sub">${count} test attempt${count > 1 ? 's' : ''} stored</div>
+          </div>
+        </div>
+        <div class="folder-badge">${count}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.openDateFolder = function(dateStr) {
+  currentSelectedDate = dateStr;
+  renderSessionsForDate(dateStr);
+};
+
+window.backToDateFolders = function() {
+  currentSelectedDate = null;
+  // Clear date query from URL clean
+  if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.pathname);
+  }
+  renderDateFolders();
+};
+
+function renderSessionsForDate(dateStr) {
+  document.getElementById('view-control-bar').style.display = 'flex';
+  const container = document.getElementById('history-content-container');
+  const subtitle = document.getElementById('header-subtitle');
+  const activeDateTitle = document.getElementById('active-date-title');
+
+  const formattedHeaderDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  activeDateTitle.textContent = formattedHeaderDate;
+
+  const filtered = historyRecords.filter(item => {
+    const time = getRecordTime(item) || Date.now();
+    const d = new Date(time);
+    const itemDateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+    return itemDateStr === dateStr;
   });
-}
 
-function openDrilldown(dateKey, sessions) {
-  activeDateKey = dateKey;
-  document.getElementById("dates-overview-container").style.display = "none";
-  document.getElementById("sessions-drilldown-container").style.display = "block";
-  const date = new Date(`${dateKey}T00:00:00`);
-  document.getElementById("drilldown-date-title").innerText = date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" });
-  document.getElementById("drilldown-attempt-count").innerText = `${sessions.length} Practice Attempt${sessions.length === 1 ? "" : "s"}`;
-  const list = document.getElementById("sessions-list");
-  list.innerHTML = "";
-  [...sessions].sort((a, b) => getRecordTime(b) - getRecordTime(a)).forEach(s => renderSessionCard(s, list));
-}
+  subtitle.textContent = `${filtered.length} attempt${filtered.length !== 1 ? 's' : ''} on this date`;
 
-function renderSessionCard(session, container) {
-  const normalized = normalizeSession(session);
-  if (!normalized) return;
-  const qs = getQuestions(normalized);
-  const total = Number(normalized.totalQuestions || qs.length || 0);
-  const correct = Number(normalized.correctAnswersCount ?? normalized.correctCount ?? calculateCorrect(normalized));
-  const score = normalized.scorePercentage !== undefined ? Number(normalized.scorePercentage) : total ? Math.round((correct / total) * 100) : 0;
-  const timeSpent = Number(normalized.timeSpentSeconds ?? normalized.durationSeconds ?? normalized.timeSpent ?? normalized.elapsedSeconds ?? 0);
-  const mins = Math.floor(timeSpent / 60), secs = timeSpent % 60, avg = total ? Math.round(timeSpent / total) : 0;
-  const scoreClass = score >= 70 ? "high" : score >= 50 ? "mid" : "low";
-  const recordTime = getRecordTime(normalized);
-  const timeString = recordTime ? new Date(recordTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "--";
-  const course = normalized.courseCode || normalized.courseTitle || normalized.courseName || normalized.subject || normalized.examTitle || "PRACTICE EXAM";
-  const mode = normalized.mode || normalized.examMode || "practice";
-
-  const card = document.createElement("div");
-  card.className = "session-card";
-  card.innerHTML = `
-    <div class="session-head">
-      <div>
-        <div class="course-title">${escapeHTML(course)}</div>
-        <div class="time-sub">Completed at ${escapeHTML(timeString)} • ${escapeHTML(String(mode).toUpperCase())}</div>
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">No attempts stored for this date</div>
+        <div style="font-size: 0.72rem;">Click "Change Date" above to select another date.</div>
       </div>
-      <div class="session-head-right">
-        <span class="score-pill ${scoreClass}">${score}%</span>
-        <button class="btn-delete-card" type="button" title="Delete Exam Record">
-          <svg viewBox="0 0 24 24">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="session-stats-grid">
-      <div class="stat-cell"><span class="stat-cell-lbl">Score</span><span class="stat-cell-val">${correct}/${total}</span></div>
-      <div class="stat-cell"><span class="stat-cell-lbl">Duration</span><span class="stat-cell-val">${mins}m ${secs}s</span></div>
-      <div class="stat-cell"><span class="stat-cell-lbl">Pace</span><span class="stat-cell-val">${avg}s/q</span></div>
-    </div>
-    <div class="session-actions">
-      <button class="action-btn btn-review" type="button">
-        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-        Review Corrections
-      </button>
-      <button class="action-btn btn-retry" type="button">
-        <svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9"></path><path d="M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-        Retake
-      </button>
-    </div>
-  `;
+    `;
+    return;
+  }
 
-  card.querySelector(".btn-review").addEventListener("click", () => reviewSession(normalized));
-  card.querySelector(".btn-retry").addEventListener("click", () => { window.location.href = `exams.html?retake=${encodeURIComponent(getStableRecordId(normalized))}`; });
-  card.querySelector(".btn-delete-card").addEventListener("click", e => { e.stopPropagation(); promptDeleteSession(normalized, course); });
-  container.appendChild(card);
+  container.innerHTML = filtered.map(session => {
+    const normalized = normalizeSession(session);
+    if (!normalized) return '';
+    const qs = getQuestions(normalized);
+    const total = Number(normalized.totalQuestions || qs.length || 0);
+    const correct = Number(normalized.correctAnswersCount ?? normalized.correctCount ?? calculateCorrect(normalized));
+    const score = normalized.scorePercentage !== undefined ? Number(normalized.scorePercentage) : total ? Math.round((correct / total) * 100) : 0;
+    const timeSpent = Number(normalized.timeSpentSeconds ?? normalized.durationSeconds ?? normalized.timeSpent ?? normalized.elapsedSeconds ?? 0);
+    const mins = Math.floor(timeSpent / 60), secs = timeSpent % 60, avg = total ? Math.round(timeSpent / total) : 0;
+    const scoreClass = score >= 70 ? "high" : score >= 50 ? "mid" : "low";
+    const recordTime = getRecordTime(normalized);
+    const timeString = recordTime ? new Date(recordTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "--";
+    const course = normalized.courseCode || normalized.courseTitle || normalized.courseName || normalized.subject || normalized.examTitle || "PRACTICE EXAM";
+    const mode = normalized.mode || normalized.examMode || "practice";
+    const recordId = getStableRecordId(normalized);
+
+    return `
+      <div class="session-card">
+        <div class="session-head">
+          <div>
+            <div class="course-title">${escapeHTML(course)}</div>
+            <div class="time-sub">Completed at ${escapeHTML(timeString)} • ${escapeHTML(String(mode).toUpperCase())}</div>
+          </div>
+          <div class="session-head-right">
+            <span class="score-pill ${scoreClass}">${score}%</span>
+            <button class="btn-delete-card" type="button" onclick="promptDeleteSession('${recordId}', '${escapeHTML(course).replace(/'/g, "\\'")}')" title="Delete Exam Record">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="session-stats-grid">
+          <div class="stat-cell"><span class="stat-cell-lbl">Score</span><span class="stat-cell-val">${correct}/${total}</span></div>
+          <div class="stat-cell"><span class="stat-cell-lbl">Duration</span><span class="stat-cell-val">${mins}m ${secs}s</span></div>
+          <div class="stat-cell"><span class="stat-cell-lbl">Pace</span><span class="stat-cell-val">${avg}s/q</span></div>
+        </div>
+        <div class="session-actions">
+          <button class="action-btn btn-review" type="button" onclick="reviewSession('${recordId}')">
+            <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            Review Corrections
+          </button>
+          <button class="action-btn btn-retry" type="button" onclick="window.location.href='exams.html?retake=${encodeURIComponent(recordId)}'">
+            <svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9"></path><path d="M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Retake
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-function reviewSession(session) {
+window.reviewSession = function(recordId) {
   if (!currentUserId) { window.location.replace("index.html"); return; }
-  const qs = getQuestions(session);
-  if (!qs.length) return;
-  const recordId = getStableRecordId(session);
+  const session = historyRecords.find(r => getStableRecordId(r) === recordId);
+  if (!session) return;
   const reviewPayload = { ...session, id: recordId, sessionId: recordId, userId: currentUserId, isReviewMode: true };
   try {
     sessionStorage.setItem("yan_review_session", JSON.stringify(reviewPayload));
   } catch (e) {}
   window.location.href = `submit.html?id=${encodeURIComponent(recordId)}`;
-}
+};
 
-function promptDeleteSession(session, title) {
-  if (!currentUserId) return;
-  sessionToDelete = session;
+window.promptDeleteSession = function(recordId, title) {
+  sessionToDelete = recordId;
   document.getElementById("modal-desc-text").innerText = `Are you sure you want to delete your ${title} attempt? This will permanently remove it from your history logs.`;
   document.getElementById("delete-modal").classList.add("active");
-}
+};
 
-function closeDeleteModal() {
+window.closeDeleteModal = function() {
   document.getElementById("delete-modal").classList.remove("active");
   sessionToDelete = null;
-}
+};
 
-async function confirmDeleteSession() {
+window.confirmDeleteSession = async function() {
   if (!sessionToDelete || !currentUserId) return;
-  const targetId = getStableRecordId(sessionToDelete);
+  const targetId = sessionToDelete;
   
   addTombstone(currentUserId, targetId);
-
   historyRecords = historyRecords.filter(r => getStableRecordId(r) !== String(targetId));
   saveLocalHistory(currentUserId, historyRecords);
-  removeFromPendingSync(currentUserId, targetId);
   safeLocalRemove(getCanonicalSessionKey(currentUserId, targetId));
   
   closeDeleteModal();
-
-  if (!historyRecords.length) {
-    showEmptyState();
-  } else if (activeDateKey) {
-    let stillHasSessions = false;
-    for (const month in groupedData) {
-      if (groupedData[month][activeDateKey]) {
-        groupedData[month][activeDateKey] = groupedData[month][activeDateKey].filter(r => getStableRecordId(r) !== String(targetId));
-        if (groupedData[month][activeDateKey].length === 0) {
-          delete groupedData[month][activeDateKey];
-          if (Object.keys(groupedData[month]).length === 0) delete groupedData[month];
-        } else {
-          stillHasSessions = true;
-        }
-      }
-    }
-    if (stillHasSessions) {
-      openDrilldown(activeDateKey, groupedData[Object.keys(groupedData)[0]]?.[activeDateKey] || []);
-    } else {
-      showDatesOverview();
-    }
-  } else {
-    processHistoryData();
-  }
+  renderCurrentState();
 
   if (navigator.onLine) {
     try {
       await deleteDoc(doc(db, "ExamHistory", String(targetId)));
     } catch (e) {}
   }
+};
+
+function showEmptyState(msg) {
+  document.getElementById('history-content-container').innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">No Practice Records Found</div>
+      <div style="font-size: 0.72rem;">${msg || "You haven't completed any practice attempts yet."}</div>
+    </div>
+  `;
 }
-
-function showEmptyState() {
-  document.getElementById("loading-state").style.display = "none";
-  document.getElementById("empty-state").style.display = "block";
-  document.getElementById("dates-overview-container").style.display = "none";
-  document.getElementById("sessions-drilldown-container").style.display = "none";
-  document.getElementById("error-state").style.display = "none";
-  document.getElementById("total-attempts-count").innerText = "0 LOGS";
-}
-
-function showDatesOverview() {
-  activeDateKey = null;
-  document.getElementById("loading-state").style.display = "none";
-  document.getElementById("dates-overview-container").style.display = "block";
-  document.getElementById("sessions-drilldown-container").style.display = "none";
-  renderDatesGrid();
-}
-
-function showErrorState(message) {
-  document.getElementById("loading-state").style.display = "none";
-  document.getElementById("error-state").style.display = "block";
-  document.getElementById("error-message").innerText = message || "We couldn't load your practice history right now.";
-}
-
-function clearHistoryUI() {
-  historyRecords = []; groupedData = {}; activeDateKey = null;
-  document.getElementById("dates-overview-container").innerHTML = "";
-  document.getElementById("sessions-list").innerHTML = "";
-  document.getElementById("total-attempts-count").innerText = "0 LOGS";
-}
-
-window.addEventListener("online", async () => {
-  if (!currentUserId) return;
-  await syncPendingSessions();
-  await loadAllRecords(currentUserId, true);
-});
-
-let historyChannel = null;
-try {
-  if ("BroadcastChannel" in window) {
-    historyChannel = new BroadcastChannel("yan-dli-history-sync");
-    historyChannel.onmessage = event => {
-      if (!currentUserId) return;
-      if (event.data?.userId && String(event.data.userId) !== String(currentUserId)) return;
-      if (event.data?.type === "history-updated" || event.data?.type === "new-exam-submitted") {
-        loadAllRecords(currentUserId, true);
-      }
-    };
-  }
-} catch (e) {}
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btn-change-date").addEventListener("click", showDatesOverview);
-  document.getElementById("modal-cancel-btn").addEventListener("click", closeDeleteModal);
-  document.getElementById("modal-confirm-delete-btn").addEventListener("click", confirmDeleteSession);
-  document.getElementById("retry-load-btn").addEventListener("click", () => { if (currentUserId) loadAllRecords(currentUserId, true); });
-  document.getElementById("delete-modal").addEventListener("click", event => { if (event.target.id === "delete-modal") closeDeleteModal(); });
-
   onAuthStateChanged(auth, async user => {
     if (!user) {
       currentUserId = null;
-      clearHistoryUI();
       window.location.replace("index.html");
       return;
     }
@@ -889,18 +821,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (recentExam) {
         sessionStorage.removeItem("yan_latest_submitted_exam");
         const parsed = JSON.parse(recentExam);
-      if (parsed && typeof parsed === "object") {
+        if (parsed && typeof parsed === "object") {
           const normalized = normalizeSession({ ...parsed, userId: user.uid });
           if (normalized && !getTombstones(user.uid).has(String(getStableRecordId(normalized)))) {
             historyRecords.unshift(normalized);
             saveLocalHistory(user.uid, historyRecords);
-            uploadSession(normalized);
           }
         }
       }
     } catch (e) {}
 
-    await loadAllRecords(user.uid, false);
+    await loadAllRecords(user.uid);
   });
 });
 </script>

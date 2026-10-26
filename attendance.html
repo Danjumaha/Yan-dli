@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yan-Dli | Course Attendance Tracker</title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-hover: #6D28D9;
+      --primary-light: #F3E8FF;
+      --bg-gray: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --text-dark: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #E5E7EB;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(124, 58, 237, 0.1);
+      --grid-line: #CBD5E1;
+      
+      --status-present-bg: #DCFCE7;
+      --status-present-text: #15803D;
+      --status-absent-bg: #FEE2E2;
+      --status-absent-text: #B91C1C;
+      --status-late-bg: #FEF3C7;
+      --status-late-text: #B45309;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #ECEFF1;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-gray);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 40px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      overflow-x: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .back-btn {
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-dark);
+      border: 1px solid var(--border-color); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
+    }
+    .back-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .content-body {
+      padding: 1rem;
+    }
+
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* NOTIFICATION BANNER */
+    .app-notification {
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.85rem;
+      display: none;
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      font-weight: 500;
+    }
+    .app-notification.active { display: block; }
+
+    /* SUMMARY COUNTER CARDS */
+    .attendance-summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .summary-count {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .summary-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    /* MULTI-TABLE TABS */
+    .table-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .table-tabs-container::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.25);
+    }
+
+    .add-table-btn {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px dashed var(--primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* TOOLBAR */
+    .sheet-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sheet-toolbar::-webkit-scrollbar { display: none; }
+
+    .sheet-tool-btn {
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .sheet-tool-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .sheet-tool-btn.danger {
+      color: #EF4444;
+    }
+    .sheet-tool-btn.danger:hover {
+      background: #FEE2E2;
+      border-color: #EF4444;
+    }
+
+    /* ATTENDANCE SHEET GRID */
+    .sheet-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+      position: relative;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sheets-grid {
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.78rem;
+    }
+
+    .sheets-grid th, .sheets-grid td {
+      border: 1px solid var(--grid-line);
+      padding: 0;
+      position: relative;
+      height: 40px;
+      min-width: 120px;
+      width: 120px;
+    }
+
+    .sheets-grid th.row-index-col, .sheets-grid td.row-index-col {
+      min-width: 40px !important;
+      width: 40px !important;
+      background: #F1F5F9 !important;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.7rem;
+      user-select: none;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+
+    .sheets-grid th {
+      background: #F1F5F9;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    .col-header-input {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      text-align: center;
+      font-weight: 700;
+      color: var(--primary-hover);
+      font-size: 0.78rem;
+      padding: 4px;
+      outline: none;
+    }
+    .col-header-input:focus {
+      background: #FFFFFF;
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+
+    .cell-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      background: transparent;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .cell-input:focus {
+      background: #FFFFFF !important;
+      box-shadow: inset 0 0 0 2px var(--primary);
+      z-index: 5;
+      position: relative;
+    }
+
+    /* ATTENDANCE STATUS STYLES */
+    .cell-input.status-present {
+      background: var(--status-present-bg) !important;
+      color: var(--status-present-text) !important;
+      font-weight: 700;
+    }
+
+    .cell-input.status-absent {
+      background: var(--status-absent-bg) !important;
+      color: var(--status-absent-text) !important;
+      font-weight: 700;
+    }
+
+    .cell-input.status-late {
+      background: var(--status-late-bg) !important;
+      color: var(--status-late-text) !important;
+      font-weight: 700;
+    }
+
+    /* MODAL POPUPS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 380px;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.18);
+    }
+
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+      color: var(--text-dark);
+    }
+
+    .modal-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    /* ATTENDANCE TOGGLE CARDS */
+    .status-toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .status-card-opt {
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .status-card-opt.present-opt {
+      background: var(--status-present-bg);
+      color: var(--status-present-text);
+      border-color: #86EFAC;
+    }
+    .status-card-opt.absent-opt {
+      background: var(--status-absent-bg);
+      color: var(--status-absent-text);
+      border-color: #FCA5A5;
+    }
+    .status-card-opt.late-opt {
+      background: var(--status-late-bg);
+      color: var(--status-late-text);
+      border-color: #FDE047;
+    }
+
+    .form-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      background: var(--bg-gray);
+      color: var(--text-dark);
+      outline: none;
+    }
+    .form-group input:focus { border-color: var(--primary); background: #FFF; }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: var(--primary);
+      border: none;
+      color: #FFF;
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+    }
+
+    .btn-danger {
+      flex: 1;
+      background: #EF4444;
+      border: none;
+      color: #FFF;
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <a href="dashboard.html" class="back-btn" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+      <h1 class="page-title">Course Attendance Tracker</h1>
+      <p class="page-subtitle">Interactive Present/Absent status grid for subjects & students</p>
+
+      <div id="app-notification" class="app-notification"></div>
+
+      <!-- ATTENDANCE STATS COUNTER -->
+      <div class="attendance-summary-row">
+        <div class="summary-card">
+          <div class="summary-count" id="count-present" style="color: var(--status-present-text);">0</div>
+          <div class="summary-label">Present</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-count" id="count-absent" style="color: var(--status-absent-text);">0</div>
+          <div class="summary-label">Absent</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-count" id="count-late" style="color: var(--status-late-text);">0</div>
+          <div class="summary-label">Late</div>
+        </div>
+      </div>
+
+      <!-- MULTI-SHEET TABS -->
+      <div class="countdown-header-flex" style="margin-bottom: 0.4rem;">
+        <span class="section-title">Attendance Sheets</span>
+        <span style="font-size: 0.68rem; color: var(--text-muted);">Tap cell for Status</span>
+      </div>
+
+      <div class="table-tabs-container" id="tabs-bar">
+        <!-- Dynamic Tabs -->
+      </div>
+
+      <!-- SHEET TOOLBAR -->
+      <div class="sheet-toolbar">
+        <button class="sheet-tool-btn" onclick="openRenameTableModal()">
+          ✏️ Rename
+        </button>
+        <button class="sheet-tool-btn" onclick="addNewRow()">
+          ➕ Add Row
+        </button>
+        <button class="sheet-tool-btn danger" onclick="removeLastRow()">
+          ➖ Remove Row
+        </button>
+        <button class="sheet-tool-btn" onclick="addNewCol()">
+          ➕ Add Col
+        </button>
+        <button class="sheet-tool-btn danger" onclick="removeLastCol()">
+          ➖ Remove Col
+        </button>
+        <button class="sheet-tool-btn" onclick="openStatusModal()">
+          ✅ Mark Status
+        </button>
+        <button class="sheet-tool-btn danger" onclick="clearActiveCell()">
+          🗑️ Clear
+        </button>
+        <button class="sheet-tool-btn danger" onclick="confirmDeleteCurrentTable()">
+          🗑️ Delete Table
+        </button>
+      </div>
+
+      <!-- ATTENDANCE INTERACTIVE TABLE -->
+      <div class="sheet-table-wrapper">
+        <table class="sheets-grid" id="sheets-attendance">
+          <thead id="sheets-head">
+            <!-- Populated dynamically -->
+          </thead>
+          <tbody id="sheets-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- CUSTOM DESIGNED CONFIRMATION DIALOG MODAL -->
+    <div id="confirm-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title" id="confirm-modal-title">Delete Confirmation</div>
+        <div class="modal-desc" id="confirm-modal-desc">Are you sure you want to proceed?</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button type="button" class="btn-danger" id="confirm-modal-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RENAME TABLE MODAL -->
+    <div id="rename-table-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Rename Attendance Sheet</div>
+        <form onsubmit="saveRenamedTable(event)">
+          <div class="form-group">
+            <label for="rename-table-input">Sheet Name</label>
+            <input type="text" id="rename-table-input" placeholder="e.g. MTH101 Attendance" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeRenameTableModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Title</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- STATUS SELECTION MODAL -->
+    <div id="status-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Select Attendance Status</div>
+        <div class="status-toggle-grid">
+          <div class="status-card-opt present-opt" onclick="applyDirectStatus('Present', 'status-present')">
+            ✅ Present
+          </div>
+          <div class="status-card-opt absent-opt" onclick="applyDirectStatus('Absent', 'status-absent')">
+            ❌ Absent
+          </div>
+          <div class="status-card-opt late-opt" onclick="applyDirectStatus('Late', 'status-late')">
+            ⚠️ Late
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="applyDirectStatus('', '')">Clear Status</button>
+          <button type="button" class="btn-secondary" onclick="closeStatusModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW ATTENDANCE SHEET MODAL -->
+    <div id="new-table-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Create Attendance Sheet</div>
+        <form onsubmit="createNewTable(event)">
+          <div class="form-group">
+            <label for="table-name-input">Course or Class Name</label>
+            <input type="text" id="table-name-input" placeholder="e.g. MTH101 Attendance, Oct 20 Lecture" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeNewTableModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Create Sheet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE ENGINE & DUAL PERSISTENCE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserUid = null;
+    let activeCellRef = null;
+    let pendingConfirmAction = null;
+
+    // Default Clean Blank Structure tailored for Attendance
+    const defaultAttendanceTables = [
+      {
+        id: "att_1",
+        name: "General Attendance",
+        headers: ["Name / ID", "Course", "Status", "Date", "Remark"],
+        rows: [
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""]
+        ],
+        tags: {}
+      }
+    ];
+
+    let userTables = JSON.parse(localStorage.getItem('yandli_attendanceTables')) || defaultAttendanceTables;
+    let activeTableIndex = 0;
+
+    function showNotification(msg) {
+      const note = document.getElementById('app-notification');
+      note.innerText = msg;
+      note.classList.add('active');
+      setTimeout(() => note.classList.remove('active'), 2500);
+    }
+
+    // CUSTOM STYLISH CONFIRMATION DIALOG MODAL
+    window.openConfirmModal = function(title, description, onConfirmCallback) {
+      document.getElementById('confirm-modal-title').innerText = title;
+      document.getElementById('confirm-modal-desc').innerText = description;
+      pendingConfirmAction = onConfirmCallback;
+      document.getElementById('confirm-modal').classList.add('active');
+    };
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      pendingConfirmAction = null;
+    };
+
+    document.getElementById('confirm-modal-btn').onclick = function() {
+      if (pendingConfirmAction) pendingConfirmAction();
+      closeConfirmModal();
+    };
+
+    function calculateStats() {
+      let presentCount = 0;
+      let absentCount = 0;
+      let lateCount = 0;
+
+      const currentTable = userTables[activeTableIndex] || userTables[0];
+      if (currentTable && currentTable.rows) {
+        currentTable.rows.forEach((row) => {
+          row.forEach((cellVal) => {
+            const val = (cellVal || '').toLowerCase().trim();
+            if (val === 'present') presentCount++;
+            else if (val === 'absent') absentCount++;
+            else if (val === 'late') lateCount++;
+          });
+        });
+      }
+
+      document.getElementById('count-present').innerText = presentCount;
+      document.getElementById('count-absent').innerText = absentCount;
+      document.getElementById('count-late').innerText = lateCount;
+    }
+
+    function renderTabs() {
+      const container = document.getElementById('tabs-bar');
+      container.innerHTML = '';
+
+      userTables.forEach((tbl, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${idx === activeTableIndex ? 'active' : ''}`;
+        btn.innerHTML = `<span>${tbl.name}</span>`;
+        btn.onclick = () => {
+          activeTableIndex = idx;
+          renderTabs();
+          renderSheetsGrid();
+        };
+        container.appendChild(btn);
+      });
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-table-btn';
+      addBtn.innerText = '+ New Sheet';
+      addBtn.onclick = () => document.getElementById('new-table-modal').classList.add('active');
+      container.appendChild(addBtn);
+    }
+
+    function renderSheetsGrid() {
+      const thead = document.getElementById('sheets-head');
+      const tbody = document.getElementById('sheets-body');
+
+      if (!userTables[activeTableIndex]) activeTableIndex = 0;
+      const currentTable = userTables[activeTableIndex] || defaultAttendanceTables[0];
+
+      // Fixed column widths to prevent cell squishing
+      const totalWidth = 40 + (currentTable.headers.length * 120);
+      document.getElementById('sheets-attendance').style.width = `${totalWidth}px`;
+
+      // Headers
+      let headHTML = `<tr><th class="row-index-col">#</th>`;
+      currentTable.headers.forEach((colName, cIdx) => {
+        headHTML += `
+          <th>
+            <input type="text" class="col-header-input" value="${colName}" onchange="updateColHeader(${cIdx}, this.value)" />
+          </th>
+        `;
+      });
+      headHTML += `</tr>`;
+      thead.innerHTML = headHTML;
+
+      // Rows
+      tbody.innerHTML = '';
+      currentTable.rows.forEach((row, rIdx) => {
+        const tr = document.createElement('tr');
+        
+        let rowHTML = `<td class="row-index-col">${rIdx + 1}</td>`;
+        row.forEach((cellVal, cIdx) => {
+          const key = `cell_${rIdx}_${cIdx}`;
+          const tagClass = currentTable.tags[key] || '';
+          
+          rowHTML += `
+            <td>
+              <input type="text" 
+                id="${key}"
+                class="cell-input ${tagClass}" 
+                value="${cellVal || ''}" 
+                onfocus="setActiveCell(this)"
+                onchange="updateCellValue(${rIdx}, ${cIdx}, this.value)" 
+              />
+            </td>
+          `;
+        });
+
+        tr.innerHTML = rowHTML;
+        tbody.appendChild(tr);
+      });
+
+      calculateStats();
+    }
+
+    window.setActiveCell = function(inputEl) {
+      activeCellRef = inputEl;
+    };
+
+    window.updateColHeader = function(cIdx, val) {
+      userTables[activeTableIndex].headers[cIdx] = val;
+      syncDataToCloud();
+    };
+
+    window.updateCellValue = function(rIdx, cIdx, val) {
+      if (!userTables[activeTableIndex].rows[rIdx]) userTables[activeTableIndex].rows[rIdx] = [];
+      userTables[activeTableIndex].rows[rIdx][cIdx] = val;
+      
+      const key = `cell_${rIdx}_${cIdx}`;
+      const lower = val.toLowerCase().trim();
+      
+      if (lower === 'present') {
+        userTables[activeTableIndex].tags[key] = 'status-present';
+        if (activeCellRef) activeCellRef.className = 'cell-input status-present';
+      } else if (lower === 'absent') {
+        userTables[activeTableIndex].tags[key] = 'status-absent';
+        if (activeCellRef) activeCellRef.className = 'cell-input status-absent';
+      } else if (lower === 'late') {
+        userTables[activeTableIndex].tags[key] = 'status-late';
+        if (activeCellRef) activeCellRef.className = 'cell-input status-late';
+      }
+
+      calculateStats();
+      syncDataToCloud();
+    };
+
+    // Table Renaming and Custom Modal Deletion
+    window.openRenameTableModal = function() {
+      const curTable = userTables[activeTableIndex];
+      if (!curTable) return;
+      document.getElementById('rename-table-input').value = curTable.name;
+      document.getElementById('rename-table-modal').classList.add('active');
+    };
+
+    window.closeRenameTableModal = () => document.getElementById('rename-table-modal').classList.remove('active');
+
+    window.saveRenamedTable = function(e) {
+      e.preventDefault();
+      const newTitle = document.getElementById('rename-table-input').value.trim();
+      if (!newTitle) return;
+      userTables[activeTableIndex].name = newTitle;
+      closeRenameTableModal();
+      renderTabs();
+      showNotification("Sheet title updated!");
+      syncDataToCloud();
+    };
+
+    window.confirmDeleteCurrentTable = function() {
+      const tableName = userTables[activeTableIndex] ? userTables[activeTableIndex].name : "this sheet";
+      
+      openConfirmModal(
+        "Delete Attendance Sheet",
+        `Are you sure you want to delete "${tableName}"? All records inside will be removed.`,
+        function() {
+          if (userTables.length <= 1) {
+            userTables = JSON.parse(JSON.stringify(defaultAttendanceTables));
+            activeTableIndex = 0;
+            renderTabs();
+            renderSheetsGrid();
+            showNotification("Sheet reset to default!");
+            syncDataToCloud();
+          } else {
+            userTables.splice(activeTableIndex, 1);
+            activeTableIndex = Math.max(0, activeTableIndex - 1);
+            renderTabs();
+            renderSheetsGrid();
+            showNotification("Sheet deleted!");
+            syncDataToCloud();
+          }
+        }
+      );
+    };
+
+    window.addNewRow = function() {
+      const curTable = userTables[activeTableIndex];
+      const newRow = new Array(curTable.headers.length).fill("");
+      curTable.rows.push(newRow);
+      renderSheetsGrid();
+      showNotification("Row added");
+      syncDataToCloud();
+    };
+
+    window.removeLastRow = function() {
+      const curTable = userTables[activeTableIndex];
+      if (curTable.rows.length <= 1) {
+        showNotification("Cannot remove the last remaining row!");
+        return;
+      }
+      curTable.rows.pop();
+      renderSheetsGrid();
+      showNotification("Row removed");
+      syncDataToCloud();
+    };
+
+    window.addNewCol = function() {
+      const curTable = userTables[activeTableIndex];
+      const colLetter = String.fromCharCode(65 + (curTable.headers.length % 26));
+      curTable.headers.push(colLetter);
+      curTable.rows.forEach(r => r.push(""));
+      renderSheetsGrid();
+      showNotification("Column added");
+      syncDataToCloud();
+    };
+
+    window.removeLastCol = function() {
+      const curTable = userTables[activeTableIndex];
+      if (curTable.headers.length <= 1) {
+        showNotification("Cannot remove the last remaining column!");
+        return;
+      }
+      curTable.headers.pop();
+      curTable.rows.forEach(r => r.pop());
+      renderSheetsGrid();
+      showNotification("Column removed");
+      syncDataToCloud();
+    };
+
+    // Attendance Status Modal
+    window.openStatusModal = function() {
+      if (!activeCellRef) {
+        showNotification("Tap a cell first to mark status!");
+        return;
+      }
+      document.getElementById('status-modal').classList.add('active');
+    };
+
+    window.closeStatusModal = () => document.getElementById('status-modal').classList.remove('active');
+
+    window.applyDirectStatus = function(statusText, tagClass) {
+      if (!activeCellRef) return;
+      const cellId = activeCellRef.id;
+      const parts = cellId.split('_');
+      const rIdx = parseInt(parts[1]);
+      const cIdx = parseInt(parts[2]);
+
+      const curTable = userTables[activeTableIndex];
+
+      activeCellRef.value = statusText;
+      if (curTable.rows[rIdx]) curTable.rows[rIdx][cIdx] = statusText;
+
+      activeCellRef.classList.remove('status-present', 'status-absent', 'status-late');
+      if (tagClass) {
+        activeCellRef.classList.add(tagClass);
+        curTable.tags[cellId] = tagClass;
+      } else {
+        delete curTable.tags[cellId];
+      }
+
+      closeStatusModal();
+      calculateStats();
+      showNotification("Status updated!");
+      syncDataToCloud();
+    };
+
+    window.clearActiveCell = function() {
+      if (!activeCellRef) {
+        showNotification("Tap a cell to clear!");
+        return;
+      }
+      activeCellRef.value = '';
+      const cellId = activeCellRef.id;
+      const parts = cellId.split('_');
+      const rIdx = parseInt(parts[1]);
+      const cIdx = parseInt(parts[2]);
+
+      const curTable = userTables[activeTableIndex];
+      if (curTable.rows[rIdx]) curTable.rows[rIdx][cIdx] = '';
+      activeCellRef.className = 'cell-input';
+      delete curTable.tags[cellId];
+
+      calculateStats();
+      showNotification("Cell cleared.");
+      syncDataToCloud();
+    };
+
+    window.closeNewTableModal = () => document.getElementById('new-table-modal').classList.remove('active');
+
+    window.createNewTable = function(e) {
+      e.preventDefault();
+      const tableName = document.getElementById('table-name-input').value.trim();
+      if (!tableName) return;
+
+      const newTbl = {
+        id: "att_" + Date.now(),
+        name: tableName,
+        headers: ["Name / ID", "Course", "Status", "Date", "Remark"],
+        rows: [
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""]
+        ],
+        tags: {}
+      };
+
+      userTables.push(newTbl);
+      activeTableIndex = userTables.length - 1;
+      document.getElementById('table-name-input').value = '';
+      closeNewTableModal();
+      renderTabs();
+      renderSheetsGrid();
+      showNotification("New sheet created!");
+      syncDataToCloud();
+    };
+
+    // Dual Persistence Sync Engine
+    async function syncDataToCloud() {
+      try {
+        localStorage.setItem('yandli_attendanceTables', JSON.stringify(userTables));
+      } catch (err) {
+        console.error("Local storage error:", err);
+      }
+
+      if (!currentUserUid) return;
+      try {
+        const userRef = doc(db, "Users", currentUserUid);
+        await setDoc(userRef, {
+          attendanceTables: userTables
+        }, { merge: true });
+      } catch (err) {
+        console.error("Cloud sync error:", err);
+      }
+    }
+
+    renderTabs();
+    renderSheetsGrid();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUserUid = user.uid;
+        try {
+          const docSnap = await getDoc(doc(db, "Users", user.uid));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.attendanceTables && Array.isArray(data.attendanceTables) && data.attendanceTables.length > 0) {
+              userTables = data.attendanceTables;
+              localStorage.setItem('yandli_attendanceTables', JSON.stringify(userTables));
+            }
+            renderTabs();
+            renderSheetsGrid();
+          } else {
+            await syncDataToCloud();
+          }
+        } catch (err) {
+          console.error("Error fetching attendance data:", err);
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>

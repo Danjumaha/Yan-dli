@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Yan-Dli | University Timetable & Countdowns</title>
+  <title>Yan-Dli | Timetable Planner</title>
   
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 
   <style>
@@ -20,8 +24,9 @@
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 12px rgba(124, 58, 237, 0.1);
+      --grid-line: #CBD5E1;
     }
 
     * {
@@ -48,14 +53,13 @@
       background: var(--bg-gray);
       min-height: 100vh;
       position: relative;
-      padding-bottom: 90px;
+      padding-bottom: 40px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
       overflow-x: hidden;
     }
 
     .top-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       padding: 0.85rem 1rem;
       background: var(--card-bg);
@@ -65,53 +69,35 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary);
-      padding: 4px;
-    }
-
-    .chat-btn-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .back-btn {
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-dark);
+      border: 1px solid var(--border-color); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
       text-decoration: none;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
     }
-
-    .chat-btn-group svg {
-      width: 18px;
-      height: 18px;
-      fill: #25D366;
-    }
-
-    .user-avatar-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
+    .back-btn:hover {
       background: var(--primary-light);
+      border-color: var(--primary);
       color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      border: 1px solid rgba(124, 58, 237, 0.15);
     }
-
-    .user-avatar-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--primary);
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
       fill: none;
-      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .content-body {
@@ -120,8 +106,14 @@
 
     .page-title {
       font-size: 1.15rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
       margin-bottom: 1rem;
     }
 
@@ -151,7 +143,7 @@
     }
     .section-title {
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -256,124 +248,201 @@
       margin-top: 2px;
     }
 
-    /* MATRIX TIMETABLE */
-    .matrix-controls-row {
+    /* MULTI-TABLE TABS */
+    .table-tabs-container {
       display: flex;
-      gap: 8px;
-      margin-bottom: 0.6rem;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-    .matrix-control-btn {
+    .table-tabs-container::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      color: var(--primary);
-      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
       cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.25);
+    }
+
+    .add-table-btn {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px dashed var(--primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* GOOGLE SHEETS TOOLBAR */
+    .sheet-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sheet-toolbar::-webkit-scrollbar { display: none; }
+
+    .sheet-tool-btn {
+      background: var(--bg-gray);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
       display: flex;
       align-items: center;
       gap: 4px;
+      transition: all 0.15s ease;
     }
-    .matrix-control-btn:hover { background: var(--primary-light); }
+    .sheet-tool-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
 
-    .table-responsive-wrapper {
+    .sheet-tool-btn.danger {
+      color: #EF4444;
+    }
+    .sheet-tool-btn.danger:hover {
+      background: #FEE2E2;
+      border-color: #EF4444;
+    }
+
+    /* SHEET GRID & TABLE WITH HORIZONTAL SCROLLING */
+    .sheet-table-wrapper {
       width: 100%;
       overflow-x: auto;
+      overflow-y: hidden;
       background: var(--card-bg);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--grid-line);
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
       box-shadow: var(--shadow-sm);
       margin-bottom: 1.5rem;
+      position: relative;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .matrix-table {
-      width: 100%;
+    .sheets-grid {
       border-collapse: collapse;
-      text-align: left;
+      table-layout: fixed;
       font-size: 0.78rem;
-      min-width: 500px;
     }
 
-    .matrix-table th, .matrix-table td {
-      border: 1px solid var(--border-color);
-      padding: 8px;
-      vertical-align: top;
+    .sheets-grid th, .sheets-grid td {
+      border: 1px solid var(--grid-line);
+      padding: 0;
+      position: relative;
+      height: 38px;
+      min-width: 120px;
+      width: 120px;
     }
 
-    .matrix-table th {
-      background: var(--primary-light);
-      color: var(--primary-hover);
-      font-weight: 600;
-      text-align: center;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-    }
-
-    .time-col {
-      width: 95px;
-      background: var(--bg-gray);
+    .sheets-grid th.row-index-col, .sheets-grid td.row-index-col {
+      min-width: 40px !important;
+      width: 40px !important;
+      background: #F1F5F9 !important;
       color: var(--text-muted);
-      font-weight: 500;
       text-align: center;
-      vertical-align: middle !important;
+      font-weight: 600;
       font-size: 0.7rem;
-      position: relative;
+      user-select: none;
+      position: sticky;
+      left: 0;
+      z-index: 10;
     }
 
-    .slot-cell {
-      height: 75px;
-      cursor: pointer;
-      position: relative;
-      transition: background 0.1s;
-    }
-
-    .slot-cell:hover {
-      background: rgba(124, 58, 237, 0.03);
-    }
-
-    .slot-content {
-      background: var(--primary-light);
-      border-left: 3px solid var(--primary);
-      padding: 5px 6px;
-      border-radius: 4px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .slot-course {
-      font-weight: 600;
-      color: var(--primary-hover);
-      font-size: 0.75rem;
-      line-height: 1.1;
-    }
-
-    .slot-venue {
-      font-size: 0.65rem;
+    .sheets-grid th {
+      background: #F1F5F9;
       color: var(--text-muted);
-    }
-
-    .empty-slot-hint {
-      color: #9CA3AF;
-      font-size: 0.65rem;
+      font-weight: 600;
+      font-size: 0.72rem;
       text-align: center;
-      margin-top: 20px;
-      font-style: italic;
+      user-select: none;
     }
 
-    /* MODALS */
+    .col-header-input {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      text-align: center;
+      font-weight: 700;
+      color: var(--primary-hover);
+      font-size: 0.78rem;
+      padding: 4px;
+      outline: none;
+    }
+    .col-header-input:focus {
+      background: #FFFFFF;
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+
+    .cell-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      background: transparent;
+      transition: background 0.15s;
+    }
+
+    .cell-input:focus {
+      background: #FFFFFF !important;
+      box-shadow: inset 0 0 0 2px var(--primary);
+      z-index: 5;
+      position: relative;
+    }
+
+    /* CELL BRAND COLOR PRESETS */
+    .cell-input.tag-purple { background: #F3E8FF; color: #6D28D9; font-weight: 600; }
+    .cell-input.tag-amber { background: #FEF3C7; color: #B45309; font-weight: 700; }
+    .cell-input.tag-indigo { background: #E0E7FF; color: #3730A3; font-weight: 600; }
+    .cell-input.tag-emerald { background: #ECFDF5; color: #047857; font-weight: 600; }
+
+    /* CLEAN MODERN POPUP MODAL */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.4);
+      background: rgba(15, 23, 42, 0.45);
       z-index: 200;
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(4px);
       padding: 1rem;
     }
     .modal-overlay.active { display: flex; }
@@ -381,17 +450,57 @@
     .modal-box {
       background: var(--card-bg);
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       border-radius: var(--radius-lg);
       padding: 1.25rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.18);
     }
 
     .modal-title {
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 0.85rem;
       color: var(--text-dark);
+    }
+
+    .modal-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    /* NEAT COLOR PRESET GRID */
+    .color-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .preset-card-option {
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .preset-card-option:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .color-indicator-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
     }
 
     .form-group {
@@ -404,15 +513,15 @@
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%;
-      padding: 0.6rem;
+      padding: 0.65rem 0.8rem;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       background: var(--bg-gray);
       color: var(--text-dark);
       outline: none;
@@ -432,7 +541,7 @@
       color: var(--text-dark);
       padding: 0.65rem;
       border-radius: var(--radius-sm);
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       font-size: 0.82rem;
     }
@@ -450,92 +559,18 @@
       box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
     }
 
-    /* DRAWER STYLES */
-    .drawer-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 100;
-      display: none;
-      backdrop-filter: blur(2px);
+    .btn-danger {
+      flex: 1;
+      background: #EF4444;
+      border: none;
+      color: #FFF;
+      padding: 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
     }
-    .drawer-overlay.active { display: block; }
-
-    .drawer {
-      position: fixed;
-      top: 0; left: -280px;
-      width: 280px; height: 100vh;
-      background: var(--card-bg);
-      z-index: 101;
-      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-    }
-    .drawer.active { left: 0; }
-
-    .drawer-header {
-      background: var(--primary-light);
-      padding: 1.5rem 1.25rem 1.25rem;
-      position: relative;
-    }
-
-    .drawer-close-btn {
-      position: absolute;
-      top: 0.85rem; right: 0.85rem;
-      background: none; border: none;
-      font-size: 1.35rem; color: var(--primary);
-      cursor: pointer; line-height: 1;
-    }
-
-    .drawer-avatar {
-      width: 42px; height: 42px;
-      border-radius: 50%; background: #E2E8F0;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 0.5rem; color: var(--primary);
-    }
-
-    .drawer-user-name {
-      font-size: 0.95rem; font-weight: 600;
-      color: var(--primary-hover); line-height: 1.2;
-    }
-
-    .drawer-edit-link {
-      font-size: 0.75rem; color: var(--primary);
-      text-decoration: none; font-weight: 500;
-      display: inline-block; margin-top: 3px;
-    }
-
-    .drawer-menu { padding: 0.75rem 0; flex: 1; overflow-y: auto; }
-
-    .drawer-item {
-      display: flex; align-items: center; gap: 0.85rem;
-      padding: 0.75rem 1.25rem; color: var(--text-dark);
-      text-decoration: none; font-size: 0.83rem;
-    }
-    .drawer-item svg {
-      width: 17px; height: 17px; stroke: var(--primary); fill: none; stroke-width: 2; flex-shrink: 0;
-    }
-    .drawer-item:hover { background: var(--bg-gray); }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 100%; max-width: 480px;
-      background: var(--card-bg);
-      border-top: 1px solid var(--border-color);
-      display: flex; justify-content: space-around;
-      padding: 0.4rem 0; z-index: 30;
-    }
-
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center;
-      text-decoration: none; color: var(--text-muted);
-      font-size: 0.65rem; gap: 2px;
-    }
-    .nav-item.active { color: var(--primary); font-weight: 500; }
-    .nav-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
   </style>
 </head>
 <body>
@@ -544,25 +579,15 @@
 
     <!-- TOP HEADER -->
     <header class="top-bar">
-      <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Open Menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="16" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
-      </button>
-
-      <a href="https://wa.me/2348000000000" class="chat-btn-group" target="_blank">
-        <span>Chat with us</span>
-        <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.758.459 3.474 1.33 4.982l-1.413 5.161 5.282-1.385a9.923 9.923 0 004.79 1.228h.005c5.505 0 9.988-4.477 9.989-9.983A9.922 9.922 0 0012.012 2z"/></svg>
-      </a>
-
-      <a href="account.html" class="user-avatar-btn" title="Account">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <a href="dashboard.html" class="back-btn" title="Back to Dashboard">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
     </header>
 
     <!-- CONTENT BODY -->
     <main class="content-body">
       <h1 class="page-title">University Timetable & Countdowns</h1>
+      <p class="page-subtitle">Clean interactive table and event planner</p>
 
       <div id="app-notification" class="app-notification"></div>
 
@@ -576,56 +601,131 @@
           </button>
         </div>
         <div id="countdown-cards-container">
-          <!-- Populated dynamically via JS -->
+          <!-- Dynamic Countdowns -->
         </div>
       </section>
 
-      <!-- TIMETABLE MATRIX CONTROLS -->
-      <div class="countdown-header-flex" style="margin-top: 1.25rem;">
-        <span class="section-title">Weekly Schedule Matrix</span>
-        <span style="font-size: 0.68rem; color: var(--text-muted);">Tap any slot to edit</span>
+      <!-- MULTI-TABLE TABS -->
+      <div class="countdown-header-flex" style="margin-top: 1.25rem; margin-bottom: 0.4rem;">
+        <span class="section-title">My Tables</span>
+        <span style="font-size: 0.68rem; color: var(--text-muted);">Tap cell to edit</span>
       </div>
 
-      <div class="matrix-controls-row">
-        <button class="matrix-control-btn" onclick="openAddTimeSlotModal()">+ Add Time Slot</button>
-        <button class="matrix-control-btn" onclick="openAddDayModal()">+ Add Day Column</button>
+      <div class="table-tabs-container" id="tabs-bar">
+        <!-- Dynamic Table Tabs -->
       </div>
 
-      <div class="table-responsive-wrapper">
-        <table class="matrix-table" id="matrix-timetable">
-          <thead id="matrix-head">
+      <!-- SHEET TOOLBAR -->
+      <div class="sheet-toolbar">
+        <button class="sheet-tool-btn" onclick="openRenameTableModal()">
+          ✏️ Rename
+        </button>
+        <button class="sheet-tool-btn" onclick="addNewRow()">
+          ➕ Add Row
+        </button>
+        <button class="sheet-tool-btn danger" onclick="removeLastRow()">
+          ➖ Remove Row
+        </button>
+        <button class="sheet-tool-btn" onclick="addNewCol()">
+          ➕ Add Col
+        </button>
+        <button class="sheet-tool-btn danger" onclick="removeLastCol()">
+          ➖ Remove Col
+        </button>
+        <button class="sheet-tool-btn" onclick="openPresetModal()">
+          🎨 Cell Color
+        </button>
+        <button class="sheet-tool-btn danger" onclick="clearActiveCell()">
+          🗑️ Clear
+        </button>
+        <button class="sheet-tool-btn danger" onclick="confirmDeleteCurrentTable()">
+          🗑️ Delete Table
+        </button>
+      </div>
+
+      <!-- SHEET INTERACTIVE TABLE -->
+      <div class="sheet-table-wrapper">
+        <table class="sheets-grid" id="sheets-timetable">
+          <thead id="sheets-head">
             <!-- Populated dynamically -->
           </thead>
-          <tbody id="matrix-body">
+          <tbody id="sheets-body">
             <!-- Populated dynamically -->
           </tbody>
         </table>
       </div>
     </main>
 
-    <!-- EDIT / ADD CLASS MODAL -->
-    <div id="class-modal" class="modal-overlay">
+    <!-- CUSTOM DESIGNED CONFIRMATION DIALOG MODAL -->
+    <div id="confirm-modal" class="modal-overlay">
       <div class="modal-box">
-        <div class="modal-title" id="modal-class-title">Edit Time Slot</div>
-        <form id="slot-form" onsubmit="saveTimeSlot(event)">
-          <input type="hidden" id="slot-day">
-          <input type="hidden" id="slot-time">
+        <div class="modal-title" id="confirm-modal-title">Delete Confirmation</div>
+        <div class="modal-desc" id="confirm-modal-desc">Are you sure you want to proceed?</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button type="button" class="btn-danger" id="confirm-modal-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RENAME TABLE MODAL -->
+    <div id="rename-table-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Rename Table</div>
+        <form onsubmit="saveRenamedTable(event)">
           <div class="form-group">
-            <label>Selected Slot</label>
-            <input type="text" id="slot-info-display" disabled style="opacity: 0.7;">
-          </div>
-          <div class="form-group">
-            <label for="input-course">Course Title / Code</label>
-            <input type="text" id="input-course" placeholder="e.g. CSC301 - Operating Systems" required>
-          </div>
-          <div class="form-group">
-            <label for="input-venue">Venue / Hall</label>
-            <input type="text" id="input-venue" placeholder="e.g. Lecture Theatre 1" required>
+            <label for="rename-table-input">Table Name</label>
+            <input type="text" id="rename-table-input" placeholder="e.g. 100L Timetable" required>
           </div>
           <div class="modal-actions">
-            <button type="button" class="btn-secondary" onclick="closeClassModal()">Cancel</button>
-            <button type="button" class="btn-secondary" style="color: #EF4444;" onclick="clearTimeSlot()">Clear Slot</button>
-            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" class="btn-secondary" onclick="closeRenameTableModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Title</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CLEAN NEAT CELL COLOR PRESET MODAL -->
+    <div id="preset-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Highlight Selected Cell</div>
+        <div class="color-preset-grid">
+          <div class="preset-card-option" style="background: #F3E8FF; color: #6D28D9;" onclick="applyDirectPreset('tag-purple')">
+            <div class="color-indicator-circle" style="background: #7C3AED;"></div>
+            <span>Purple</span>
+          </div>
+          <div class="preset-card-option" style="background: #FEF3C7; color: #B45309;" onclick="applyDirectPreset('tag-amber')">
+            <div class="color-indicator-circle" style="background: #D97706;"></div>
+            <span>Amber</span>
+          </div>
+          <div class="preset-card-option" style="background: #E0E7FF; color: #3730A3;" onclick="applyDirectPreset('tag-indigo')">
+            <div class="color-indicator-circle" style="background: #4338CA;"></div>
+            <span>Indigo</span>
+          </div>
+          <div class="preset-card-option" style="background: #ECFDF5; color: #047857;" onclick="applyDirectPreset('tag-emerald')">
+            <div class="color-indicator-circle" style="background: #059669;"></div>
+            <span>Emerald</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="applyDirectPreset('')">Clear Highlight</button>
+          <button type="button" class="btn-secondary" onclick="closePresetModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW SHEET / TABLE MODAL -->
+    <div id="new-table-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Create New Table</div>
+        <form onsubmit="createNewTable(event)">
+          <div class="form-group">
+            <label for="table-name-input">Table Name</label>
+            <input type="text" id="table-name-input" placeholder="e.g. Exam Timetable, Study Routine" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeNewTableModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Create Table</button>
           </div>
         </form>
       </div>
@@ -653,110 +753,13 @@
       </div>
     </div>
 
-    <!-- ADD TIME SLOT MODAL -->
-    <div id="time-slot-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-title">Add New Time Slot</div>
-        <form onsubmit="addNewTimeSlot(event)">
-          <div class="form-group">
-            <label for="new-time-val">Time Range</label>
-            <input type="text" id="new-time-val" placeholder="e.g. 04:00 - 06:00" required>
-          </div>
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" onclick="document.getElementById('time-slot-modal').classList.remove('active')">Cancel</button>
-            <button type="submit" class="btn-primary">Add Slot</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- ADD DAY MODAL -->
-    <div id="day-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-title">Add New Day Column</div>
-        <form onsubmit="addNewDayColumn(event)">
-          <div class="form-group">
-            <label for="new-day-val">Day Name</label>
-            <input type="text" id="new-day-val" placeholder="e.g. Sunday" required>
-          </div>
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" onclick="document.getElementById('day-modal').classList.remove('active')">Cancel</button>
-            <button type="submit" class="btn-primary">Add Day</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- SIDE DRAWER BACKDROP -->
-    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
-
-    <!-- SIDE NAVIGATION DRAWER -->
-    <aside id="drawer" class="drawer">
-      <div class="drawer-header">
-        <button class="drawer-close-btn" onclick="toggleDrawer(false)">&times;</button>
-        <div class="drawer-avatar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </div>
-        <div class="drawer-user-name" id="drawer-user-name">Student</div>
-        <a href="profile.html" class="drawer-edit-link">Edit Profile</a>
-      </div>
-
-      <nav class="drawer-menu">
-        <a href="dashboard.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home
-        </a>
-        <a href="table.html" class="drawer-item" style="color: var(--primary); font-weight: 500;">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Campus Timetable
-        </a>
-        <a href="hard.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>My Hard Questions
-        </a>
-        <a href="history.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Practice History
-        </a>
-        <a href="analysis.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Performance Analysis
-        </a>
-        <a href="leaderboard.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Leaderboard
-        </a>
-        <a href="activate.html" class="drawer-item">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Activation
-        </a>
-        <a href="#" id="logout-btn" class="drawer-item" style="color: #EF4444;">
-          <svg viewBox="0 0 24 24" style="stroke: #EF4444;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log out
-        </a>
-      </nav>
-    </aside>
-
-    <!-- BOTTOM FIXED NAVIGATION BAR -->
-    <nav class="bottom-nav">
-      <a href="dashboard.html" class="nav-item">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span>Home</span>
-      </a>
-      <a href="exams.html" class="nav-item">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>Exams</span>
-      </a>
-      <a href="classroom.html" class="nav-item">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Classroom</span>
-      </a>
-      <a href="activate.html" class="nav-item">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>Activation</span>
-      </a>
-      <a href="account.html" class="nav-item">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Account</span>
-      </a>
-    </nav>
-
   </div>
 
-  <!-- FIREBASE & MATRIX TIMETABLE ENGINE -->
+  <!-- FIREBASE ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -773,164 +776,317 @@
     const db = getFirestore(app);
 
     let currentUserUid = null;
-    
-    let timeSlots = ["08:00 - 10:00", "10:00 - 12:00", "12:00 - 02:00", "02:00 - 04:00"];
-    let daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    let activeCellRef = null;
+    let pendingConfirmAction = null;
 
-    let matrixTimetable = {}; 
-    let countdownEvents = [];
+    // Default Preset Columns matching user requirements (Time, Day, Course, Venue)
+    const defaultTables = [
+      {
+        id: "tab_1",
+        name: "Timetable 1",
+        headers: ["Time", "Day", "Course", "Venue"],
+        rows: [
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""]
+        ],
+        tags: {}
+      }
+    ];
+
+    let userTables = JSON.parse(localStorage.getItem('yandli_userTables')) || defaultTables;
+    let activeTableIndex = 0;
+    let countdownEvents = JSON.parse(localStorage.getItem('yandli_countdowns')) || [];
 
     function showNotification(msg) {
       const note = document.getElementById('app-notification');
       note.innerText = msg;
       note.classList.add('active');
-      setTimeout(() => note.classList.remove('active'), 3500);
+      setTimeout(() => note.classList.remove('active'), 2500);
     }
 
-    window.toggleDrawer = (open) => {
-      document.getElementById('drawer').classList.toggle('active', open);
-      document.getElementById('drawer-overlay').classList.toggle('active', open);
+    // CUSTOM STYLISH CONFIRMATION DIALOG MODAL
+    window.openConfirmModal = function(title, description, onConfirmCallback) {
+      document.getElementById('confirm-modal-title').innerText = title;
+      document.getElementById('confirm-modal-desc').innerText = description;
+      pendingConfirmAction = onConfirmCallback;
+      document.getElementById('confirm-modal').classList.add('active');
     };
 
-    function renderMatrixTimetable() {
-      const thead = document.getElementById('matrix-head');
-      const tbody = document.getElementById('matrix-body');
-      
-      let headerHTML = `<tr><th>Time</th>`;
-      daysOfWeek.forEach((day, dIdx) => {
-        headerHTML += `<th>${day} <button onclick="deleteDayColumn(${dIdx})" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:0.6rem;margin-left:2px;" title="Remove day">&times;</button></th>`;
-      });
-      headerHTML += `</tr>`;
-      thead.innerHTML = headerHTML;
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      pendingConfirmAction = null;
+    };
 
+    document.getElementById('confirm-modal-btn').onclick = function() {
+      if (pendingConfirmAction) pendingConfirmAction();
+      closeConfirmModal();
+    };
+
+    function renderTabs() {
+      const container = document.getElementById('tabs-bar');
+      container.innerHTML = '';
+
+      userTables.forEach((tbl, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${idx === activeTableIndex ? 'active' : ''}`;
+        btn.innerHTML = `<span>${tbl.name}</span>`;
+        btn.onclick = () => {
+          activeTableIndex = idx;
+          renderTabs();
+          renderSheetsGrid();
+        };
+        container.appendChild(btn);
+      });
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-table-btn';
+      addBtn.innerText = '+ New Table';
+      addBtn.onclick = () => document.getElementById('new-table-modal').classList.add('active');
+      container.appendChild(addBtn);
+    }
+
+    function renderSheetsGrid() {
+      const thead = document.getElementById('sheets-head');
+      const tbody = document.getElementById('sheets-body');
+
+      if (!userTables[activeTableIndex]) activeTableIndex = 0;
+      const currentTable = userTables[activeTableIndex] || defaultTables[0];
+
+      // Calculate explicit width for the table based on column count
+      const totalWidth = 40 + (currentTable.headers.length * 120);
+      document.getElementById('sheets-timetable').style.width = `${totalWidth}px`;
+
+      // Build Headers
+      let headHTML = `<tr><th class="row-index-col">#</th>`;
+      currentTable.headers.forEach((colName, cIdx) => {
+        headHTML += `
+          <th>
+            <input type="text" class="col-header-input" value="${colName}" onchange="updateColHeader(${cIdx}, this.value)" />
+          </th>
+        `;
+      });
+      headHTML += `</tr>`;
+      thead.innerHTML = headHTML;
+
+      // Build Body Rows
       tbody.innerHTML = '';
-      timeSlots.forEach((time, tIdx) => {
+      currentTable.rows.forEach((row, rIdx) => {
         const tr = document.createElement('tr');
         
-        const tdTime = document.createElement('td');
-        tdTime.className = 'time-col';
-        tdTime.innerHTML = `<div>${time}</div><button onclick="deleteTimeSlot(${tIdx})" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:0.6rem;margin-top:2px;">Remove</button>`;
-        tr.appendChild(tdTime);
-
-        daysOfWeek.forEach(day => {
-          const td = document.createElement('td');
-          td.className = 'slot-cell';
-          const key = `${day}_${time}`;
-          const slotData = matrixTimetable[key];
-
-          if (slotData && slotData.course) {
-            td.innerHTML = `
-              <div class="slot-content">
-                <div>
-                  <div class="slot-course">${slotData.course}</div>
-                  <div class="slot-venue">📍 ${slotData.venue}</div>
-                </div>
-                <div style="font-size:0.6rem; color:var(--primary); text-align:right;">Edit</div>
-              </div>
-            `;
-          } else {
-            td.innerHTML = `<div class="empty-slot-hint">+ Add</div>`;
-          }
-
-          td.onclick = () => openSlotModal(day, time);
-          tr.appendChild(td);
+        let rowHTML = `<td class="row-index-col">${rIdx + 1}</td>`;
+        row.forEach((cellVal, cIdx) => {
+          const key = `cell_${rIdx}_${cIdx}`;
+          const tagClass = currentTable.tags[key] || '';
+          rowHTML += `
+            <td>
+              <input type="text" 
+                id="${key}"
+                class="cell-input ${tagClass}" 
+                value="${cellVal || ''}" 
+                onfocus="setActiveCell(this)"
+                onchange="updateCellValue(${rIdx}, ${cIdx}, this.value)" 
+              />
+            </td>
+          `;
         });
 
+        tr.innerHTML = rowHTML;
         tbody.appendChild(tr);
       });
     }
 
-    window.openAddTimeSlotModal = () => document.getElementById('time-slot-modal').classList.add('active');
-    window.openAddDayModal = () => document.getElementById('day-modal').classList.add('active');
+    window.setActiveCell = function(inputEl) {
+      activeCellRef = inputEl;
+    };
 
-    window.addNewTimeSlot = async function(e) {
+    window.updateColHeader = function(cIdx, val) {
+      userTables[activeTableIndex].headers[cIdx] = val;
+      syncDataToCloud();
+    };
+
+    window.updateCellValue = function(rIdx, cIdx, val) {
+      if (!userTables[activeTableIndex].rows[rIdx]) userTables[activeTableIndex].rows[rIdx] = [];
+      userTables[activeTableIndex].rows[rIdx][cIdx] = val;
+      syncDataToCloud();
+    };
+
+    // Table Renaming and Custom Modal Deletion
+    window.openRenameTableModal = function() {
+      const curTable = userTables[activeTableIndex];
+      if (!curTable) return;
+      document.getElementById('rename-table-input').value = curTable.name;
+      document.getElementById('rename-table-modal').classList.add('active');
+    };
+
+    window.closeRenameTableModal = () => document.getElementById('rename-table-modal').classList.remove('active');
+
+    window.saveRenamedTable = function(e) {
       e.preventDefault();
-      const val = document.getElementById('new-time-val').value.trim();
-      if (val && !timeSlots.includes(val)) {
-        timeSlots.push(val);
-        document.getElementById('time-slot-modal').classList.remove('active');
-        document.getElementById('new-time-val').value = '';
-        renderMatrixTimetable();
-        showNotification("Time slot added!");
-        await syncDataToCloud();
-      }
+      const newTitle = document.getElementById('rename-table-input').value.trim();
+      if (!newTitle) return;
+      userTables[activeTableIndex].name = newTitle;
+      closeRenameTableModal();
+      renderTabs();
+      showNotification("Table title updated!");
+      syncDataToCloud();
     };
 
-    window.addNewDayColumn = async function(e) {
-      e.preventDefault();
-      const val = document.getElementById('new-day-val').value.trim();
-      if (val && !daysOfWeek.includes(val)) {
-        daysOfWeek.push(val);
-        document.getElementById('day-modal').classList.remove('active');
-        document.getElementById('new-day-val').value = '';
-        renderMatrixTimetable();
-        showNotification("Day column added!");
-        await syncDataToCloud();
-      }
-    };
-
-    window.deleteTimeSlot = async function(index) {
-      timeSlots.splice(index, 1);
-      renderMatrixTimetable();
-      showNotification("Time slot removed.");
-      await syncDataToCloud();
-    };
-
-    window.deleteDayColumn = async function(index) {
-      daysOfWeek.splice(index, 1);
-      renderMatrixTimetable();
-      showNotification("Day column removed.");
-      await syncDataToCloud();
-    };
-
-    window.openSlotModal = function(day, time) {
-      document.getElementById('slot-day').value = day;
-      document.getElementById('slot-time').value = time;
-      document.getElementById('slot-info-display').value = `${day} (${time})`;
+    window.confirmDeleteCurrentTable = function() {
+      const tableName = userTables[activeTableIndex] ? userTables[activeTableIndex].name : "this table";
       
-      const key = `${day}_${time}`;
-      const existing = matrixTimetable[key];
-      if (existing) {
-        document.getElementById('input-course').value = existing.course;
-        document.getElementById('input-venue').value = existing.venue;
+      openConfirmModal(
+        "Delete Table",
+        `Are you sure you want to delete "${tableName}"? This action cannot be undone.`,
+        function() {
+          if (userTables.length <= 1) {
+            userTables = JSON.parse(JSON.stringify(defaultTables));
+            activeTableIndex = 0;
+            renderTabs();
+            renderSheetsGrid();
+            showNotification("Table reset to default!");
+            syncDataToCloud();
+          } else {
+            userTables.splice(activeTableIndex, 1);
+            activeTableIndex = Math.max(0, activeTableIndex - 1);
+            renderTabs();
+            renderSheetsGrid();
+            showNotification("Table deleted!");
+            syncDataToCloud();
+          }
+        }
+      );
+    };
+
+    // Row & Column Addition and Removal
+    window.addNewRow = function() {
+      const curTable = userTables[activeTableIndex];
+      const newRow = new Array(curTable.headers.length).fill("");
+      curTable.rows.push(newRow);
+      renderSheetsGrid();
+      showNotification("New row added");
+      syncDataToCloud();
+    };
+
+    window.removeLastRow = function() {
+      const curTable = userTables[activeTableIndex];
+      if (curTable.rows.length <= 1) {
+        showNotification("Cannot remove the last remaining row!");
+        return;
+      }
+      curTable.rows.pop();
+      renderSheetsGrid();
+      showNotification("Last row removed");
+      syncDataToCloud();
+    };
+
+    window.addNewCol = function() {
+      const curTable = userTables[activeTableIndex];
+      const colLetter = String.fromCharCode(65 + (curTable.headers.length % 26));
+      curTable.headers.push(colLetter);
+      curTable.rows.forEach(r => r.push(""));
+      renderSheetsGrid();
+      showNotification("New column added");
+      syncDataToCloud();
+    };
+
+    window.removeLastCol = function() {
+      const curTable = userTables[activeTableIndex];
+      if (curTable.headers.length <= 1) {
+        showNotification("Cannot remove the last remaining column!");
+        return;
+      }
+      curTable.headers.pop();
+      curTable.rows.forEach(r => r.pop());
+      renderSheetsGrid();
+      showNotification("Last column removed");
+      syncDataToCloud();
+    };
+
+    // Cell Color Highlighting
+    window.openPresetModal = function() {
+      if (!activeCellRef) {
+        showNotification("Tap a cell first to highlight!");
+        return;
+      }
+      document.getElementById('preset-modal').classList.add('active');
+    };
+
+    window.closePresetModal = () => document.getElementById('preset-modal').classList.remove('active');
+
+    window.applyDirectPreset = function(tagClass) {
+      if (!activeCellRef) return;
+      const cellId = activeCellRef.id;
+      const curTable = userTables[activeTableIndex];
+
+      activeCellRef.classList.remove('tag-purple', 'tag-amber', 'tag-indigo', 'tag-emerald');
+      if (tagClass) {
+        activeCellRef.classList.add(tagClass);
+        curTable.tags[cellId] = tagClass;
       } else {
-        document.getElementById('input-course').value = '';
-        document.getElementById('input-venue').value = '';
+        delete curTable.tags[cellId];
       }
 
-      document.getElementById('class-modal').classList.add('active');
+      closePresetModal();
+      showNotification("Cell highlight updated!");
+      syncDataToCloud();
     };
 
-    window.closeClassModal = () => document.getElementById('class-modal').classList.remove('active');
+    window.clearActiveCell = function() {
+      if (!activeCellRef) {
+        showNotification("Tap a cell to clear!");
+        return;
+      }
+      activeCellRef.value = '';
+      const cellId = activeCellRef.id;
+      const parts = cellId.split('_');
+      const rIdx = parseInt(parts[1]);
+      const cIdx = parseInt(parts[2]);
 
-    window.saveTimeSlot = async function(e) {
+      const curTable = userTables[activeTableIndex];
+      if (curTable.rows[rIdx]) curTable.rows[rIdx][cIdx] = '';
+      activeCellRef.className = 'cell-input';
+      delete curTable.tags[cellId];
+
+      showNotification("Cell cleared.");
+      syncDataToCloud();
+    };
+
+    // New Table Sheet Creation
+    window.closeNewTableModal = () => document.getElementById('new-table-modal').classList.remove('active');
+
+    window.createNewTable = function(e) {
       e.preventDefault();
-      const day = document.getElementById('slot-day').value;
-      const time = document.getElementById('slot-time').value;
-      const course = document.getElementById('input-course').value.trim();
-      const venue = document.getElementById('input-venue').value.trim();
+      const tableName = document.getElementById('table-name-input').value.trim();
+      if (!tableName) return;
 
-      const key = `${day}_${time}`;
-      matrixTimetable[key] = { course, venue };
+      const newTbl = {
+        id: "tab_" + Date.now(),
+        name: tableName,
+        headers: ["Time", "Day", "Course", "Venue"],
+        rows: [
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""]
+        ],
+        tags: {}
+      };
 
-      closeClassModal();
-      renderMatrixTimetable();
-      showNotification("Timetable slot saved!");
-      await syncDataToCloud();
+      userTables.push(newTbl);
+      activeTableIndex = userTables.length - 1;
+      document.getElementById('table-name-input').value = '';
+      closeNewTableModal();
+      renderTabs();
+      renderSheetsGrid();
+      showNotification("New table created!");
+      syncDataToCloud();
     };
 
-    window.clearTimeSlot = async function() {
-      const day = document.getElementById('slot-day').value;
-      const time = document.getElementById('slot-time').value;
-      const key = `${day}_${time}`;
-      
-      delete matrixTimetable[key];
-      closeClassModal();
-      renderMatrixTimetable();
-      showNotification("Slot cleared.");
-      await syncDataToCloud();
-    };
-
+    // Countdowns Engine with Custom Confirm Modal
     window.openAddEventModal = (editIndex = -1) => {
       document.getElementById('event-edit-index').value = editIndex;
       if (editIndex >= 0) {
@@ -972,11 +1128,18 @@
       await syncDataToCloud();
     };
 
-    window.deleteCountdownEvent = async function(index) {
-      countdownEvents.splice(index, 1);
-      renderCountdowns();
-      showNotification("Event deleted.");
-      await syncDataToCloud();
+    window.deleteCountdownEvent = function(index) {
+      const eventName = countdownEvents[index] ? countdownEvents[index].name : "this event";
+      openConfirmModal(
+        "Delete Event",
+        `Are you sure you want to delete the event "${eventName}"?`,
+        async function() {
+          countdownEvents.splice(index, 1);
+          renderCountdowns();
+          showNotification("Event deleted.");
+          await syncDataToCloud();
+        }
+      );
     };
 
     function renderCountdowns() {
@@ -1011,7 +1174,6 @@
       });
     }
 
-    // Live Countdown IntervalTicker with Status Alerts
     setInterval(() => {
       const now = new Date().getTime();
       countdownEvents.forEach((ev, idx) => {
@@ -1025,7 +1187,6 @@
 
         if (!dEl || !cardEl || !statusEl) return;
 
-        // Check Event States & Warnings
         if (distance <= 0) {
           dEl.innerText = "00"; hEl.innerText = "00"; mEl.innerText = "00"; sEl.innerText = "00";
           cardEl.className = "countdown-card expired";
@@ -1044,10 +1205,9 @@
         mEl.innerText = String(mins).padStart(2, '0');
         sEl.innerText = String(secs).padStart(2, '0');
 
-        // Dynamic Warning Banners based on remaining duration
         if (days === 0 && hours === 0) {
           cardEl.className = "countdown-card urgent";
-          statusEl.innerText = "⚡ Running out soon! Less than 1 hour remaining.";
+          statusEl.innerText = "⚡ Less than 1 hour remaining!";
           statusEl.style.display = "inline-block";
         } else if (days === 0) {
           cardEl.className = "countdown-card urgent";
@@ -1060,20 +1220,33 @@
       });
     }, 1000);
 
+    // DUAL-PERSISTENCE: LOCALSTORAGE + FIRESTORE SETDOC MERGE
     async function syncDataToCloud() {
+      // 1. Instant Local Storage Save
+      try {
+        localStorage.setItem('yandli_userTables', JSON.stringify(userTables));
+        localStorage.setItem('yandli_countdowns', JSON.stringify(countdownEvents));
+      } catch (err) {
+        console.error("Local storage save error:", err);
+      }
+
+      // 2. Cloud Firestore Save
       if (!currentUserUid) return;
       try {
         const userRef = doc(db, "Users", currentUserUid);
-        await updateDoc(userRef, {
-          matrixTimetable: matrixTimetable,
-          countdownEvents: countdownEvents,
-          timeSlots: timeSlots,
-          daysOfWeek: daysOfWeek
-        });
+        await setDoc(userRef, {
+          userTables: userTables,
+          countdownEvents: countdownEvents
+        }, { merge: true });
       } catch (err) {
-        console.error("Cloud sync failed:", err);
+        console.error("Cloud sync error:", err);
       }
     }
+
+    // Initialize View Immediately from Local Storage
+    renderTabs();
+    renderSheetsGrid();
+    renderCountdowns();
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -1082,25 +1255,27 @@
           const docSnap = await getDoc(doc(db, "Users", user.uid));
           if (docSnap.exists()) {
             const data = docSnap.data();
-            if (data.name) document.getElementById('drawer-user-name').innerText = data.name;
-            if (data.matrixTimetable) matrixTimetable = data.matrixTimetable;
-            if (data.countdownEvents) countdownEvents = data.countdownEvents;
-            if (data.timeSlots) timeSlots = data.timeSlots;
-            if (data.daysOfWeek) daysOfWeek = data.daysOfWeek;
+            if (data.userTables && Array.isArray(data.userTables) && data.userTables.length > 0) {
+              userTables = data.userTables;
+              localStorage.setItem('yandli_userTables', JSON.stringify(userTables));
+            }
+            if (data.countdownEvents) {
+              countdownEvents = data.countdownEvents;
+              localStorage.setItem('yandli_countdowns', JSON.stringify(countdownEvents));
+            }
+            renderTabs();
+            renderSheetsGrid();
+            renderCountdowns();
+          } else {
+            // First time user document setup
+            await syncDataToCloud();
           }
-          renderMatrixTimetable();
-          renderCountdowns();
         } catch (err) {
-          console.error("Error fetching account data:", err);
+          console.error("Error fetching cloud data:", err);
         }
       } else {
         window.location.href = "index.html";
       }
-    });
-
-    document.getElementById('logout-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      signOut(auth).then(() => window.location.href = "index.html");
     });
   </script>
 </body>

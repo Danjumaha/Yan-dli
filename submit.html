@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Exam Summary & Review</title>
+
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C3AED">
+
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -25,9 +31,40 @@
     .app-container { width: 100%; max-width: 480px; background: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     .header { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.85rem 1.1rem; position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
     .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .btn-icon { flex-shrink: 0; background: var(--bg-gray); color: var(--text-dark); border: 1px solid var(--border-color); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: all 0.2s ease; }
+    
+    /* Modern OPay-style Back Button */
+    .btn-icon { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      background: #F8FAFC; 
+      color: var(--text-dark);
+      border: 1px solid var(--border-color); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
+    }
+    .btn-icon:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
     .btn-icon:active { transform: scale(0.95); background: var(--primary-light); color: var(--primary); }
-    .btn-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    .btn-icon svg { 
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .header-title { font-size: 0.98rem; font-weight: 700; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-badge { flex-shrink: 0; background: var(--primary-light); color: var(--primary); font-size: 0.62rem; font-weight: 700; padding: 4px 9px; border-radius: 20px; letter-spacing: 0.3px; text-transform: uppercase; }
     .content-body { padding: 1.1rem 1rem; }
@@ -124,7 +161,7 @@
   <header class="header">
     <div class="header-brand">
       <a href="dashboard.html" class="btn-icon" id="header-back-link" title="Back to Dashboard" aria-label="Back to Dashboard">
-        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
       <span class="header-title" id="page-header-title">Exam Review</span>
     </div>
@@ -434,6 +471,7 @@
     return "";
   }
 
+  // OFFLINE-AWARE LOCAL SESSION FINDER
   function findLocalSession() {
     const sessionId = getSessionId();
     if (!sessionId) return null;
@@ -475,7 +513,7 @@
   }
 
   async function getFirestoreSession(sessionId) {
-    if (!sessionId) return null;
+    if (!sessionId || !navigator.onLine) return null;
     try {
       const snapshot = await getDoc(doc(db, "ExamHistory", sessionId));
       if (!snapshot.exists()) return null;
@@ -525,13 +563,15 @@
         cacheResolvedSession(localSession);
       }
 
-      const cloudSession = await getFirestoreSession(requestedSessionId);
-
-      if (cloudSession && resolvedSession) {
-        resolvedSession = mergeSessions(resolvedSession, cloudSession);
-      } else if (cloudSession) {
-        resolvedSession = cloudSession;
-        cacheResolvedSession(cloudSession);
+      // Try fetching from Firestore if online
+      if (navigator.onLine) {
+        const cloudSession = await getFirestoreSession(requestedSessionId);
+        if (cloudSession && resolvedSession) {
+          resolvedSession = mergeSessions(resolvedSession, cloudSession);
+        } else if (cloudSession) {
+          resolvedSession = cloudSession;
+          cacheResolvedSession(cloudSession);
+        }
       }
 
       if (resolvedSession && resolvedSession.id && String(resolvedSession.id) !== String(requestedSessionId)) {
@@ -771,7 +811,7 @@
   }
 
   onAuthStateChanged(auth, user => {
-    if (user && requestedSessionId && !sessionData) {
+    if (user && requestedSessionId && !sessionData && navigator.onLine) {
       getFirestoreSession(requestedSessionId).then(cloudSession => {
         if (!cloudSession) return;
         sessionData = attachLocalQuestionArchive(cloudSession);
