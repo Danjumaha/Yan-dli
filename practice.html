@@ -22,7 +22,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; font-weight: 400; line-height: 1.6; letter-spacing: 0.1px; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; min-height: 100%; }
     body { background-color: #E2E8F0; color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
-    button, select, input { font: inherit; }
+    button, select, input, textarea { font: inherit; }
     button { -webkit-user-select: none; user-select: none; }
     .app-container { width: 100%; max-width: 480px; background: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 0 25px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; }
     
@@ -71,6 +71,7 @@
     .question-instruction { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.4rem; }
     .question-text { font-size: 0.91rem; font-weight: 500; color: var(--text-dark); line-height: 1.6; margin-bottom: 1rem; overflow-wrap: anywhere; }
     
+    /* OBJECTIVE OPTIONS */
     .options-list { display: flex; flex-direction: column; gap: 10px; }
     .option-card { border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.8rem 1rem; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.15s ease; background: var(--card-bg); }
     .option-card:active { transform: scale(0.995); }
@@ -87,6 +88,17 @@
     .option-card.wrong-ans .option-radio { border-color: var(--danger); background: var(--danger-light); }
     .option-label { font-size: 0.88rem; font-weight: 400; color: var(--text-dark); line-height: 1.5; overflow-wrap: anywhere; }
     
+    /* THEORY INPUT & HINT SYSTEM */
+    .theory-section { display: flex; flex-direction: column; gap: 12px; margin-top: 0.5rem; }
+    .theory-textarea { width: 100%; min-height: 140px; padding: 12px 14px; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.88rem; color: var(--text-dark); background: var(--card-bg); outline: none; resize: vertical; transition: all 0.2s ease; }
+    .theory-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    
+    .theory-actions-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .hint-btn { background: var(--warning-light); border: 1px solid #FDE68A; color: var(--warning-amber); padding: 7px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+    .hint-btn:active { transform: scale(0.96); }
+    .hint-display-box { background: var(--warning-light); border: 1px dashed var(--warning-amber); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.78rem; color: #92400E; font-weight: 600; display: none; }
+    .hint-display-box.active { display: block; }
+
     .explanation-card { margin-top: 1.25rem; background: var(--success-light); border: 1px solid var(--success-border); border-radius: var(--radius-md); padding: 1rem; display: none; box-shadow: var(--shadow-md); animation: fadeIn 0.3s ease-in-out; }
     .explanation-card.active { display: block; }
     .explanation-header { font-size: 0.88rem; font-weight: 600; color: #065F46; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
@@ -165,7 +177,7 @@
     <header class="exam-header">
       <div class="header-brand">
         <div class="brand-title">Yan-Dli</div>
-        <div class="brand-subtitle">Exam Portal</div>
+        <div class="brand-subtitle" id="portal-subtitle-type">Exam Portal</div>
       </div>
       <div class="header-controls">
         <button class="icon-btn-round" id="btn-flag-hard" title="Save to Hard Questions">
@@ -230,10 +242,12 @@
       <div class="question-card">
         <div class="question-instruction" id="question-instruction" style="display:none;"></div>
         <div class="question-text" id="question-text">Loading examination question...</div>
-        <div class="options-list" id="options-list"></div>
+        
+        <!-- DYNAMIC CONTAINER FOR OBJECTIVE OR THEORY -->
+        <div id="format-answer-container"></div>
 
         <div class="explanation-card" id="explanation-card">
-          <div class="explanation-header" id="explanation-header">Explanation for the correct option: (A)</div>
+          <div class="explanation-header" id="explanation-header">Explanation / Model Solution</div>
           <div class="explanation-body" id="explanation-body"></div>
         </div>
       </div>
@@ -311,9 +325,9 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, enableIndexedDbPersistence, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, enableIndexedDbPersistence, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
@@ -331,39 +345,45 @@
 
     enableIndexedDbPersistence(db).catch(() => {});
 
+    const savedConfig = JSON.parse(localStorage.getItem('yan_current_session_config') || '{}');
     const urlParams = new URLSearchParams(window.location.search);
+    
     const queryParams = {
-      deptId: urlParams.get('deptId') || '',
-      deptName: urlParams.get('deptName') || '',
-      levelId: urlParams.get('levelId') || '',
-      levelName: urlParams.get('levelName') || '',
-      courseId: urlParams.get('courseId') || '',
-      courseCode: urlParams.get('courseCode') || '',
-      courseTitle: urlParams.get('courseTitle') || '',
-      topicId: urlParams.get('topicId') || 'all',
-      topicName: urlParams.get('topicName') || 'General Practice',
-      mode: (urlParams.get('mode') || 'practice').toLowerCase(),
-      count: parseInt(urlParams.get('count')) || 15,
-      time: parseInt(urlParams.get('time')) || 20
+      deptId: savedConfig.deptId || urlParams.get('deptId') || '',
+      deptName: savedConfig.deptName || urlParams.get('deptName') || '',
+      levelId: savedConfig.levelId || urlParams.get('levelId') || '',
+      levelName: savedConfig.levelName || urlParams.get('levelName') || '',
+      courseId: savedConfig.courseId || urlParams.get('courseId') || '',
+      courseCode: savedConfig.courseCode || urlParams.get('courseCode') || '',
+      courseTitle: savedConfig.courseTitle || urlParams.get('courseTitle') || '',
+      topicId: savedConfig.topicId || urlParams.get('topicId') || 'all',
+      topicName: savedConfig.topicName || urlParams.get('topicName') || 'General Practice',
+      qType: (savedConfig.qType || urlParams.get('qType') || 'all').toLowerCase(),
+      mode: (savedConfig.mode || urlParams.get('mode') || 'practice').toLowerCase(),
+      count: parseInt(savedConfig.count || urlParams.get('count')) || 15,
+      time: parseInt(savedConfig.time || urlParams.get('time')) || 20
     };
 
     let courseDetails = { code: queryParams.courseCode, title: queryParams.courseTitle };
 
     const fallbackQuestions = [
       {
-        id: "fb-1",
-        courseCode: queryParams.courseCode || "ACC 101",
-        topic: queryParams.topicName || "Introduction to Financial Accounting",
-        q: "A primary quality of accounting information is that it should be",
-        options: ["Sizeable", "Verifiable", "Appreciable", "Depreciable"],
-        answer: 1,
-        exp: "Accounting information must be verifiable through objective documentation such as sales receipts, contracts, and bank statements."
+        id: "fb-theory-1",
+        type: "theory",
+        courseCode: queryParams.courseCode || "CSC 101",
+        topic: queryParams.topicName || "Introduction to Computer Science",
+        q: "Define Operating System and state two primary functions.",
+        keywords: "operating system, software, hardware, resource management, process",
+        marks: 10,
+        sampleAnswer: "An Operating System is system software that manages computer hardware and software resources.",
+        exp: "OS acts as an intermediary between users and computer hardware."
       }
     ];
 
     let questions = [];
     let currentIndex = 0;
     let userAnswers = {};
+    let theoryHintsUsed = {};
     let timerInterval = null;
     let totalTimeAllocatedSeconds = queryParams.time * 60;
     let secondsRemaining = totalTimeAllocatedSeconds;
@@ -462,53 +482,71 @@
       } catch (error) {}
     }
 
-    // ROBUST OFFLINE-AWARE QUESTION FETCHING
     async function fetchExamQuestions() {
       const offlineBundleKey = `yan_offline_course_${queryParams.courseId}`;
       const localBundle = localStorage.getItem(offlineBundleKey);
 
-      // 1. If offline, load instantly from cached offline course bundle
+      let rawQuestions = [];
+
       if (!navigator.onLine && localBundle) {
         const parsed = safeParse(localBundle);
         if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-          showToast('📱 Running Offline: Loaded from cached course bundle.', 'info');
-          return parsed.questions;
+          rawQuestions = parsed.questions;
         }
       }
 
-      // 2. Try fetching from Firestore if online
-      try {
-        const qRef = collection(db, 'questions');
-        let qQuery = qRef;
-        if (queryParams.courseId) {
-          qQuery = query(qRef, where('courseId', '==', queryParams.courseId));
-        }
-        const qSnap = await getDocs(qQuery);
-        if (!qSnap.empty) {
-          const fetched = qSnap.docs.map(questionDoc => ({ id: questionDoc.id, ...questionDoc.data() }));
-          
-          // Auto-cache for offline practice
-          localStorage.setItem(offlineBundleKey, JSON.stringify({
-            title: courseDetails.title || queryParams.courseTitle,
-            downloadedAt: new Date().toISOString(),
-            questions: fetched
-          }));
-
-          return fetched;
-        }
-      } catch (error) {
-        console.warn("Firestore fetch failed, checking local storage cache...", error);
+      if (rawQuestions.length === 0) {
+        try {
+          const qRef = collection(db, 'questions');
+          let qQuery = qRef;
+          if (queryParams.courseId) {
+            qQuery = query(qRef, where('courseId', '==', queryParams.courseId));
+          }
+          const qSnap = await getDocs(qQuery);
+          if (!qSnap.empty) {
+            rawQuestions = qSnap.docs.map(questionDoc => ({ id: questionDoc.id, ...questionDoc.data() }));
+            localStorage.setItem(offlineBundleKey, JSON.stringify({
+              title: courseDetails.title || queryParams.courseTitle,
+              downloadedAt: new Date().toISOString(),
+              questions: rawQuestions
+            }));
+          }
+        } catch (error) {}
       }
 
-      // 3. Fallback to local storage if online fetch fails
-      if (localBundle) {
+      if (rawQuestions.length === 0 && localBundle) {
         const parsed = safeParse(localBundle);
         if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-          return parsed.questions;
+          rawQuestions = parsed.questions;
         }
       }
 
-      return [];
+      let processed = rawQuestions.map(q => {
+        let type = q.type ? String(q.type).toLowerCase().trim() : '';
+        const opts = getQuestionOptions(q);
+
+        // AUTO-DETECT: If it has no options, or if sampleAnswer/keywords exist, or type is explicitly theory, treat as theory!
+        if (type === 'theory' || opts.length === 0 || q.sampleAnswer || q.keywords || q.markingGuide) {
+          type = 'theory';
+        } else {
+          type = 'objective';
+        }
+        return { ...q, type };
+      });
+
+      // Filter based on selected QType from setup.html
+      if (queryParams.qType === 'theory') {
+        processed = processed.filter(q => q.type === 'theory');
+      } else if (queryParams.qType === 'objective') {
+        processed = processed.filter(q => q.type === 'objective');
+      }
+
+      if (queryParams.topicId && queryParams.topicId !== 'all') {
+        const filteredByTopic = processed.filter(q => q.topicId === queryParams.topicId);
+        if (filteredByTopic.length > 0) processed = filteredByTopic;
+      }
+
+      return processed;
     }
 
     function shuffleArray(array) {
@@ -561,6 +599,12 @@
         levelEl.style.display = 'none';
       }
 
+      let typeLabel = 'Exam Portal';
+      if (queryParams.qType === 'theory') typeLabel = 'Theory Exam Portal';
+      else if (queryParams.qType === 'objective') typeLabel = 'Objective Exam Portal';
+      else typeLabel = 'Comprehensive Exam Portal';
+
+      document.getElementById('portal-subtitle-type').innerText = typeLabel;
       document.getElementById('display-course-title').innerText = courseTitle;
       document.getElementById('display-course-title').title = courseTitle;
       document.getElementById('display-course-code').innerText = courseCode;
@@ -572,6 +616,7 @@
       stopSpeech();
       if (!questions || !questions[currentIndex]) return;
       const q = questions[currentIndex];
+      const isTheory = q.type === 'theory' || getQuestionOptions(q).length === 0;
 
       document.getElementById('q-counter-indicator').innerText = `${currentIndex + 1} of ${questions.length}`;
 
@@ -611,40 +656,106 @@
 
       document.getElementById('question-text').innerHTML = renderRichText(q.q || q.question || q.text || '');
 
-      const optionsContainer = document.getElementById('options-list');
-      optionsContainer.innerHTML = '';
-      const opts = getQuestionOptions(q);
-      const userSelected = userAnswers[currentIndex];
-      const correctAnswer = parseCorrectAnswer(q.answer ?? q.correctAnswer ?? q.correct_option);
+      const formatContainer = document.getElementById('format-answer-container');
+      formatContainer.innerHTML = '';
 
-      opts.forEach((optText, idx) => {
-        const isSelected = userSelected === idx;
-        const optCard = document.createElement('div');
-        let cardClasses = 'option-card';
-        if (queryParams.mode === 'practice' && userSelected !== undefined) {
-          if (idx === correctAnswer) cardClasses += ' correct-ans';
-          else if (isSelected && userSelected !== correctAnswer) cardClasses += ' wrong-ans';
-        } else if (isSelected) {
-          cardClasses += ' selected';
+      if (isTheory) {
+        const userText = userAnswers[currentIndex] !== undefined ? userAnswers[currentIndex] : '';
+        const hintIndex = theoryHintsUsed[currentIndex] || 0;
+        const keywordsArray = (q.keywords || '').split(',').map(k => k.trim()).filter(Boolean);
+
+        const theoryDiv = document.createElement('div');
+        theoryDiv.className = 'theory-section';
+        theoryDiv.innerHTML = `
+          <textarea class="theory-textarea" id="theory-input" placeholder="Type your comprehensive answer here...">${escapeHtml(userText)}</textarea>
+          <div class="theory-actions-bar">
+            <button type="button" class="hint-btn" id="btn-show-hint">
+              💡 Show Hint Keyword
+            </button>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Max Marks: ${q.marks || 10}</span>
+          </div>
+          <div class="hint-display-box" id="hint-box"></div>
+        `;
+        formatContainer.appendChild(theoryDiv);
+
+        const textareaEl = document.getElementById('theory-input');
+        textareaEl.addEventListener('input', (e) => {
+          userAnswers[currentIndex] = e.target.value;
+          saveLiveExamState();
+        });
+
+        const hintBtn = document.getElementById('btn-show-hint');
+        const hintBox = document.getElementById('hint-box');
+
+        if (keywordsArray.length > 0 && hintIndex > 0) {
+          hintBox.innerText = `Hint: "${keywordsArray[(hintIndex - 1) % keywordsArray.length]}"`;
+          hintBox.classList.add('active');
         }
 
-        optCard.className = cardClasses;
-        optCard.onclick = () => selectOption(idx);
-        optCard.innerHTML = `
-          <div class="option-radio"><div class="option-radio-inner"></div></div>
-          <div class="option-label">(${optionLetters[idx] || idx + 1}) ${renderRichText(optText)}</div>
-        `;
-        optionsContainer.appendChild(optCard);
-      });
+        hintBtn.addEventListener('click', () => {
+          if (keywordsArray.length === 0) {
+            showToast('No keyword hints available for this question.', 'warning');
+            return;
+          }
+          const currentH = theoryHintsUsed[currentIndex] || 0;
+          const nextH = (currentH % keywordsArray.length);
+          theoryHintsUsed[currentIndex] = currentH + 1;
 
-      const expCard = document.getElementById('explanation-card');
-      if (queryParams.mode === 'practice' && userSelected !== undefined) {
-        const correctLetter = optionLetters[correctAnswer] || 'A';
-        document.getElementById('explanation-header').innerText = `Explanation for correct option: (${correctLetter})`;
-        document.getElementById('explanation-body').innerHTML = renderRichText(q.exp || q.explanation || 'No detailed explanation provided.');
-        expCard.classList.add('active');
+          hintBox.innerText = `Hint Keyword: "${keywordsArray[nextH]}" (Note: To get full credit, ensure you include other distinct keywords as well!)`;
+          hintBox.classList.add('active');
+          showToast('Hint revealed!', 'info');
+        });
+
+        const expCard = document.getElementById('explanation-card');
+        if (queryParams.mode === 'practice' && userText.trim().length > 0) {
+          document.getElementById('explanation-header').innerText = `Model Solution / Marking Guide`;
+          document.getElementById('explanation-body').innerHTML = `
+            <strong>Sample Answer:</strong> ${renderRichText(q.sampleAnswer || q.exp || 'N/A')}<br><br>
+            <strong>Marking Guide:</strong> ${renderRichText(q.markingGuide || 'Evaluated based on key phrase presence.')}
+          `;
+          expCard.classList.add('active');
+        } else {
+          expCard.classList.remove('active');
+        }
+
       } else {
-        expCard.classList.remove('active');
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'options-list';
+        formatContainer.appendChild(optionsContainer);
+
+        const opts = getQuestionOptions(q);
+        const userSelected = userAnswers[currentIndex];
+        const correctAnswer = parseCorrectAnswer(q.answer ?? q.correctAnswer ?? q.correct_option);
+
+        opts.forEach((optText, idx) => {
+          const isSelected = userSelected === idx;
+          const optCard = document.createElement('div');
+          let cardClasses = 'option-card';
+          if (queryParams.mode === 'practice' && userSelected !== undefined) {
+            if (idx === correctAnswer) cardClasses += ' correct-ans';
+            else if (isSelected && userSelected !== correctAnswer) cardClasses += ' wrong-ans';
+          } else if (isSelected) {
+            cardClasses += ' selected';
+          }
+
+          optCard.className = cardClasses;
+          optCard.onclick = () => selectObjectiveOption(idx);
+          optCard.innerHTML = `
+            <div class="option-radio"><div class="option-radio-inner"></div></div>
+            <div class="option-label">(${optionLetters[idx] || idx + 1}) ${renderRichText(optText)}</div>
+          `;
+          optionsContainer.appendChild(optCard);
+        });
+
+        const expCard = document.getElementById('explanation-card');
+        if (queryParams.mode === 'practice' && userSelected !== undefined) {
+          const correctLetter = optionLetters[correctAnswer] || 'A';
+          document.getElementById('explanation-header').innerText = `Explanation for correct option: (${correctLetter})`;
+          document.getElementById('explanation-body').innerHTML = renderRichText(q.exp || q.explanation || 'No detailed explanation provided.');
+          expCard.classList.add('active');
+        } else {
+          expCard.classList.remove('active');
+        }
       }
 
       document.getElementById('btn-prev').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
@@ -652,7 +763,7 @@
       setupPalette();
     }
 
-    function selectOption(idx) {
+    function selectObjectiveOption(idx) {
       if (examSubmitted) return;
       userAnswers[currentIndex] = idx;
       saveLiveExamState();
@@ -749,7 +860,7 @@
       questions.forEach((q, idx) => {
         const item = document.createElement('button');
         item.className = 'palette-item';
-        if (userAnswers[idx] !== undefined) item.classList.add('attempted');
+        if (userAnswers[idx] !== undefined && userAnswers[idx] !== '') item.classList.add('attempted');
         if (idx === currentIndex) item.classList.add('current');
         const isHard = hardQuestions.some(h => h && (h.id === q.id || (h.q && q.q && h.q === q.q)));
         if (isHard) item.classList.add('flagged-item');
@@ -783,11 +894,15 @@
       if (!q) return;
 
       const lang = document.getElementById('voice-lang').value;
-      const opts = getQuestionOptions(q);
       let fullText = (q.q || q.question || q.text || '') + '. ';
-      opts.forEach((opt, idx) => {
-        fullText += `Option ${optionLetters[idx] || idx + 1}, ${opt}. `;
-      });
+      
+      const isTheory = q.type === 'theory' || getQuestionOptions(q).length === 0;
+      if (!isTheory) {
+        const opts = getQuestionOptions(q);
+        opts.forEach((opt, idx) => {
+          fullText += `Option ${optionLetters[idx] || idx + 1}, ${opt}. `;
+        });
+      }
 
       const utterance = new SpeechSynthesisUtterance(fullText.replace(/<[^>]*>?/gm, ''));
       utterance.lang = lang;
@@ -812,11 +927,13 @@
         const state = {
           id: sessionId,
           status: 'in_progress',
+          qType: queryParams.qType,
           courseCode: courseDetails.code || queryParams.courseCode,
           courseTitle: queryParams.topicName || courseDetails.title,
           mode: queryParams.mode,
           currentIndex: currentIndex,
           userAnswers: userAnswers,
+          theoryHintsUsed: theoryHintsUsed,
           secondsRemaining: secondsRemaining,
           questionsSnapshot: questions
         };
@@ -833,6 +950,7 @@
           questions = saved.questionsSnapshot;
         }
         if (saved.userAnswers) userAnswers = saved.userAnswers;
+        if (saved.theoryHintsUsed) theoryHintsUsed = saved.theoryHintsUsed;
         if (Number.isInteger(saved.currentIndex)) currentIndex = saved.currentIndex;
         if (typeof saved.secondsRemaining === 'number') secondsRemaining = saved.secondsRemaining;
         return true;
@@ -844,23 +962,58 @@
     function buildCompletedSessionPayload() {
       let correctCount = 0, wrongCount = 0, unattemptedCount = 0;
       const structuredResults = questions.map((q, idx) => {
-        const userSel = userAnswers[idx];
-        const correctIdx = parseCorrectAnswer(q.answer ?? q.correctAnswer ?? q.correct_option);
+        const userVal = userAnswers[idx];
+        const isTheory = q.type === 'theory' || getQuestionOptions(q).length === 0;
         let status = 'unattempted';
 
-        if (userSel !== undefined && userSel !== null) {
-          if (Number(userSel) === Number(correctIdx)) { status = 'correct'; correctCount++; }
-          else { status = 'wrong'; wrongCount++; }
+        if (isTheory) {
+          if (userVal !== undefined && userVal !== null && String(userVal).trim().length > 0) {
+            const studentText = String(userVal).toLowerCase();
+            const keywords = (q.keywords || '').split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+            const hintIdx = (theoryHintsUsed[idx] || 0) > 0 ? ((theoryHintsUsed[idx] - 1) % keywords.length) : -1;
+            const hintKeyword = hintIdx >= 0 ? keywords[hintIdx] : null;
+
+            let matchedOtherCount = 0;
+            keywords.forEach((kw, kwIdx) => {
+              if (studentText.includes(kw)) {
+                if (hintKeyword === null || kwIdx !== hintIdx) {
+                  matchedOtherCount++;
+                }
+              }
+            });
+
+            if (keywords.length === 0) {
+              status = 'correct'; correctCount++;
+            } else if (hintKeyword !== null && keywords.length === 1) {
+              status = matchedOtherCount > 0 ? 'correct' : 'wrong';
+              if (status === 'correct') correctCount++; else wrongCount++;
+            } else {
+              if (matchedOtherCount > 0) {
+                status = 'correct'; correctCount++;
+              } else {
+                status = 'wrong'; wrongCount++;
+              }
+            }
+          } else {
+            unattemptedCount++;
+          }
         } else {
-          unattemptedCount++;
+          const correctIdx = parseCorrectAnswer(q.answer ?? q.correctAnswer ?? q.correct_option);
+          if (userVal !== undefined && userVal !== null) {
+            if (Number(userVal) === Number(correctIdx)) { status = 'correct'; correctCount++; }
+            else { status = 'wrong'; wrongCount++; }
+          } else {
+            unattemptedCount++;
+          }
         }
 
         return {
           questionId: q.id || `q-${idx}`,
           questionText: q.q || q.question || '',
-          options: getQuestionOptions(q),
-          userSelected: userSel !== undefined ? userSel : null,
-          correctAnswer: correctIdx,
+          type: q.type || (isTheory ? 'theory' : 'objective'),
+          options: isTheory ? [] : getQuestionOptions(q),
+          userSelected: userVal !== undefined ? userVal : null,
+          correctAnswer: isTheory ? (q.sampleAnswer || q.exp || '') : parseCorrectAnswer(q.answer ?? q.correctAnswer ?? q.correct_option),
           explanation: q.exp || q.explanation || '',
           status: status
         };
@@ -869,6 +1022,7 @@
       return {
         id: sessionId,
         uid: currentUser?.uid || null,
+        qType: queryParams.qType,
         courseCode: courseDetails.code || queryParams.courseCode,
         courseTitle: queryParams.topicName || courseDetails.title,
         deptName: queryParams.deptName,
@@ -914,7 +1068,7 @@
 
     function confirmSubmitExam() {
       if (examSubmitted || submissionInProgress) return;
-      const answeredCount = Object.keys(userAnswers).length;
+      const answeredCount = Object.keys(userAnswers).filter(k => userAnswers[k] !== undefined && String(userAnswers[k]).trim() !== '').length;
       const skipped = Math.max(0, questions.length - answeredCount);
       showConfirmModal(
         'Submit Exam?',
@@ -979,7 +1133,9 @@
       const restored = restoreLiveExamState();
       if (!restored) {
         let fetchedQuestions = await fetchExamQuestions();
-        if (!fetchedQuestions || fetchedQuestions.length === 0) fetchedQuestions = fallbackQuestions;
+        if (!fetchedQuestions || fetchedQuestions.length === 0) {
+          fetchedQuestions = fallbackQuestions;
+        }
 
         questions = shuffleArray(fetchedQuestions).slice(0, queryParams.count);
         if (questions.length === 0) questions = fallbackQuestions;
@@ -987,6 +1143,7 @@
         examStartedAt = Date.now();
         secondsRemaining = totalTimeAllocatedSeconds;
         userAnswers = {};
+        theoryHintsUsed = {};
         currentIndex = 0;
         saveLiveExamState();
       }

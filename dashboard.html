@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Dashboard</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C3AED">
+  <meta name="theme-color" content="#7C3AED">
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 
@@ -114,22 +113,6 @@
       display: none;
     }
 
-    .chat-btn-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-
-    .chat-btn-group svg {
-      width: 18px;
-      height: 18px;
-      fill: #25D366;
-    }
-
     .user-avatar-btn {
       width: 34px;
       height: 34px;
@@ -160,7 +143,7 @@
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-dark);
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
       line-height: 1.2;
     }
 
@@ -169,6 +152,71 @@
       color: var(--primary);
     }
 
+    /* --- JUMIA-STYLE IMAGE ADS CAROUSEL BANNER --- */
+    .ads-carousel-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 1.25rem;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      background: #1E1B4B;
+    }
+
+    .ads-carousel-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+
+    .ads-carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ad-banner-slide {
+      min-width: 100%;
+      width: 100%;
+      height: 160px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+    }
+
+    .ad-banner-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #D1D5DB;
+      transition: all 0.3s ease;
+    }
+
+    .carousel-dot.active {
+      width: 18px;
+      border-radius: 3px;
+      background: var(--primary);
+    }
+
+    /* --- STATS SLIDER --- */
     .stats-slider {
       display: flex;
       gap: 0.75rem;
@@ -609,6 +657,28 @@
        Welcome, <span id="greeting-name">Student</span>
       </div>
 
+      <!-- IMAGE ADS CAROUSEL BANNER (JUMIA STYLE) -->
+      <div class="ads-carousel-wrapper">
+        <div class="ads-carousel-track" id="adsTrack">
+          
+          <!-- SLIDE 1: STUDENT BANNER -->
+          <a href="https://wa.me/2348036909700" target="_blank" class="ad-banner-slide">
+            <img src="student.jpg" alt="Student Support Banner" onerror="this.src='student.png'">
+          </a>
+
+          <!-- SLIDE 2: TROPHY / LEADERBOARD BANNER -->
+          <a href="leaderboard.html" class="ad-banner-slide">
+            <img src="trophy.jpg" alt="Leaderboard Trophy Banner" onerror="this.src='trophy.png'">
+          </a>
+
+        </div>
+
+        <div class="carousel-dots" id="carouselDots">
+          <span class="carousel-dot active"></span>
+          <span class="carousel-dot"></span>
+        </div>
+      </div>
+
       <!-- HORIZONTAL STAT CARDS SLIDER -->
       <div class="stats-slider">
         
@@ -617,7 +687,7 @@
           <div class="card-bg-shape"></div>
           <div>
             <div class="stat-val" id="stat-exams-count">0</div>
-            <div class="stat-lbl">Exams Practiced</div>
+            <div class="stat-lbl">Exams Practiced (OBJ & Theory)</div>
           </div>
           <div class="card-history-footer">
             <span class="history-action-pill">
@@ -646,12 +716,12 @@
           </div>
         </div>
 
-        <!-- CARD 3: EXAMS SCORE (LINKED TO LEADERBOARD.HTML) -->
+        <!-- CARD 3: EXAMS SCORE -->
         <a href="leaderboard.html" class="purple-card history-card">
           <div class="card-bg-shape"></div>
           <div>
             <div class="stat-val" id="stat-exams-score">0</div>
-            <div class="stat-lbl">Exams Score</div>
+            <div class="stat-lbl">Total Score (OBJ + Theory)</div>
           </div>
           <div class="card-history-footer">
             <span class="history-action-pill">
@@ -758,8 +828,8 @@
           </svg>
         </div>
         <div>
-          <div class="banner-title">Subscribe now to enjoy unlimited access</div>
-          <div class="banner-desc">Over 100,000  expert-curated questions, detailed explanation & much more.</div>
+          <div class="banner-title">Subscribe now for Objective & Theory Practice</div>
+          <div class="banner-desc">Over 100,000 expert-curated OBJ & Theory questions with keyword grading and breakdowns.</div>
         </div>
       </a>
 
@@ -793,24 +863,15 @@
           Pocket Manager
         </a>
 
-
         <a href="table.html" class="drawer-item">
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Campus Timetable
         </a>
 
-
-
-
-
-
         <a href="attendance.html" class="drawer-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           Course Attendance
         </a>
-
-
-
 
         <a href="gpa.html" class="drawer-item">
           <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -865,9 +926,6 @@
         <span>Home</span>
       </a>
 
-
-
-
       <a href="exams.html" class="nav-item">
         <span class="nav-icon">
           <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -897,6 +955,81 @@
 
   </div>
 
+  <!-- AUTO-SCROLLING & DYNAMIC CAROUSEL SCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const track = document.getElementById("adsTrack");
+      const slides = track ? track.querySelectorAll(".ad-banner-slide") : [];
+      const dotsContainer = document.getElementById("carouselDots");
+      
+      if (dotsContainer && slides.length > 0) {
+        dotsContainer.innerHTML = '';
+        slides.forEach((_, idx) => {
+          const dot = document.createElement('span');
+          dot.className = `carousel-dot ${idx === 0 ? 'active' : ''}`;
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      const dots = document.querySelectorAll(".carousel-dot");
+      const slideCount = slides.length;
+      let currentIndex = 0;
+      let autoScrollInterval;
+
+      function updateDots(index) {
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle("active", idx === index);
+        });
+      }
+
+      function scrollToIndex(index) {
+        if (!track || slideCount === 0) return;
+        const slideWidth = track.clientWidth;
+        track.scrollTo({
+          left: slideWidth * index,
+          behavior: "smooth"
+        });
+      }
+
+      function nextSlide() {
+        if (slideCount === 0) return;
+        currentIndex = (currentIndex + 1) % slideCount;
+        scrollToIndex(currentIndex);
+        updateDots(currentIndex);
+      }
+
+      function startAutoScroll() {
+        if (slideCount > 1) {
+          autoScrollInterval = setInterval(nextSlide, 3000);
+        }
+      }
+
+      function stopAutoScroll() {
+        clearInterval(autoScrollInterval);
+      }
+
+      if (track) {
+        track.addEventListener("scroll", () => {
+          const slideWidth = track.clientWidth;
+          if (slideWidth > 0) {
+            const activeIndex = Math.round(track.scrollLeft / slideWidth);
+            if (activeIndex >= 0 && activeIndex < slideCount) {
+              currentIndex = activeIndex;
+              updateDots(currentIndex);
+            }
+          }
+        });
+
+        track.addEventListener("touchstart", stopAutoScroll);
+        track.addEventListener("touchend", startAutoScroll);
+        track.addEventListener("mouseenter", stopAutoScroll);
+        track.addEventListener("mouseleave", startAutoScroll);
+      }
+
+      startAutoScroll();
+    });
+  </script>
+
   <!-- FIREBASE & USER SYNC ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -924,7 +1057,8 @@
         examItem.correctAnswersCount,
         examItem.correctCount,
         examItem.correctScore,
-        examItem.correct
+        examItem.correct,
+        examItem.totalScore
       ];
 
       for (const val of possibleCounts) {
@@ -974,7 +1108,7 @@
           totalExamScore += extractRawScore(item);
         });
       } catch(e) {
-        console.error("Error reading namespaced local history:", e);
+        console.error("Error reading local history:", e);
       }
 
       try {
@@ -1001,14 +1135,13 @@
           }
         }
       } catch (err) {
-        console.error("Could not fetch remote exam history from Firebase:", err);
+        console.error("Could not fetch remote exam history:", err);
       }
 
       document.getElementById('stat-exams-count').innerText = totalExamsCount;
       document.getElementById('stat-exams-score').innerText = totalExamScore;
     }
 
-    // Real-time unread notifications count listener
     function initNotificationBadge(userId) {
       const q = query(
         collection(db, "Notifications"),
@@ -1041,7 +1174,6 @@
             firstName = userData.Firstname || userData.name || "";
             lastName = userData.Lastname || "";
 
-            // Display specific Department & Level scope instead of generic "Full Access Mode"
             if (userData.isActivated && userData.department) {
               document.getElementById('stat-activation-status').innerText = `${userData.department} (${userData.level || 'Scope'})`;
               document.getElementById('stat-activation-desc').innerText = `Active Plan: ${userData.activePlan || 'Standard'}`;
@@ -1087,7 +1219,6 @@
     });
   </script>
 
-  <!-- DRAWER TOGGLE FUNCTION -->
   <script>
     function toggleDrawer(open) {
       const drawer = document.getElementById('drawer');
@@ -1102,64 +1233,38 @@
     }
   </script>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('Yan-Dli Offline Engine Active:', reg.scope);
+          })
+          .catch((err) => console.error('ServiceWorker registration failed:', err));
+      });
+    }
+  </script>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+      authDomain: "yan-dli.firebaseapp.com",
+      databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+      projectId: "yan-dli",
+      storageBucket: "yan-dli.firebasestorage.app",
+      messagingSenderId: "538794949165",
+      appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+    };
 
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New update available! Reloading...');
-              }
-            };
-          };
-        })
-        .catch((err) => console.error('ServiceWorker registration failed:', err));
-    });
-  }
-</script>
-
-
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
-    authDomain: "yan-dli.firebaseapp.com",
-    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
-    projectId: "yan-dli",
-    storageBucket: "yan-dli.firebasestorage.app",
-    messagingSenderId: "538794949165",
-    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
-  };
-
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Automatically enable offline caching for Firestore data
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.log("Persistence active in another open tab.");
-      } else if (err.code === 'unimplemented') {
-        console.log("Browser does not support offline persistence.");
-      }
-    });
-  } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
-    console.log("Offline DB engine active.");
-  }
-</script>
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      enableIndexedDbPersistence(db).catch((err) => {});
+    } catch (e) {}
+  </script>
 
 </body>
 </html>

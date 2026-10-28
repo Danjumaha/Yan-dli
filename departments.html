@@ -27,6 +27,8 @@
       --danger-light: #FEE2E2;
       --warning: #F59E0B;
       --warning-light: #FEF3C7;
+      --theory-badge-bg: #EDE9FE;
+      --theory-badge-text: #6D28D9;
       --radius-app: 20px;
       --radius-btn: 12px;
       --shadow-card: 0 4px 16px -2px rgba(139, 92, 246, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
@@ -171,7 +173,19 @@
     .icon-box svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
 
     .card-title { font-weight: 700; font-size: 0.85rem; color: var(--text-main); line-height: 1.3; }
-    .card-sub { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; font-weight: 500; }
+    .card-sub { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; font-weight: 500; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .format-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .format-badge.theory { background: var(--theory-badge-bg); color: var(--theory-badge-text); }
+    .format-badge.obj { background: #E0F2FE; color: #0284C7; }
 
     .arrow-icon svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 2.5; }
     .lock-badge { font-size: 0.68rem; font-weight: 800; color: var(--warning); background: var(--warning-light); padding: 3px 8px; border-radius: 20px; }
@@ -275,7 +289,6 @@
     let userPinData = null;
     let rawItemsData = [];
 
-    // --- HARDCODED FALLBACK DIRECTORY DATA FOR 100% RELIABLE OFFLINE STARTUP ---
     const FALLBACK_DEPARTMENTS = [
       { id: 'dept_accounting', name: 'Accounting', faculty: 'Faculty of Commerce' },
       { id: 'dept_busadmin', name: 'Business Administration', faculty: 'Faculty of Commerce' }
@@ -307,7 +320,6 @@
              (userLvl === currentLvl || userLvl.includes(currentLvl) || currentLvl.includes(userLvl));
     }
 
-    // --- UNIVERSAL DOWNLOAD & CACHE HANDLER FOR ALL STEPS ---
     window.downloadStepDataForOffline = async function(event, stepType, identifier, titleName) {
       event.stopPropagation();
       try {
@@ -341,18 +353,17 @@
         }
 
         showToast(`✅ Successfully saved ${titleName} offline!`);
-        renderItems(rawItemsData); // Refresh UI to show green checkmark
+        renderItems(rawItemsData);
       } catch (err) {
         console.error("Download error:", err);
         showToast('❌ Download failed. Check your internet connection.');
       }
     };
 
-    // Course questions specific offline downloader
     window.downloadCourseForOffline = async function(event, courseId, courseTitle) {
       event.stopPropagation();
       try {
-        showToast(`⬇️ Downloading questions for ${courseTitle}...`);
+        showToast(`⬇️ Downloading OBJ & Theory questions for ${courseTitle}...`);
         const qRef = collection(db, 'questions');
         const qQuery = query(qRef, where('courseId', '==', courseId));
         const qSnap = await getDocs(qQuery);
@@ -371,7 +382,7 @@
           questions: questionsList
         }));
 
-        showToast(`✅ Successfully downloaded ${courseTitle}!`);
+        showToast(`✅ Successfully downloaded ${courseTitle} questions!`);
         renderItems(rawItemsData);
       } catch (err) {
         console.error("Offline download error:", err);
@@ -382,9 +393,10 @@
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const userDoc = await getDoc(doc(db, "Users", user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
+          const userDoc = await doc(db, "Users", user.uid);
+          const docSnap = await getDoc(userDoc);
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
             let isExpired = userData.expiresAt && new Date(userData.expiresAt) < new Date();
             isUserActivated = !!userData.isActivated && !isExpired;
             userPinData = {
@@ -408,7 +420,6 @@
       renderItems(filtered);
     };
 
-    // --- STEP 1: DEPARTMENTS WITH FALLBACK CACHE ---
     async function loadDepartments() {
       currentStep = 'department';
       document.getElementById('step-badge').innerText = 'STEP 1 OF 4';
@@ -432,7 +443,6 @@
         console.warn("Using offline fallback for departments");
       }
 
-      // If offline or fetch failed, fall back to localStorage or hardcoded fallback array
       if (deptDocs.length === 0) {
         const cached = localStorage.getItem('yan_offline_departments');
         deptDocs = cached ? JSON.parse(cached) : FALLBACK_DEPARTMENTS;
@@ -458,7 +468,6 @@
       renderItems(rawItemsData);
     }
 
-    // --- STEP 2: LEVELS WITH FALLBACK CACHE ---
     window.selectDepartment = async function(deptId, deptName) {
       selectedDept = { id: deptId, name: deptName };
       currentStep = 'level';
@@ -506,7 +515,6 @@
       renderItems(rawItemsData);
     };
 
-    // --- STEP 3: COURSES WITH FALLBACK CACHE ---
     window.selectLevel = async function(levelId, levelName) {
       selectedLevel = { id: levelId, name: levelName };
       currentStep = 'course';
@@ -516,7 +524,7 @@
       document.getElementById('page-subtitle').innerText = `${selectedDept.name} • ${levelName}`;
       document.getElementById('item-search-input').value = '';
 
-      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading courses...</div>`;
+      listContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-sub); font-size: 0.8rem;">Loading courses & questions...</div>`;
 
       let courseDocs = [];
       const cacheKey = `yan_offline_courses_${selectedDept.id}_${levelId}`;
@@ -542,6 +550,27 @@
         if (cached) courseDocs = JSON.parse(cached);
       }
 
+      // Fetch questions to detect objective & theory availability per course
+      let courseQuestionMap = {};
+      try {
+        const qSnap = await getDocs(collection(db, "questions"));
+        qSnap.forEach(docSnap => {
+          const qData = docSnap.data();
+          if (qData.courseId && !qData.archived) {
+            if (!courseQuestionMap[qData.courseId]) {
+              courseQuestionMap[qData.courseId] = { hasObj: false, hasTheory: false };
+            }
+            if (qData.type === 'theory') {
+              courseQuestionMap[qData.courseId].hasTheory = true;
+            } else {
+              courseQuestionMap[qData.courseId].hasObj = true;
+            }
+          }
+        });
+      } catch (e) {
+        console.error("Error checking question formats:", e);
+      }
+
       let courses = [];
       courseDocs.forEach((data) => {
         if (!data.archived) {
@@ -554,21 +583,24 @@
       rawItemsData = courses.map((c, index) => {
         const isLocked = !scopeUnlocked && index > 0;
         const isDownloaded = !!localStorage.getItem(`yan_offline_course_${c.id}`);
+        const formats = courseQuestionMap[c.id] || { hasObj: true, hasTheory: true };
+
         return {
           id: c.id,
           code: c.code,
           title: c.title,
           name: `[${c.code}] ${c.title}`,
-          sub: isLocked ? 'Locked (Activate scope)' : (isDownloaded ? '✅ Available Offline' : 'Available to practice'),
+          sub: isLocked ? 'Locked (Activate scope)' : (isDownloaded ? '✅ Available Offline' : 'OBJ & Theory available'),
           locked: isLocked,
           isDownloaded: isDownloaded,
+          hasObj: formats.hasObj,
+          hasTheory: formats.hasTheory,
           searchText: `${c.code} ${c.title}`
         };
       });
       renderItems(rawItemsData);
     };
 
-    // --- STEP 4: TOPICS WITH FALLBACK CACHE ---
     window.selectCourse = async function(courseId, courseTitle, courseCode) {
       selectedCourse = { id: courseId, title: courseTitle, code: courseCode };
       currentStep = 'topic';
@@ -605,7 +637,7 @@
 
       topics.push({
         id: 'all',
-        name: '🎯 Practice All Topics',
+        name: '🎯 Practice All Topics (OBJ & Theory)',
         sub: scopeUnlocked ? 'Random questions across full syllabus' : 'Locked',
         locked: !scopeUnlocked
       });
@@ -710,6 +742,14 @@
           }
         }
 
+        let badgesHtml = '';
+        if (currentStep === 'course') {
+          badgesHtml = `
+            <span class="format-badge obj">OBJ</span>
+            <span class="format-badge theory">Theory</span>
+          `;
+        }
+
         const isSpecialAll = item.id === 'all';
         const cardStyle = isSpecialAll ? 'border: 2px solid var(--primary); background: var(--primary-light);' : '';
         const iconStyle = isSpecialAll ? 'background: var(--primary); color: white;' : '';
@@ -722,7 +762,10 @@
               </div>
               <div style="min-width:0; flex:1;">
                 <div class="card-title" style="${isSpecialAll ? 'color: var(--primary-dark); font-weight:800;' : ''}">${item.name}</div>
-                <div class="card-sub" style="${isSpecialAll ? 'color: var(--primary);' : ''}">${item.sub}</div>
+                <div class="card-sub" style="${isSpecialAll ? 'color: var(--primary);' : ''}">
+                  <span>${item.sub}</span>
+                  ${badgesHtml}
+                </div>
               </div>
             </div>
             ${rightActionHtml}

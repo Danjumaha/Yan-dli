@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yan-Dli | Mobile Admin Portal</title>
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C3AED">
+    <meta name="theme-color" content="#7C3AED">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -139,7 +139,7 @@
             border-radius: 12px;
             color: var(--text-sub);
             font-weight: 700;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -187,7 +187,7 @@
         }
 
         .login-card h2 { font-weight: 800; color: var(--text-main); margin-bottom: 4px; font-size: 1.25rem; }
-        .login-card p { color: var(--text-sub); font-size: 0.8rem; margin-bottom: 20px; }
+        .login-card p { color: var(--text-sub); font-size: 0.85rem; margin-bottom: 20px; }
 
         .app-header {
             padding: 14px 16px;
@@ -219,7 +219,7 @@
         }
 
         .app-header-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
-        .app-header-subtitle { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
+        .app-header-subtitle { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
 
         .exit-icon-btn {
             width: 38px;
@@ -260,7 +260,7 @@
         }
 
         .app-card-title {
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: 800;
             color: var(--text-main);
             margin-bottom: 12px;
@@ -281,11 +281,11 @@
         }
 
         .filter-engine-title {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 800;
             color: var(--primary);
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -310,7 +310,7 @@
             padding: 10px 12px 10px 36px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             background: #FFFFFF;
             outline: none;
             color: var(--text-main);
@@ -322,16 +322,169 @@
             gap: 6px;
         }
 
-        .filter-engine-grid select {
+        /* CUSTOM MODERN SELECT DROPDOWN COMPONENT */
+        .custom-select-trigger {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.78rem;
-            background: #FFFFFF;
-            outline: none;
-            color: var(--text-main);
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-btn);
+            font-size: 0.85rem;
             font-weight: 600;
+            background-color: #FFFFFF;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .custom-select-trigger:hover {
+            border-color: var(--primary);
+        }
+        .custom-select-trigger svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--primary-dark);
+            stroke-width: 2.5;
+            transition: transform 0.2s ease;
+        }
+
+        .app-input, textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-btn);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: #FFFFFF;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .app-input:focus, textarea:focus, .custom-select-trigger.active {
+            border-color: var(--primary);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* CUSTOM DROPDOWN MODAL SHEET */
+        .select-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .select-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .select-modal-sheet {
+            background: #FFFFFF;
+            width: 100%;
+            max-height: 75vh;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .select-modal-overlay.active .select-modal-sheet {
+            transform: translateY(0);
+        }
+        .select-modal-header {
+            padding: 18px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .select-modal-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .select-modal-close {
+            background: var(--bg-body);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .select-modal-options {
+            padding: 12px 16px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .select-option-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-main);
+            background: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #F1F5F9;
+            transition: all 0.15s ease;
+        }
+        .select-option-item:hover, .select-option-item.selected {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: var(--primary-light);
+        }
+
+        /* TYPE TOGGLE PILLS */
+        .q-type-toggle-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: #F1F5F9;
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
+        .q-type-btn {
+            padding: 10px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .q-type-btn.active {
+            background: #FFFFFF;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
         .metrics-grid {
@@ -350,21 +503,20 @@
         }
 
         .metric-card .icon {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
             background: var(--primary-light);
             color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        .metric-card .val { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
-        .metric-card .lbl { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
+        .metric-card .val { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .metric-card .lbl { font-size: 0.75rem; color: var(--text-sub); font-weight: 700; }
 
-        /* ITEM CARDS & THREE-DOTS POPUP STACKING FIX */
         .item-card {
             background: #FFFFFF;
             border-radius: 16px;
@@ -377,12 +529,9 @@
             gap: 6px;
             position: relative;
             z-index: 1;
-            overflow: visible;
         }
 
-        /* DYNAMIC STACKING FIX: Whenever a card has an open dropdown, bring it to the absolute top of the stack */
-        .item-card.has-open-menu,
-        .item-card:has(.dots-dropdown-menu.active) {
+        .item-card.has-open-menu {
             z-index: 100 !important;
         }
 
@@ -394,13 +543,12 @@
             align-items: flex-start;
             gap: 8px;
             position: relative;
-            overflow: visible;
         }
 
         .item-title {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
-            font-size: 0.88rem;
+            font-size: 0.92rem;
             line-height: 1.35;
             flex: 1;
         }
@@ -411,21 +559,22 @@
             gap: 6px;
             flex-shrink: 0;
             position: relative;
-            overflow: visible;
         }
 
         .badge-chip {
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.62rem;
+            font-size: 0.68rem;
             font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .badge-active { background: var(--success-light); color: var(--success); }
         .badge-archived { background: #E2E8F0; color: #475569; }
+        .badge-theory { background: #EDE9FE; color: var(--primary-dark); }
+        .badge-obj { background: #E0F2FE; color: #0284C7; }
 
-        /* Three Dots Menu Button */
         .three-dots-btn {
             background: #F8FAFC;
             border: 1px solid var(--border);
@@ -439,14 +588,13 @@
             cursor: pointer;
             transition: all 0.15s ease;
         }
-        .three-dots-btn:hover, .three-dots-btn:active {
+        .three-dots-btn:hover {
             background: var(--primary-light);
             color: var(--primary);
             border-color: var(--primary-light);
         }
         .three-dots-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-        /* Popover Menu Dropdown Overlay Fix */
         .dots-dropdown-menu {
             position: absolute;
             top: 38px;
@@ -454,22 +602,17 @@
             background: #FFFFFF;
             border: 1px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
-            z-index: 9999;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+            z-index: 999;
             min-width: 140px;
             display: none;
             flex-direction: column;
             padding: 6px;
-            overflow: hidden;
-            animation: fadeIn 0.15s ease;
         }
-
-        /* Dropup variant for items near the bottom of the list */
         .dots-dropdown-menu.dropup {
             top: auto;
             bottom: 38px;
         }
-
         .dots-dropdown-menu.active { display: flex; }
 
         .menu-action-item {
@@ -477,7 +620,7 @@
             align-items: center;
             gap: 8px;
             padding: 10px 12px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-main);
             cursor: pointer;
@@ -487,51 +630,34 @@
         .menu-action-item:hover { background: #F1F5F9; }
         .menu-action-item.danger-item { color: var(--danger); }
         .menu-action-item.danger-item:hover { background: var(--danger-light); }
-        .menu-action-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 
-        .item-sub { font-size: 0.75rem; color: var(--text-sub); line-height: 1.4; }
+        .item-sub { font-size: 0.78rem; color: var(--text-sub); line-height: 1.4; font-weight: 600; }
 
         .plain-text-preview {
             background: #F8FAFC;
             padding: 10px;
             border-radius: 10px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: #334155;
             line-height: 1.45;
             word-break: break-word;
             border: 1px solid #EDF2F7;
+            font-weight: 600;
         }
 
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-        
-        .app-input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-btn);
-            font-size: 0.85rem;
-            background: #F8FAFC;
-            color: var(--text-main);
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .app-input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-            background: #FFFFFF;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-help-text { font-size: 0.72rem; color: var(--text-sub); margin-top: 4px; font-weight: 600; }
 
         .app-btn {
             width: 100%;
-            padding: 11px;
+            padding: 12px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: var(--radius-btn);
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.88rem;
+            font-weight: 800;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
             transition: all 0.2s ease;
@@ -542,14 +668,14 @@
         }
 
         .app-btn:active { transform: scale(0.98); }
-        .app-btn-secondary { background: var(--primary-light); color: var(--primary); box-shadow: none; }
+        .app-btn-secondary { background: var(--primary-light); color: var(--primary-dark); box-shadow: none; }
         .app-btn-danger { background: var(--danger-light); color: var(--danger); box-shadow: none; }
 
         .image-upload-dropzone {
             border: 2px dashed var(--primary);
             background: var(--primary-light);
             border-radius: 16px;
-            padding: 20px 12px;
+            padding: 18px 12px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -560,7 +686,6 @@
             gap: 6px;
         }
         .image-upload-dropzone:hover { background: #ECE0FD; }
-        .image-upload-dropzone svg { color: var(--primary); }
 
         .image-preview-container {
             display: none;
@@ -593,7 +718,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
 
         .csv-dropzone {
@@ -606,7 +731,6 @@
             margin-bottom: 12px;
             transition: all 0.2s ease;
         }
-        .csv-dropzone:hover { background: #ECE0FD; }
 
         .csv-preview-table-container {
             max-height: 220px;
@@ -620,7 +744,7 @@
         .csv-preview-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             text-align: left;
         }
 
@@ -641,6 +765,7 @@
             max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 600;
         }
 
         .bottom-nav {
@@ -664,7 +789,7 @@
             align-items: center;
             justify-content: center;
             color: #94A3B8;
-            font-size: 0.62rem;
+            font-size: 0.68rem;
             font-weight: 700;
             cursor: pointer;
             width: 20%;
@@ -687,7 +812,7 @@
             backdrop-filter: blur(4px);
         }
         .modal-overlay.active { display: flex; }
-        .modal-body { background: white; padding: 20px; border-radius: 20px; width: 100%; text-align: center; }
+        .modal-body { background: white; padding: 22px; border-radius: 24px; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
@@ -702,8 +827,8 @@
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                     </div>
                     <div>
-                        <div style="font-weight:800; font-size:0.95rem; color:var(--text-main);">Yan-Dli</div>
-                        <div style="font-size:0.72rem; color:var(--text-sub);">Navigation Menu</div>
+                        <div style="font-weight:800; font-size:1rem; color:var(--text-main);">Yan-Dli</div>
+                        <div style="font-size:0.75rem; color:var(--text-sub); font-weight:600;">Navigation Menu</div>
                     </div>
                 </div>
 
@@ -711,26 +836,11 @@
                     <div class="sidebar-link active" onclick="navigateToSection('dashboard')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                         Overview
-                  </div>
-
-
-
-
-<div class="sidebar-link" onclick="window.location.href='mine.html'">My People Page</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    </div>
+                    <div class="sidebar-link" onclick="window.location.href='mine.html'">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        My People Page
+                    </div>
                     <div class="sidebar-link" onclick="navigateToSection('courses')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                         Course Catalog
@@ -834,7 +944,7 @@
                 <div class="app-card">
                     <div class="app-card-title">Express Operations</div>
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <button class="app-btn" onclick="navigateToSection('csv-import')">⚡ Bulk Upload CSV Questions</button>
+                        <button class="app-btn" onclick="navigateToSection('csv-import')">⚡ Bulk Upload CSV (OBJ & Theory)</button>
                         <button class="app-btn app-btn-secondary" onclick="navigateToSection('questions')">Author Single Question</button>
                         <button class="app-btn app-btn-secondary" onclick="navigateToSection('topics')">Manage Course Topics</button>
                     </div>
@@ -846,32 +956,32 @@
                 <div class="app-card">
                     <div class="app-card-title">
                         <span>Bulk CSV Upload</span>
-                        <button class="app-btn app-btn-secondary" style="width:auto; padding:5px 10px; font-size:0.72rem;" onclick="downloadSampleCSV()">Sample CSV</button>
+                        <button class="app-btn app-btn-secondary" style="width:auto; padding:5px 10px; font-size:0.75rem;" onclick="downloadSampleCSV()">Sample CSV</button>
                     </div>
 
-                    <div class="form-group"><label>Target Department</label><select id="csv-dept-select" onchange="filterCsvCascading()"></select></div>
-                    <div class="form-group"><label>Target Level</label><select id="csv-level-select" onchange="filterCsvCascading()"></select></div>
-                    <div class="form-group"><label>Target Course</label><select id="csv-course-select" onchange="filterCsvTopics()"></select></div>
-                    <div class="form-group"><label>Target Topic (Optional)</label><select id="csv-topic-select"></select></div>
+                    <div class="form-group"><label>Target Department</label><div id="csv-dept-select" class="custom-select-trigger" onclick="openCustomSelect('csv-dept-select')"><span>Select Department</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Target Level</label><div id="csv-level-select" class="custom-select-trigger" onclick="openCustomSelect('csv-level-select')"><span>Select Level</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Target Course</label><div id="csv-course-select" class="custom-select-trigger" onclick="openCustomSelect('csv-course-select')"><span>Select Course</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Target Topic (Optional)</label><div id="csv-topic-select" class="custom-select-trigger" onclick="openCustomSelect('csv-topic-select')"><span>Select Topic (Optional)</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
 
                     <div class="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary); margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        <div style="font-weight:700; font-size:0.85rem; color:var(--text-main);" id="csv-file-label">Tap to select CSV file</div>
-                        <div style="font-size:0.72rem; color:var(--text-sub); margin-top:2px;">Supports thousands of rows</div>
+                        <div style="font-weight:700; font-size:0.88rem; color:var(--text-main);" id="csv-file-label">Tap to select CSV file</div>
+                        <div style="font-size:0.75rem; color:var(--text-sub); margin-top:2px;">Supports Objective & Theory rows</div>
                     </div>
                     <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFileSelect(event)">
 
                     <div id="csv-preview-area" style="display:none;">
-                        <div style="font-weight:800; font-size:0.8rem; margin-bottom:6px; color:var(--text-main);" id="csv-count-badge">Parsed 0 Questions</div>
+                        <div style="font-weight:800; font-size:0.82rem; margin-bottom:6px; color:var(--text-main);" id="csv-count-badge">Parsed 0 Questions</div>
                         <div class="csv-preview-table-container">
                             <table class="csv-preview-table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Type</th>
                                         <th>Question</th>
-                                        <th>Opt A</th>
-                                        <th>Opt B</th>
-                                        <th>Key</th>
+                                        <th>Key / Match Words</th>
+                                        <th>Marks</th>
                                     </tr>
                                 </thead>
                                 <tbody id="csv-preview-body"></tbody>
@@ -953,11 +1063,11 @@
                     <input type="hidden" id="edit-course-id">
                     <div class="form-group">
                         <label>Department</label>
-                        <select id="course-dept-select"></select>
+                        <div id="course-dept-select" class="custom-select-trigger" onclick="openCustomSelect('course-dept-select')"><span>Select Department</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
                     <div class="form-group">
                         <label>Target Level</label>
-                        <select id="course-level-select"></select>
+                        <div id="course-level-select" class="custom-select-trigger" onclick="openCustomSelect('course-level-select')"><span>Select Level</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
                     <div class="form-group">
                         <label>Course Title</label>
@@ -982,8 +1092,8 @@
                         <input type="text" id="filter-course-search" placeholder="Search course name/code..." oninput="renderCourses()">
                     </div>
                     <div class="filter-engine-grid">
-                        <select id="filter-course-dept" onchange="renderCourses()"><option value="">All Departments</option></select>
-                        <select id="filter-course-level" onchange="renderCourses()"><option value="">All Levels</option></select>
+                        <div id="filter-course-dept" class="custom-select-trigger" onclick="openCustomSelect('filter-course-dept')" style="font-size:0.78rem; padding:9px 10px;"><span>All Departments</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
+                        <div id="filter-course-level" class="custom-select-trigger" onclick="openCustomSelect('filter-course-level')" style="font-size:0.78rem; padding:9px 10px;"><span>All Levels</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
                 </div>
 
@@ -995,9 +1105,9 @@
                 <div class="app-card">
                     <div class="app-card-title" id="topic-form-title">Add Topic</div>
                     <input type="hidden" id="edit-topic-id">
-                    <div class="form-group"><label>Department Filter</label><select id="topic-dept-select" onchange="filterTopicCascading()"></select></div>
-                    <div class="form-group"><label>Level Filter</label><select id="topic-level-select" onchange="filterTopicCascading()"></select></div>
-                    <div class="form-group"><label>Course</label><select id="topic-course-select"></select></div>
+                    <div class="form-group"><label>Department Filter</label><div id="topic-dept-select" class="custom-select-trigger" onclick="openCustomSelect('topic-dept-select')"><span>Select Department</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Level Filter</label><div id="topic-level-select" class="custom-select-trigger" onclick="openCustomSelect('topic-level-select')"><span>Select Level</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Course</label><div id="topic-course-select" class="custom-select-trigger" onclick="openCustomSelect('topic-course-select')"><span>Select Course</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
                     <div class="form-group"><label>Topic Name</label><input type="text" id="topic-name" class="app-input" placeholder="e.g. Data Structures & Algorithms"></div>
                     <div style="display:flex; gap:6px;">
                         <button class="app-btn" id="save-topic-btn" onclick="saveTopic()">Save Topic</button>
@@ -1014,36 +1124,46 @@
                         <input type="text" id="filter-topic-search" placeholder="Search topic keyword..." oninput="renderTopics()">
                     </div>
                     <div class="filter-engine-grid">
-                        <select id="filter-topic-dept" onchange="updateTopicFilterCascading()"><option value="">All Depts</option></select>
-                        <select id="filter-topic-level" onchange="updateTopicFilterCascading()"><option value="">All Levels</option></select>
+                        <div id="filter-topic-dept" class="custom-select-trigger" onclick="openCustomSelect('filter-topic-dept')" style="font-size:0.78rem; padding:9px 10px;"><span>All Depts</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
+                        <div id="filter-topic-level" class="custom-select-trigger" onclick="openCustomSelect('filter-topic-level')" style="font-size:0.78rem; padding:9px 10px;"><span>All Levels</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
-                    <select id="filter-topic-course" onchange="renderTopics()"><option value="">All Courses</option></select>
+                    <div id="filter-topic-course" class="custom-select-trigger" onclick="openCustomSelect('filter-topic-course')" style="font-size:0.78rem; padding:9px 10px; margin-top:6px;"><span>All Courses</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                 </div>
 
                 <div id="topics-list"></div>
             </div>
 
-            <!-- SECTION: QUESTIONS AUTHORING -->
+            <!-- SECTION: QUESTIONS AUTHORING (OBJ & THEORY) -->
             <div id="section-questions" class="section-page">
                 <div class="app-card">
                     <div class="app-card-title" id="question-form-title">Author Question</div>
                     <input type="hidden" id="edit-q-id">
 
-                    <div class="form-group"><label>Department</label><select id="q-dept-select" onchange="filterQuestionCascading()"></select></div>
-                    <div class="form-group"><label>Level</label><select id="q-level-select" onchange="filterQuestionCascading()"></select></div>
-                    <div class="form-group"><label>Course</label><select id="q-course-select" onchange="filterQuestionTopics()"></select></div>
-                    <div class="form-group"><label>Topic</label><select id="q-topic-select"></select></div>
+                    <!-- QUESTION TYPE SELECTOR -->
+                    <div class="form-group">
+                        <label>Question Format</label>
+                        <div class="q-type-toggle-wrapper">
+                            <button type="button" class="q-type-btn active" id="btn-type-obj" onclick="setQuestionType('objective')">Objective (MCQ)</button>
+                            <button type="button" class="q-type-btn" id="btn-type-theory" onclick="setQuestionType('theory')">Theory / Essay</button>
+                        </div>
+                        <input type="hidden" id="q-type" value="objective">
+                    </div>
+
+                    <div class="form-group"><label>Department</label><div id="q-dept-select" class="custom-select-trigger" onclick="openCustomSelect('q-dept-select')"><span>Select Department</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Level</label><div id="q-level-select" class="custom-select-trigger" onclick="openCustomSelect('q-level-select')"><span>Select Level</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Course</label><div id="q-course-select" class="custom-select-trigger" onclick="openCustomSelect('q-course-select')"><span>Select Course</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+                    <div class="form-group"><label>Topic</label><div id="q-topic-select" class="custom-select-trigger" onclick="openCustomSelect('q-topic-select')"><span>Select Topic</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div></div>
 
                     <div class="form-group">
-                        <label>Question Text (supports HTML formatting)</label>
-                        <textarea id="q-text" rows="3" class="app-input" placeholder="Type question text..."></textarea>
+                        <label>Question Content / Prompt (HTML supported)</label>
+                        <textarea id="q-text" rows="3" class="app-input" placeholder="Type question statement or essay prompt..."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>Question Diagram / Image (Optional)</label>
+                        <label>Question Diagram / Attachment (Optional)</label>
                         <div class="image-upload-dropzone" onclick="openCloudinaryUploader()">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                            <span style="font-weight:700; font-size:0.82rem; color:var(--text-main);" id="image-dropzone-label">Click to upload image</span>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--primary)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <span style="font-weight:700; font-size:0.85rem; color:var(--text-main);" id="image-dropzone-label">Click or drop file to upload diagram</span>
                             <span style="font-size:0.72rem; color:var(--text-sub);">Supports PNG, JPG, WEBP via Cloudinary</span>
                         </div>
                         <input type="hidden" id="q-image-url">
@@ -1053,23 +1173,50 @@
                         </div>
                     </div>
 
-                    <div class="form-group"><label>Option A</label><input type="text" id="opt-a" class="app-input"></div>
-                    <div class="form-group"><label>Option B</label><input type="text" id="opt-b" class="app-input"></div>
-                    <div class="form-group"><label>Option C</label><input type="text" id="opt-c" class="app-input"></div>
-                    <div class="form-group"><label>Option D</label><input type="text" id="opt-d" class="app-input"></div>
+                    <!-- OBJECTIVE FIELDS CONTAINER -->
+                    <div id="objective-fields-container">
+                        <div class="form-group"><label>Option A</label><input type="text" id="opt-a" class="app-input" placeholder="Option A text"></div>
+                        <div class="form-group"><label>Option B</label><input type="text" id="opt-b" class="app-input" placeholder="Option B text"></div>
+                        <div class="form-group"><label>Option C</label><input type="text" id="opt-c" class="app-input" placeholder="Option C text"></div>
+                        <div class="form-group"><label>Option D</label><input type="text" id="opt-d" class="app-input" placeholder="Option D text"></div>
 
-                    <div class="form-group">
-                        <label>Correct Key Option</label>
-                        <select id="q-answer">
-                            <option value="0">Option A</option>
-                            <option value="1">Option B</option>
-                            <option value="2">Option C</option>
-                            <option value="3">Option D</option>
-                        </select>
+                        <div class="form-group">
+                            <label>Correct Key Option</label>
+                            <div id="q-answer" class="custom-select-trigger" onclick="openCustomSelect('q-answer')"><span>Option A</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
+                        </div>
+                    </div>
+
+                    <!-- THEORY FIELDS CONTAINER -->
+                    <div id="theory-fields-container" style="display:none;">
+                        <div class="form-group">
+                            <label>🔑 Key Phrase Matches (comma-separated)</label>
+                            <input type="text" id="q-keywords" class="app-input" placeholder="e.g. computer, software, data processing, CPU">
+                            <div class="form-help-text">Used for automated keyword matching and partial scoring algorithm.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Marks Allotted</label>
+                            <input type="number" id="q-marks" class="app-input" placeholder="e.g. 10" value="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label>📝 Comprehensive Sample Answer / Model Solution</label>
+                            <textarea id="q-sample-answer" rows="3" class="app-input" placeholder="Provide fully detailed standard sample answer for student review..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>📊 Marking Guide & Grading Breakdown</label>
+                            <textarea id="q-marking-guide" rows="2" class="app-input" placeholder="e.g. 3 marks for definition, 4 marks for diagram, 3 marks for examples..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>💡 Exam Tips & Hints for Students</label>
+                            <textarea id="q-tips" rows="2" class="app-input" placeholder="Key tips or common mistakes to avoid..."></textarea>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Solution Explanation</label>
+                        <label>Solution Explanation / Step-by-Step Breakdown</label>
                         <textarea id="q-exp" rows="2" class="app-input" placeholder="Detailed explanation..."></textarea>
                     </div>
 
@@ -1088,13 +1235,14 @@
                         <input type="text" id="filter-q-search" placeholder="Search question text..." oninput="renderQuestions()">
                     </div>
                     <div class="filter-engine-grid">
-                        <select id="filter-q-dept" onchange="updateQFilterCascading()"><option value="">All Depts</option></select>
-                        <select id="filter-q-level" onchange="updateQFilterCascading()"><option value="">All Levels</option></select>
+                        <div id="filter-q-type" class="custom-select-trigger" onclick="openCustomSelect('filter-q-type')" style="font-size:0.78rem; padding:9px 10px;"><span>All Formats (OBJ & Theory)</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
+                        <div id="filter-q-dept" class="custom-select-trigger" onclick="openCustomSelect('filter-q-dept')" style="font-size:0.78rem; padding:9px 10px;"><span>All Depts</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
-                    <div class="filter-engine-grid">
-                        <select id="filter-q-course" onchange="updateQFilterTopics()"><option value="">All Courses</option></select>
-                        <select id="filter-q-topic" onchange="renderQuestions()"><option value="">All Topics</option></select>
+                    <div class="filter-engine-grid" style="margin-top:6px;">
+                        <div id="filter-q-level" class="custom-select-trigger" onclick="openCustomSelect('filter-q-level')" style="font-size:0.78rem; padding:9px 10px;"><span>All Levels</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
+                        <div id="filter-q-course" class="custom-select-trigger" onclick="openCustomSelect('filter-q-course')" style="font-size:0.78rem; padding:9px 10px;"><span>All Courses</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
+                    <div id="filter-q-topic" class="custom-select-trigger" onclick="openCustomSelect('filter-q-topic')" style="font-size:0.78rem; padding:9px 10px; margin-top:6px;"><span>All Topics</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div>
                 </div>
 
                 <div id="questions-list"></div>
@@ -1128,7 +1276,7 @@
         <div class="modal-overlay" id="confirm-modal">
             <div class="modal-body">
                 <h3 id="modal-title" style="margin-bottom:6px; font-weight:800;">Confirm Action</h3>
-                <p id="modal-message" style="font-size:0.8rem; color:var(--text-sub); margin-bottom:14px;"></p>
+                <p id="modal-message" style="font-size:0.85rem; color:var(--text-sub); margin-bottom:14px; font-weight:600;"></p>
                 <div style="display:flex; gap:6px;">
                     <button class="app-btn app-btn-secondary" onclick="closeModal()">Cancel</button>
                     <button class="app-btn app-btn-danger" id="modal-confirm-btn">Confirm</button>
@@ -1136,66 +1284,974 @@
             </div>
         </div>
 
+        <!-- CUSTOM SELECT MODAL SHEET -->
+        <div class="select-modal-overlay" id="custom-select-modal" onclick="closeCustomSelectModal()">
+            <div class="select-modal-sheet" onclick="event.stopPropagation()">
+                <div class="select-modal-header">
+                    <div class="select-modal-title" id="custom-select-title">Select Option</div>
+                    <button class="select-modal-close" onclick="closeCustomSelectModal()">&times;</button>
+                </div>
+                <div class="select-modal-options" id="custom-select-options-list"></div>
+            </div>
+        </div>
+
     </div>
 
-    <script type="module" src="./admin-logic.js"></script>
+    <!-- COMBINED SCRIPT ENGINE FOR ABSOLUTE SCOPE ACCURACY -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getFirestore, enableIndexedDbPersistence, doc, setDoc, collection, addDoc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
+            authDomain: "yan-dli.firebaseapp.com",
+            databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
+            projectId: "yan-dli",
+            storageBucket: "yan-dli.firebasestorage.app",
+            messagingSenderId: "538794949165",
+            appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
+        };
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New update available! Reloading...');
-              }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        try { enableIndexedDbPersistence(db).catch((err) => {}); } catch(e) {}
+
+        const ADMIN_PASSWORD = '@Admin123';
+        const CLOUD_NAME = 'dytzpxabq';
+        const UPLOAD_PRESET = 'yandli';
+
+        let allDepartments = [], allLevels = [], allCourses = [], allTopics = [], allQuestions = [];
+        let parsedCSVData = [];
+        let selectDataStore = {}; // Holds options and selected values for custom triggers
+        let activeSelectTriggerId = null;
+
+        // Custom Select Handler
+        window.openCustomSelect = function(triggerId) {
+            activeSelectTriggerId = triggerId;
+            const data = selectDataStore[triggerId] || { options: [], selectedValue: '' };
+            const triggerEl = document.getElementById(triggerId);
+            const titleText = triggerEl ? triggerEl.previousElementSibling?.textContent || 'Select Option' : 'Select Option';
+
+            document.getElementById('custom-select-title').textContent = titleText;
+            const listContainer = document.getElementById('custom-select-options-list');
+            
+            listContainer.innerHTML = data.options.map(opt => `
+                <div class="select-option-item ${opt.value === data.selectedValue ? 'selected' : ''}" onclick="selectCustomOption('${triggerId}', '${opt.value}', '${opt.text.replace(/'/g, "\\'")}')">
+                    <span>${opt.text}</span>
+                    ${opt.value === data.selectedValue ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('custom-select-modal').classList.add('active');
+        };
+
+        window.closeCustomSelectModal = function() {
+            document.getElementById('custom-select-modal').classList.remove('active');
+        };
+
+        window.selectCustomOption = function(triggerId, val, text) {
+            if (!selectDataStore[triggerId]) selectDataStore[triggerId] = {};
+            selectDataStore[triggerId].selectedValue = val;
+            
+            const triggerEl = document.getElementById(triggerId);
+            if (triggerEl) {
+                const span = triggerEl.querySelector('span');
+                if (span) span.textContent = text;
+            }
+            window.closeCustomSelectModal();
+
+            // Trigger cascading/change callbacks
+            if (triggerId === 'topic-dept-select' || triggerId === 'topic-level-select') window.filterTopicCascading();
+            else if (triggerId === 'q-dept-select' || triggerId === 'q-level-select') window.filterQuestionCascading();
+            else if (triggerId === 'q-course-select') window.filterQuestionTopics();
+            else if (triggerId === 'csv-dept-select' || triggerId === 'csv-level-select') window.filterCsvCascading();
+            else if (triggerId === 'csv-course-select') window.filterCsvTopics();
+            else if (triggerId === 'filter-topic-dept' || triggerId === 'filter-topic-level') window.updateTopicFilterCascading();
+            else if (triggerId === 'filter-q-dept' || triggerId === 'filter-q-level') window.updateQFilterCascading();
+            else if (triggerId === 'filter-q-course') window.updateQFilterTopics();
+            else if (triggerId.startsWith('filter-')) {
+                if (triggerId.includes('course')) window.renderCourses();
+                else if (triggerId.includes('topic')) window.renderTopics();
+                else if (triggerId.includes('q')) window.renderQuestions();
+            }
+        };
+
+        function registerSelectOptions(triggerId, optionsArray, defaultText, currentVal = '') {
+            selectDataStore[triggerId] = {
+                options: [{ value: '', text: defaultText }, ...optionsArray],
+                selectedValue: currentVal
             };
-          };
-        })
-        .catch((err) => console.error('ServiceWorker registration failed:', err));
-    });
-  }
-</script>
+            const match = selectDataStore[triggerId].options.find(o => o.value === currentVal);
+            const triggerEl = document.getElementById(triggerId);
+            if (triggerEl) {
+                const span = triggerEl.querySelector('span');
+                if (span) span.textContent = match ? match.text : defaultText;
+            }
+        }
 
+        window.getSelectValue = function(triggerId) {
+            return selectDataStore[triggerId]?.selectedValue || '';
+        };
 
+        window.setSelectValue = function(triggerId, val) {
+            if (selectDataStore[triggerId]) {
+                selectDataStore[triggerId].selectedValue = val;
+                const match = selectDataStore[triggerId].options.find(o => o.value === val);
+                const triggerEl = document.getElementById(triggerId);
+                if (triggerEl && match) {
+                    const span = triggerEl.querySelector('span');
+                    if (span) span.textContent = match.text;
+                }
+            }
+        };
 
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        // Attach all functions to window so inline onclick works seamlessly
+        window.toggleActionMenu = function(e, menuId) {
+            e.stopPropagation();
+            const btn = e.currentTarget;
+            const currentMenu = document.getElementById(menuId);
+            const isCurrentlyActive = currentMenu ? currentMenu.classList.contains('active') : false;
+            
+            window.closeAllActionMenus();
+            
+            if (currentMenu && !isCurrentlyActive) {
+                const rect = btn.getBoundingClientRect();
+                const appContent = document.querySelector('.app-content');
+                const contentRect = appContent ? appContent.getBoundingClientRect() : { bottom: window.innerHeight };
+                
+                if (rect.bottom > contentRect.bottom - 180) {
+                    currentMenu.classList.add('dropup');
+                } else {
+                    currentMenu.classList.remove('dropup');
+                }
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcJ2YJQ0hz27M8CxuPiaqzIiCNdx8LvCY",
-    authDomain: "yan-dli.firebaseapp.com",
-    databaseURL: "https://yan-dli-default-rtdb.firebaseio.com",
-    projectId: "yan-dli",
-    storageBucket: "yan-dli.firebasestorage.app",
-    messagingSenderId: "538794949165",
-    appId: "1:538794949165:web:7425a4ba4e915b7e6996a4"
-  };
+                currentMenu.classList.add('active');
+                const parentCard = currentMenu.closest('.item-card');
+                if (parentCard) parentCard.classList.add('has-open-menu');
+            }
+        };
 
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Automatically enable offline caching for Firestore data
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.log("Persistence active in another open tab.");
-      } else if (err.code === 'unimplemented') {
-        console.log("Browser does not support offline persistence.");
-      }
-    });
-  } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
-    console.log("Offline DB engine active.");
-  }
-</script>
+        window.closeAllActionMenus = function() {
+            document.querySelectorAll('.dots-dropdown-menu').forEach(menu => menu.classList.remove('active'));
+            document.querySelectorAll('.item-card.has-open-menu').forEach(card => card.classList.remove('has-open-menu'));
+        };
 
+        let cloudinaryWidget = null;
+        function initCloudinaryWidget() {
+            if (window.cloudinary && !cloudinaryWidget) {
+                cloudinaryWidget = cloudinary.createUploadWidget({
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    sources: ['local', 'url', 'camera'],
+                    multiple: false,
+                    folder: 'yandli_questions'
+                }, (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const secureUrl = result.info.secure_url;
+                        document.getElementById('q-image-url').value = secureUrl;
+                        document.getElementById('image-preview-tag').src = secureUrl;
+                        document.getElementById('image-preview-tag').style.display = 'block';
+                        document.getElementById('image-preview-wrapper').style.display = 'block';
+                        document.getElementById('image-dropzone-label').textContent = 'Image Uploaded Successfully';
+                    }
+                });
+            }
+        }
+
+        window.openCloudinaryUploader = function() {
+            initCloudinaryWidget();
+            if (cloudinaryWidget) cloudinaryWidget.open();
+            else alert('❌ Cloudinary widget failed to load.');
+        };
+
+        window.clearUploadedImage = function(e) {
+            e.stopPropagation();
+            document.getElementById('q-image-url').value = '';
+            document.getElementById('image-preview-tag').src = '';
+            document.getElementById('image-preview-wrapper').style.display = 'none';
+            document.getElementById('image-dropzone-label').textContent = 'Click or drop file to upload diagram';
+        };
+
+        window.setQuestionType = function(type) {
+            document.getElementById('q-type').value = type;
+            const btnObj = document.getElementById('btn-type-obj');
+            const btnTheory = document.getElementById('btn-type-theory');
+            const containerObj = document.getElementById('objective-fields-container');
+            const containerTheory = document.getElementById('theory-fields-container');
+
+            if (type === 'theory') {
+                btnObj.classList.remove('active');
+                btnTheory.classList.add('active');
+                containerObj.style.display = 'none';
+                containerTheory.style.display = 'block';
+            } else {
+                btnTheory.classList.remove('active');
+                btnObj.classList.add('active');
+                containerTheory.style.display = 'none';
+                containerObj.style.display = 'block';
+            }
+        };
+
+        window.toggleSidebar = function(open) {
+            const overlay = document.getElementById('sidebar-overlay');
+            if (open) overlay.classList.add('active');
+            else overlay.classList.remove('active');
+        };
+
+        window.navigateToSection = function(sectionName) {
+            window.toggleSidebar(false);
+            window.showSection(sectionName);
+        };
+
+        window.adminLogin = function() {
+            if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {                
+                document.getElementById('admin-login').style.display = 'none';
+                initRealtimeListeners();
+            } else {
+                alert('❌ Incorrect Access Key!');
+            }
+        };
+
+        window.adminLogout = function() {
+            if (!confirm('Exit mobile session?')) return;
+            window.toggleSidebar(false);
+            document.getElementById('admin-login').style.display = 'flex';
+            document.getElementById('admin-password').value = '';
+        };
+
+        window.showSection = function(sectionName, tabElement = null) {
+            document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
+            document.getElementById(`section-${sectionName}`)?.classList.add('active');
+
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            if (tabElement) tabElement.classList.add('active');
+            else document.getElementById(`tab-${sectionName}`)?.classList.add('active');
+
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick')?.includes(`'${sectionName}'`)) link.classList.add('active');
+            });
+
+            const titles = { 
+                dashboard: 'Overview', 
+                departments: 'Departments',
+                levels: 'Academic Levels',
+                courses: 'Course Catalog',
+                topics: 'Topic Registry', 
+                questions: 'Question Bank',
+                'csv-import': 'Bulk CSV Upload'
+            };
+            document.getElementById('page-title').textContent = titles[sectionName] || 'Yan-Dli Suite';
+        };
+
+        function initRealtimeListeners() {
+            onSnapshot(collection(db, "departments"), (snapshot) => {
+                allDepartments = [];
+                snapshot.forEach(d => allDepartments.push({ id: d.id, ...d.data() }));
+                updateDropdowns();
+                window.renderDepartments();
+                updateMetrics();
+            });
+
+            onSnapshot(collection(db, "levels"), (snapshot) => {
+                allLevels = [];
+                snapshot.forEach(d => allLevels.push({ id: d.id, ...d.data() }));
+                allLevels.sort((a, b) => (parseInt(a.code) || 0) - (parseInt(b.code) || 0));
+                updateDropdowns();
+                window.renderLevels();
+                updateMetrics();
+            });
+
+            onSnapshot(collection(db, "courses"), (snapshot) => {
+                allCourses = [];
+                snapshot.forEach(d => allCourses.push({ id: d.id, ...d.data() }));
+                window.renderCourses();
+                updateMetrics();
+            });
+
+            onSnapshot(collection(db, "topics"), (snapshot) => {
+                allTopics = [];
+                snapshot.forEach(d => allTopics.push({ id: d.id, ...d.data() }));
+                window.renderTopics();
+                updateMetrics();
+            });
+
+            onSnapshot(collection(db, "questions"), (snapshot) => {
+                allQuestions = [];
+                snapshot.forEach(d => allQuestions.push({ id: d.id, ...d.data() }));
+                window.renderQuestions();
+                updateMetrics();
+            });
+        }
+
+        function updateMetrics() {
+            document.getElementById('stat-departments').textContent = allDepartments.filter(d => !d.archived).length;
+            document.getElementById('stat-levels').textContent = allLevels.filter(l => !l.archived).length;
+            document.getElementById('stat-courses').textContent = allCourses.filter(c => !c.archived).length;
+            document.getElementById('stat-questions').textContent = allQuestions.filter(q => !q.archived).length;
+        }
+
+        function updateDropdowns() {
+            const deptOptions = allDepartments.filter(d => !d.archived).map(d => ({ value: d.id, text: d.name }));
+            const levelOptions = allLevels.filter(l => !l.archived).map(l => ({ value: l.id, text: l.name }));
+
+            ['course-dept-select', 'topic-dept-select', 'q-dept-select', 'csv-dept-select'].forEach(id => {
+                registerSelectOptions(id, deptOptions, 'Select Department', getSelectValue(id));
+            });
+            ['filter-course-dept', 'filter-topic-dept', 'filter-q-dept'].forEach(id => {
+                registerSelectOptions(id, deptOptions, 'All Depts', getSelectValue(id));
+            });
+
+            ['course-level-select', 'topic-level-select', 'q-level-select', 'csv-level-select'].forEach(id => {
+                registerSelectOptions(id, levelOptions, 'Select Level', getSelectValue(id));
+            });
+            ['filter-course-level', 'filter-topic-level', 'filter-q-level'].forEach(id => {
+                registerSelectOptions(id, levelOptions, 'All Levels', getSelectValue(id));
+            });
+
+            // Objective answer options
+            registerSelectOptions('q-answer', [
+                { value: '0', text: 'Option A' },
+                { value: '1', text: 'Option B' },
+                { value: '2', text: 'Option C' },
+                { value: '3', text: 'Option D' }
+            ], 'Select Answer', getSelectValue('q-answer') || '0');
+
+            // Question type filter options
+            registerSelectOptions('filter-q-type', [
+                { value: 'objective', text: 'Objective Only' },
+                { value: 'theory', text: 'Theory Only' }
+            ], 'All Formats (OBJ & Theory)', getSelectValue('filter-q-type'));
+        }
+
+        window.filterTopicCascading = function() {
+            const deptId = getSelectValue('topic-dept-select');
+            const levelId = getSelectValue('topic-level-select');
+            let filtered = allCourses.filter(c => !c.archived);
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            const courseOpts = filtered.map(c => ({ value: c.id, text: `${c.code} - ${c.title}` }));
+            registerSelectOptions('topic-course-select', courseOpts, 'Select Course');
+        };
+
+        window.filterQuestionCascading = function() {
+            const deptId = getSelectValue('q-dept-select');
+            const levelId = getSelectValue('q-level-select');
+            let filtered = allCourses.filter(c => !c.archived);
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            const courseOpts = filtered.map(c => ({ value: c.id, text: `${c.code} - ${c.title}` }));
+            registerSelectOptions('q-course-select', courseOpts, 'Select Course');
+            window.filterQuestionTopics();
+        };
+
+        window.filterQuestionTopics = function() {
+            const courseId = getSelectValue('q-course-select');
+            let filtered = allTopics.filter(t => !t.archived);
+            if (courseId) filtered = filtered.filter(t => t.courseId === courseId);
+            const topicOpts = filtered.map(t => ({ value: t.id, text: t.name }));
+            registerSelectOptions('q-topic-select', topicOpts, 'Select Topic');
+        };
+
+        window.filterCsvCascading = function() {
+            const deptId = getSelectValue('csv-dept-select');
+            const levelId = getSelectValue('csv-level-select');
+            let filtered = allCourses.filter(c => !c.archived);
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            const courseOpts = filtered.map(c => ({ value: c.id, text: `${c.code} - ${c.title}` }));
+            registerSelectOptions('csv-course-select', courseOpts, 'Select Course');
+            window.filterCsvTopics();
+        };
+
+        window.filterCsvTopics = function() {
+            const courseId = getSelectValue('csv-course-select');
+            let filtered = allTopics.filter(t => !t.archived);
+            if (courseId) filtered = filtered.filter(t => t.courseId === courseId);
+            const topicOpts = filtered.map(t => ({ value: t.id, text: t.name }));
+            registerSelectOptions('csv-topic-select', topicOpts, 'Select Topic (Optional)');
+        };
+
+        window.updateTopicFilterCascading = function() {
+            const deptId = getSelectValue('filter-topic-dept');
+            const levelId = getSelectValue('filter-topic-level');
+            let filtered = allCourses.filter(c => !c.archived);
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            const courseOpts = filtered.map(c => ({ value: c.id, text: `${c.code} - ${c.title}` }));
+            registerSelectOptions('filter-topic-course', courseOpts, 'All Courses');
+            window.renderTopics();
+        };
+
+        window.updateQFilterCascading = function() {
+            const deptId = getSelectValue('filter-q-dept');
+            const levelId = getSelectValue('filter-q-level');
+            let filtered = allCourses.filter(c => !c.archived);
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            const courseOpts = filtered.map(c => ({ value: c.id, text: `${c.code} - ${c.title}` }));
+            registerSelectOptions('filter-q-course', courseOpts, 'All Courses');
+            window.updateQFilterTopics();
+        };
+
+        window.updateQFilterTopics = function() {
+            const courseId = getSelectValue('filter-q-course');
+            let filtered = allTopics.filter(t => !t.archived);
+            if (courseId) filtered = filtered.filter(t => t.courseId === courseId);
+            const topicOpts = filtered.map(t => ({ value: t.id, text: t.name }));
+            registerSelectOptions('filter-q-topic', topicOpts, 'All Topics');
+            window.renderQuestions();
+        };
+
+        window.renderDepartments = function() {
+            const query = (document.getElementById('filter-dept-search')?.value || '').toLowerCase();
+            const container = document.getElementById('departments-list');
+            const filtered = allDepartments.filter(d => (d.name || '').toLowerCase().includes(query) || (d.faculty || '').toLowerCase().includes(query));
+            container.innerHTML = filtered.map(d => `
+                <div class="item-card ${d.archived ? 'archived' : ''}">
+                    <div class="item-header">
+                        <div class="item-title">${d.name}</div>
+                        <div class="item-header-right">
+                            <span class="badge-chip ${d.archived ? 'badge-archived' : 'badge-active'}">${d.archived ? 'Archived' : 'Active'}</span>
+                            <button class="three-dots-btn" onclick="toggleActionMenu(event, 'menu-dept-${d.id}')">
+                                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </button>
+                            <div class="dots-dropdown-menu" id="menu-dept-${d.id}">
+                                <div class="menu-action-item" onclick="editDepartment('${d.id}')">Edit</div>
+                                <div class="menu-action-item" onclick="toggleArchive('departments', '${d.id}', ${!!d.archived})">${d.archived ? 'Unarchive' : 'Archive'}</div>
+                                <div class="menu-action-item danger-item" onclick="deleteItem('departments', '${d.id}')">Delete</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-sub">Faculty: ${d.faculty}</div>
+                </div>
+            `).join('');
+        };
+
+        window.renderLevels = function() {
+            const query = (document.getElementById('filter-level-search')?.value || '').toLowerCase();
+            const container = document.getElementById('levels-list');
+            const filtered = allLevels.filter(l => (l.name || '').toLowerCase().includes(query) || (l.code || '').toString().includes(query));
+            container.innerHTML = filtered.map(l => `
+                <div class="item-card ${l.archived ? 'archived' : ''}">
+                    <div class="item-header">
+                        <div class="item-title">${l.name}</div>
+                        <div class="item-header-right">
+                            <span class="badge-chip ${l.archived ? 'badge-archived' : 'badge-active'}">${l.archived ? 'Archived' : 'Active'}</span>
+                            <button class="three-dots-btn" onclick="toggleActionMenu(event, 'menu-level-${l.id}')">
+                                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </button>
+                            <div class="dots-dropdown-menu" id="menu-level-${l.id}">
+                                <div class="menu-action-item" onclick="editLevel('${l.id}')">Edit</div>
+                                <div class="menu-action-item" onclick="toggleArchive('levels', '${l.id}', ${!!l.archived})">${l.archived ? 'Unarchive' : 'Archive'}</div>
+                                <div class="menu-action-item danger-item" onclick="deleteItem('levels', '${l.id}')">Delete</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-sub">Order Code: ${l.code}</div>
+                </div>
+            `).join('');
+        };
+
+        window.renderCourses = function() {
+            const query = (document.getElementById('filter-course-search')?.value || '').toLowerCase();
+            const deptId = getSelectValue('filter-course-dept');
+            const levelId = getSelectValue('filter-course-level');
+            const container = document.getElementById('courses-list');
+            let filtered = allCourses.filter(c => (c.title || '').toLowerCase().includes(query) || (c.code || '').toLowerCase().includes(query));
+            if (deptId) filtered = filtered.filter(c => c.departmentId === deptId);
+            if (levelId) filtered = filtered.filter(c => c.levelId === levelId);
+            container.innerHTML = filtered.map(c => `
+                <div class="item-card ${c.archived ? 'archived' : ''}">
+                    <div class="item-header">
+                        <div class="item-title">[${c.code}] ${c.title}</div>
+                        <div class="item-header-right">
+                            <span class="badge-chip ${c.archived ? 'badge-archived' : 'badge-active'}">${c.archived ? 'Archived' : 'Active'}</span>
+                            <button class="three-dots-btn" onclick="toggleActionMenu(event, 'menu-course-${c.id}')">
+                                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </button>
+                            <div class="dots-dropdown-menu" id="menu-course-${c.id}">
+                                <div class="menu-action-item" onclick="editCourse('${c.id}')">Edit</div>
+                                <div class="menu-action-item" onclick="toggleArchive('courses', '${c.id}', ${!!c.archived})">${c.archived ? 'Unarchive' : 'Archive'}</div>
+                                <div class="menu-action-item danger-item" onclick="deleteItem('courses', '${c.id}')">Delete</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.renderTopics = function() {
+            const query = (document.getElementById('filter-topic-search')?.value || '').toLowerCase();
+            const courseId = getSelectValue('filter-topic-course');
+            const deptId = getSelectValue('filter-topic-dept');
+            const levelId = getSelectValue('filter-topic-level');
+            const container = document.getElementById('topics-list');
+            let filtered = allTopics.filter(t => (t.name || '').toLowerCase().includes(query));
+            if (courseId) filtered = filtered.filter(t => t.courseId === courseId);
+            else if (deptId || levelId) {
+                let matchingCourseIds = allCourses.filter(c => (!deptId || c.departmentId === deptId) && (!levelId || c.levelId === levelId)).map(c => c.id);
+                filtered = filtered.filter(t => matchingCourseIds.includes(t.courseId));
+            }
+            container.innerHTML = filtered.map(t => {
+                const parentCourse = allCourses.find(c => c.id === t.courseId);
+                return `
+                    <div class="item-card ${t.archived ? 'archived' : ''}">
+                        <div class="item-header">
+                            <div class="item-title">${t.name}</div>
+                            <div class="item-header-right">
+                                <span class="badge-chip ${t.archived ? 'badge-archived' : 'badge-active'}">${t.archived ? 'Archived' : 'Active'}</span>
+                                <button class="three-dots-btn" onclick="toggleActionMenu(event, 'menu-topic-${t.id}')">
+                                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                </button>
+                                <div class="dots-dropdown-menu" id="menu-topic-${t.id}">
+                                    <div class="menu-action-item" onclick="editTopic('${t.id}')">Edit</div>
+                                    <div class="menu-action-item" onclick="toggleArchive('topics', '${t.id}', ${!!t.archived})">${t.archived ? 'Unarchive' : 'Archive'}</div>
+                                    <div class="menu-action-item danger-item" onclick="deleteItem('topics', '${t.id}')">Delete</div>
+                                </div>
+                            </div>
+                        </div>
+                        ${parentCourse ? `<div class="item-sub">Course: ${parentCourse.code} - ${parentCourse.title}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.renderQuestions = function() {
+            const query = (document.getElementById('filter-q-search')?.value || '').toLowerCase();
+            const typeFilter = getSelectValue('filter-q-type');
+            const deptId = getSelectValue('filter-q-dept');
+            const levelId = getSelectValue('filter-q-level');
+            const courseId = getSelectValue('filter-q-course');
+            const topicId = getSelectValue('filter-q-topic');
+            const container = document.getElementById('questions-list');
+
+            let filtered = allQuestions.filter(q => (q.q || '').toLowerCase().includes(query));
+            if (typeFilter) filtered = filtered.filter(q => (q.type || 'objective') === typeFilter);
+            if (topicId) filtered = filtered.filter(q => q.topicId === topicId);
+            else if (courseId) filtered = filtered.filter(q => q.courseId === courseId);
+            else if (deptId || levelId) {
+                if (deptId) filtered = filtered.filter(q => q.departmentId === deptId);
+                if (levelId) filtered = filtered.filter(q => q.levelId === levelId);
+            }
+
+            container.innerHTML = filtered.map(q => {
+                const isTheory = q.type === 'theory';
+                return `
+                    <div class="item-card ${q.archived ? 'archived' : ''}">
+                        <div class="item-header">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span class="badge-chip ${isTheory ? 'badge-theory' : 'badge-obj'}">${isTheory ? 'Theory' : 'Objective'}</span>
+                                <div class="item-title">${isTheory ? `Theory (${q.marks || 10} Marks)` : 'Objective Question'}</div>
+                            </div>
+                            <div class="item-header-right">
+                                <span class="badge-chip ${q.archived ? 'badge-archived' : 'badge-active'}">${q.archived ? 'Archived' : 'Active'}</span>
+                                <button class="three-dots-btn" onclick="toggleActionMenu(event, 'menu-q-${q.id}')">
+                                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                </button>
+                                <div class="dots-dropdown-menu" id="menu-q-${q.id}">
+                                    <div class="menu-action-item" onclick="editQuestion('${q.id}')">Edit</div>
+                                    <div class="menu-action-item" onclick="toggleArchive('questions', '${q.id}', ${!!q.archived})">${q.archived ? 'Unarchive' : 'Archive'}</div>
+                                    <div class="menu-action-item danger-item" onclick="deleteItem('questions', '${q.id}')">Delete</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="plain-text-preview">${q.q}</div>
+                        ${q.imageUrl ? `<div style="margin-top:6px;"><img src="${q.imageUrl}" style="max-height:90px; border-radius:8px; object-fit:contain;" alt="Diagram" onerror="this.style.display='none'"></div>` : ''}
+                        ${isTheory ? `
+                            <div class="item-sub" style="margin-top:4px;">🔑 <strong>Keywords:</strong> ${q.keywords || 'None set'}</div>
+                            ${q.sampleAnswer ? `<div class="item-sub">📝 <strong>Sample Answer:</strong> ${q.sampleAnswer.substring(0, 90)}...</div>` : ''}
+                            ${q.markingGuide ? `<div class="item-sub">📊 <strong>Marking Guide:</strong> ${q.markingGuide.substring(0, 90)}...</div>` : ''}
+                            ${q.tips ? `<div class="item-sub">💡 <strong>Tips:</strong> ${q.tips.substring(0, 90)}...</div>` : ''}
+                        ` : `
+                            <div class="item-sub" style="margin-top:4px;">Key Answer: Option ${['A','B','C','D'][q.answer] || 'A'}</div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // DUAL-FORMAT CSV ENGINE
+        window.downloadSampleCSV = function() {
+            const sample = `question_type,question,option_a,option_b,option_c,option_d,answer,keywords,marks,sample_answer,marking_guide,tips,explanation,image_url
+objective,"What is the capital of Nigeria?","Lagos","Abuja","Kano","Ibadan","B","","","","","","Abuja is the federal capital territory.",""
+theory,"Define Operating System and state two primary functions.","","","","","","operating system, software, hardware, resource management","10","An Operating System (OS) is system software that manages computer hardware...","5 marks for definition, 5 marks for functions","Keep your definitions concise.","OS acts as the base software interface.",""`;
+
+            const blob = new Blob([sample], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'yan_dli_questions_template.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+
+        window.handleCSVFileSelect = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('csv-file-label').textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = (evt) => parseCSVText(evt.target.result);
+            reader.readAsText(file);
+        };
+
+        function parseCSVText(csvText) {
+            const lines = csvText.split(/\r\n|\n/);
+            parsedCSVData = [];
+            if (lines.length < 2) return alert('❌ Invalid CSV file format or empty file.');
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].trim();
+                if (!row) continue;
+                const cols = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c => c.replace(/^["']|["']$/g, '').trim());
+                if (cols.length >= 2) {
+                    const typeVal = (cols[0] || 'objective').toLowerCase().includes('theory') ? 'theory' : 'objective';
+                    if (typeVal === 'theory') {
+                        parsedCSVData.push({
+                            type: 'theory',
+                            q: cols[1] || '',
+                            keywords: cols[7] || '',
+                            marks: parseInt(cols[8]) || 10,
+                            sampleAnswer: cols[9] || '',
+                            markingGuide: cols[10] || '',
+                            tips: cols[11] || '',
+                            exp: cols[12] || '',
+                            imageUrl: cols[13] || ''
+                        });
+                    } else {
+                        let ansKey = 0;
+                        const keyStr = (cols[6] || '').toUpperCase();
+                        if (keyStr === 'B' || keyStr === '1') ansKey = 1;
+                        else if (keyStr === 'C' || keyStr === '2') ansKey = 2;
+                        else if (keyStr === 'D' || keyStr === '3') ansKey = 3;
+
+                        parsedCSVData.push({
+                            type: 'objective',
+                            q: cols[1] || '',
+                            optA: cols[2] || '',
+                            optB: cols[3] || '',
+                            optC: cols[4] || '',
+                            optD: cols[5] || '',
+                            answer: ansKey,
+                            exp: cols[12] || '',
+                            imageUrl: cols[13] || ''
+                        });
+                    }
+                }
+            }
+
+            if (parsedCSVData.length === 0) {
+                alert('❌ No valid question rows parsed from CSV.');
+                document.getElementById('csv-preview-area').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('csv-count-badge').textContent = `Parsed ${parsedCSVData.length} Questions`;
+            document.getElementById('csv-preview-body').innerHTML = parsedCSVData.slice(0, 50).map((row, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><span class="badge-chip ${row.type === 'theory' ? 'badge-theory' : 'badge-obj'}">${row.type}</span></td>
+                    <td>${row.q}</td>
+                    <td>${row.type === 'theory' ? row.keywords : `Option ${['A','B','C','D'][row.answer]}`}</td>
+                    <td>${row.type === 'theory' ? `${row.marks} Marks` : '1 Mark'}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('csv-preview-area').style.display = 'block';
+        }
+
+        window.processBulkCSVUpload = async function() {
+            const deptId = getSelectValue('csv-dept-select');
+            const levelId = getSelectValue('csv-level-select');
+            const courseId = getSelectValue('csv-course-select');
+            const topicId = getSelectValue('csv-topic-select');
+
+            if (!deptId || !levelId || !courseId) return alert('❌ Please select Target Department, Level, and Course before uploading.');
+            if (parsedCSVData.length === 0) return alert('❌ No CSV data loaded.');
+
+            const btn = document.getElementById('csv-upload-btn');
+            btn.disabled = true;
+            btn.textContent = `Uploading 0 / ${parsedCSVData.length}...`;
+
+            try {
+                let count = 0;
+                for (const item of parsedCSVData) {
+                    const payload = {
+                        departmentId: deptId,
+                        levelId,
+                        courseId,
+                        topicId: topicId || '',
+                        type: item.type,
+                        q: item.q,
+                        imageUrl: item.imageUrl || '',
+                        exp: item.exp || '',
+                        archived: false,
+                        createdAt: new Date()
+                    };
+
+                    if (item.type === 'theory') {
+                        payload.keywords = item.keywords || '';
+                        payload.marks = item.marks || 10;
+                        payload.sampleAnswer = item.sampleAnswer || '';
+                        payload.markingGuide = item.markingGuide || '';
+                        payload.tips = item.tips || '';
+                    } else {
+                        payload.options = [item.optA || '', item.optB || '', item.optC || '', item.optD || ''];
+                        payload.answer = item.answer || 0;
+                    }
+
+                    await addDoc(collection(db, "questions"), payload);
+                    count++;
+                    btn.textContent = `Uploading ${count} / ${parsedCSVData.length}...`;
+                }
+
+                alert(`🎉 Successfully uploaded ${parsedCSVData.length} questions to database!`);
+                document.getElementById('csv-file-input').value = '';
+                document.getElementById('csv-file-label').textContent = 'Tap to select CSV file';
+                document.getElementById('csv-preview-area').style.display = 'none';
+                parsedCSVData = [];
+                window.showSection('questions');
+            } catch (err) {
+                console.error(err);
+                alert('❌ Error uploading batch: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Upload Batch to Database';
+            }
+        };
+
+        window.saveDepartment = async function() {
+            const name = document.getElementById('dept-name').value.trim();
+            const faculty = document.getElementById('dept-faculty').value.trim();
+            const editId = document.getElementById('edit-dept-id').value;
+            if(!name || !faculty) return alert('Please complete required fields');
+            if(editId) await updateDoc(doc(db, "departments", editId), { name, faculty });
+            else await addDoc(collection(db, "departments"), { name, faculty, archived: false, createdAt: new Date() });
+            window.resetDepartmentForm();
+        };
+
+        window.editDepartment = function(id) {
+            window.closeAllActionMenus();
+            const item = allDepartments.find(d => d.id === id);
+            if(!item) return;
+            document.getElementById('edit-dept-id').value = item.id;
+            document.getElementById('dept-name').value = item.name;
+            document.getElementById('dept-faculty').value = item.faculty;
+            document.getElementById('cancel-dept-btn').style.display = 'inline-flex';
+        };
+
+        window.resetDepartmentForm = function() {
+            document.getElementById('edit-dept-id').value = '';
+            document.getElementById('dept-name').value = '';
+            document.getElementById('dept-faculty').value = '';
+            document.getElementById('cancel-dept-btn').style.display = 'none';
+        };
+
+        window.saveLevel = async function() {
+            const name = document.getElementById('level-name').value.trim();
+            const code = document.getElementById('level-code').value.trim();
+            const editId = document.getElementById('edit-level-id').value;
+            if(!name || !code) return alert('Please complete required fields');
+            if(editId) await updateDoc(doc(db, "levels", editId), { name, code });
+            else await addDoc(collection(db, "levels"), { name, code, archived: false, createdAt: new Date() });
+            window.resetLevelForm();
+        };
+
+        window.editLevel = function(id) {
+            window.closeAllActionMenus();
+            const item = allLevels.find(l => l.id === id);
+            if(!item) return;
+            document.getElementById('edit-level-id').value = item.id;
+            document.getElementById('level-name').value = item.name;
+            document.getElementById('level-code').value = item.code;
+            document.getElementById('cancel-level-btn').style.display = 'inline-flex';
+        };
+
+        window.resetLevelForm = function() {
+            document.getElementById('edit-level-id').value = '';
+            document.getElementById('level-name').value = '';
+            document.getElementById('level-code').value = '';
+            document.getElementById('cancel-level-btn').style.display = 'none';
+        };
+
+        window.saveCourse = async function() {
+            const deptId = getSelectValue('course-dept-select');
+            const levelId = getSelectValue('course-level-select');
+            const title = document.getElementById('course-title').value.trim();
+            const code = document.getElementById('course-code').value.trim();
+            const editId = document.getElementById('edit-course-id').value;
+            if(!deptId || !levelId || !title || !code) return alert('Please complete required fields');
+            if(editId) await updateDoc(doc(db, "courses", editId), { departmentId: deptId, levelId, title, code });
+            else await addDoc(collection(db, "courses"), { departmentId: deptId, levelId, title, code, archived: false, createdAt: new Date() });
+            window.resetCourseForm();
+        };
+
+        window.editCourse = function(id) {
+            window.closeAllActionMenus();
+            const item = allCourses.find(c => c.id === id);
+            if(!item) return;
+            document.getElementById('edit-course-id').value = item.id;
+            setSelectValue('course-dept-select', item.departmentId || '');
+            setSelectValue('course-level-select', item.levelId || '');
+            document.getElementById('course-title').value = item.title;
+            document.getElementById('course-code').value = item.code;
+            document.getElementById('cancel-course-btn').style.display = 'inline-flex';
+        };
+
+        window.resetCourseForm = function() {
+            document.getElementById('edit-course-id').value = '';
+            setSelectValue('course-dept-select', '');
+            setSelectValue('course-level-select', '');
+            document.getElementById('course-title').value = '';
+            document.getElementById('course-code').value = '';
+            document.getElementById('cancel-course-btn').style.display = 'none';
+        };
+
+        window.saveTopic = async function() {
+            const courseId = getSelectValue('topic-course-select');
+            const name = document.getElementById('topic-name').value.trim();
+            const editId = document.getElementById('edit-topic-id').value;
+            if(!courseId || !name) return alert('Please select course and topic name');
+            if(editId) await updateDoc(doc(db, "topics", editId), { courseId, name });
+            else await addDoc(collection(db, "topics"), { courseId, name, archived: false, createdAt: new Date() });
+            window.resetTopicForm();
+        };
+
+        window.editTopic = function(id) {
+            window.closeAllActionMenus();
+            const item = allTopics.find(t => t.id === id);
+            if(!item) return;
+            document.getElementById('edit-topic-id').value = item.id;
+            document.getElementById('topic-name').value = item.name;
+            document.getElementById('cancel-topic-btn').style.display = 'inline-flex';
+        };
+
+        window.resetTopicForm = function() {
+            document.getElementById('edit-topic-id').value = '';
+            document.getElementById('topic-name').value = '';
+            document.getElementById('cancel-topic-btn').style.display = 'none';
+        };
+
+        window.saveQuestion = async function() {
+            const type = document.getElementById('q-type').value;
+            const deptId = getSelectValue('q-dept-select');
+            const levelId = getSelectValue('q-level-select');
+            const courseId = getSelectValue('q-course-select');
+            const topicId = getSelectValue('q-topic-select');
+            const qText = document.getElementById('q-text').value.trim();
+            const imageUrl = document.getElementById('q-image-url').value.trim();
+            const exp = document.getElementById('q-exp').value.trim();
+            const editId = document.getElementById('edit-q-id').value;
+
+            if (!qText) return alert('Please enter question content / prompt.');
+
+            const qData = { type, departmentId: deptId, levelId, courseId, topicId, q: qText, imageUrl, exp };
+
+            if (type === 'theory') {
+                qData.keywords = document.getElementById('q-keywords').value.trim();
+                qData.marks = parseInt(document.getElementById('q-marks').value) || 10;
+                qData.sampleAnswer = document.getElementById('q-sample-answer').value.trim();
+                qData.markingGuide = document.getElementById('q-marking-guide').value.trim();
+                qData.tips = document.getElementById('q-tips').value.trim();
+            } else {
+                const optA = document.getElementById('opt-a').value.trim();
+                const optB = document.getElementById('opt-b').value.trim();
+                const optC = document.getElementById('opt-c').value.trim();
+                const optD = document.getElementById('opt-d').value.trim();
+                const answer = parseInt(getSelectValue('q-answer')) || 0;
+                if (!optA || !optB) return alert('Please provide at least Option A and Option B for objective format.');
+                qData.options = [optA, optB, optC, optD];
+                qData.answer = answer;
+            }
+
+            if (editId) await updateDoc(doc(db, "questions", editId), qData);
+            else {
+                qData.archived = false;
+                qData.createdAt = new Date();
+                await addDoc(collection(db, "questions"), qData);
+            }
+            window.resetQuestionForm();
+        };
+
+        window.editQuestion = function(id) {
+            window.closeAllActionMenus();
+            const q = allQuestions.find(i => i.id === id);
+            if (!q) return;
+
+            document.getElementById('edit-q-id').value = q.id;
+            window.setQuestionType(q.type || 'objective');
+
+            setSelectValue('q-dept-select', q.departmentId || '');
+            setSelectValue('q-level-select', q.levelId || '');
+            window.filterQuestionCascading();
+            setSelectValue('q-course-select', q.courseId || '');
+            window.filterQuestionTopics();
+            setSelectValue('q-topic-select', q.topicId || '');
+
+            document.getElementById('q-text').value = q.q || '';
+            document.getElementById('q-image-url').value = q.imageUrl || '';
+            if (q.imageUrl) {
+                document.getElementById('image-preview-tag').src = q.imageUrl;
+                document.getElementById('image-preview-tag').style.display = 'block';
+                document.getElementById('image-preview-wrapper').style.display = 'block';
+                document.getElementById('image-dropzone-label').textContent = 'Change image';
+            } else {
+                document.getElementById('image-preview-wrapper').style.display = 'none';
+                document.getElementById('image-dropzone-label').textContent = 'Click or drop file to upload diagram';
+            }
+
+            if (q.type === 'theory') {
+                document.getElementById('q-keywords').value = q.keywords || '';
+                document.getElementById('q-marks').value = q.marks || 10;
+                document.getElementById('q-sample-answer').value = q.sampleAnswer || '';
+                document.getElementById('q-marking-guide').value = q.markingGuide || '';
+                document.getElementById('q-tips').value = q.tips || '';
+            } else {
+                document.getElementById('opt-a').value = q.options?.[0] || '';
+                document.getElementById('opt-b').value = q.options?.[1] || '';
+                document.getElementById('opt-c').value = q.options?.[2] || '';
+                document.getElementById('opt-d').value = q.options?.[3] || '';
+                setSelectValue('q-answer', (q.answer ?? 0).toString());
+            }
+            document.getElementById('q-exp').value = q.exp || '';
+            document.getElementById('cancel-q-btn').style.display = 'inline-flex';
+        };
+
+        window.resetQuestionForm = function() {
+            document.getElementById('edit-q-id').value = '';
+            window.setQuestionType('objective');
+            document.getElementById('q-text').value = '';
+            document.getElementById('q-image-url').value = '';
+            document.getElementById('image-preview-wrapper').style.display = 'none';
+            document.getElementById('image-dropzone-label').textContent = 'Click or drop file to upload diagram';
+            document.getElementById('opt-a').value = '';
+            document.getElementById('opt-b').value = '';
+            document.getElementById('opt-c').value = '';
+            document.getElementById('opt-d').value = '';
+            setSelectValue('q-answer', '0');
+            document.getElementById('q-keywords').value = '';
+            document.getElementById('q-marks').value = '10';
+            document.getElementById('q-sample-answer').value = '';
+            document.getElementById('q-marking-guide').value = '';
+            document.getElementById('q-tips').value = '';
+            document.getElementById('q-exp').value = '';
+            document.getElementById('cancel-q-btn').style.display = 'none';
+        };
+
+        window.toggleArchive = async function(col, id, status) {
+            window.closeAllActionMenus();
+            await updateDoc(doc(db, col, id), { archived: !status });
+        };
+
+        window.deleteItem = async function(col, id) {
+            window.closeAllActionMenus();
+            if (!confirm('Are you sure you want to permanently delete this item?')) return;
+            await deleteDoc(doc(db, col, id));
+        };
+
+        window.closeModal = function() {
+            document.getElementById('confirm-modal').classList.remove('active');
+        };
+    </script>
 </body>
 </html>

@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yan-Dli | Exam Summary & Review</title>
 
-
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7C3AED">
-
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
   <style>
@@ -32,7 +30,6 @@
     .header { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0.85rem 1.1rem; position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
     .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
     
-    /* Modern OPay-style Back Button */
     .btn-icon { 
       width: 40px; 
       height: 40px; 
@@ -252,7 +249,7 @@
       <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       History Logs
     </a>
-    <a href="exams.html" class="nav-btn nav-btn-primary">
+    <a href="departments.html" class="nav-btn nav-btn-primary">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Take New Test
     </a>
@@ -419,25 +416,44 @@
   }
 
   function analyzeQuestion(question, index, userAnswers) {
-    const options = normalizeOptions(question);
-    const correctRaw = getCorrectAnswer(question);
+    const isTheory = (question.type || sessionData?.qType) === 'theory';
+    const options = isTheory ? [] : normalizeOptions(question);
+    const correctRaw = isTheory ? firstDefined(question.sampleAnswer, question.exp, question.explanation, "Model evaluation based on keywords.") : getCorrectAnswer(question);
     const userRaw = firstDefined(question?.userAnswer, question?.selectedAnswer, question?.userSelected, question?.selectedOption, question?.chosenAnswer, findUserAnswer(question, index, userAnswers));
-    const correctIndex = parseAnswerIndex(correctRaw, options);
-    const userSelectedIndex = parseAnswerIndex(userRaw, options);
+    
+    let correctIndex = isTheory ? null : parseAnswerIndex(correctRaw, options);
+    let userSelectedIndex = isTheory ? null : parseAnswerIndex(userRaw, options);
     let status = getStoredStatus(question);
 
-    if (!status) {
-      if (userSelectedIndex === null || userSelectedIndex === undefined) status = "skipped";
-      else if (correctIndex !== null && userSelectedIndex === correctIndex) status = "correct";
-      else status = "wrong";
+    if (isTheory) {
+      if (!status) {
+        if (userRaw === undefined || userRaw === null || String(userRaw).trim() === '') {
+          status = "skipped";
+        } else {
+          const studentText = String(userRaw).toLowerCase();
+          const keywords = (question.keywords || '').split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+          if (keywords.length === 0) {
+            status = "correct";
+          } else {
+            const matchedCount = keywords.filter(kw => studentText.includes(kw)).length;
+            status = matchedCount > 0 ? "correct" : "wrong";
+          }
+        }
+      }
+    } else {
+      if (!status) {
+        if (userSelectedIndex === null || userSelectedIndex === undefined) status = "skipped";
+        else if (correctIndex !== null && userSelectedIndex === correctIndex) status = "correct";
+        else status = "wrong";
+      }
+      if (userSelectedIndex !== null && correctIndex === null && !getStoredStatus(question)) status = "wrong";
     }
-
-    if (userSelectedIndex !== null && correctIndex === null && !getStoredStatus(question)) status = "wrong";
 
     return {
       original: question,
       id: getQuestionId(question, index),
       index: index + 1,
+      isTheory,
       question: getQuestionText(question),
       options,
       correctRaw,
@@ -450,7 +466,7 @@
       image: getQuestionImage(question),
       topic: firstDefined(question?.topic, question?.topicName, question?.chapter),
       year: firstDefined(question?.year, question?.examYear),
-      marks: firstDefined(question?.marks, question?.mark, question?.score)
+      marks: firstDefined(question?.marks, question?.mark, question?.score, isTheory ? 10 : 1)
     };
   }
 
@@ -471,7 +487,6 @@
     return "";
   }
 
-  // OFFLINE-AWARE LOCAL SESSION FINDER
   function findLocalSession() {
     const sessionId = getSessionId();
     if (!sessionId) return null;
@@ -563,7 +578,6 @@
         cacheResolvedSession(localSession);
       }
 
-      // Try fetching from Firestore if online
       if (navigator.onLine) {
         const cloudSession = await getFirestoreSession(requestedSessionId);
         if (cloudSession && resolvedSession) {
@@ -703,67 +717,90 @@
       </div>
     ` : "";
 
-    let optionsHtml = "";
-    if (item.options && item.options.length > 0) {
-      optionsHtml = `<div class="options-breakdown">`;
-      item.options.forEach((optionText, optionIndex) => {
-        const letter = optionLetters[optionIndex] || String(optionIndex + 1);
-        let classes = "option-item";
-        let tags = "";
+    let bodyContentHtml = "";
+    if (item.isTheory) {
+      let userAnswerText = "Not answered";
+      if (item.userRaw !== undefined && item.userRaw !== null && String(item.userRaw).trim() !== "") {
+        userAnswerText = String(item.userRaw);
+      }
+      let modelAnswerText = item.correctRaw || item.explanation || "Model solution available in course materials.";
 
-        if (optionIndex === item.correctIndex) {
-          classes += " correct-ans";
-          tags += `<span class="option-tag correct-tag">Correct Answer</span>`;
-        }
-        if (optionIndex === item.userSelectedIndex) {
-          if (item.status === "wrong") {
-            classes += " user-wrong";
-            tags += `<span class="option-tag wrong-tag">Your Choice</span>`;
-          } else if (item.status === "correct") {
-            classes += " user-correct";
-            if (optionIndex !== item.correctIndex) {
-              tags += `<span class="option-tag correct-tag">Your Choice</span>`;
+      bodyContentHtml = `
+        <div class="answer-summary" style="grid-template-columns: 1fr;">
+          <div class="answer-box your-answer" style="margin-bottom: 8px;">
+            <span class="answer-box-label">Your Typed Answer</span>
+            <div class="answer-box-value" style="font-weight: normal; margin-top: 4px;">${textToHtml(userAnswerText)}</div>
+          </div>
+          <div class="answer-box correct-answer">
+            <span class="answer-box-label">Model Solution / Key Guide</span>
+            <div class="answer-box-value" style="font-weight: normal; margin-top: 4px;">${textToHtml(modelAnswerText)}</div>
+          </div>
+        </div>
+      `;
+    } else {
+      let optionsHtml = "";
+      if (item.options && item.options.length > 0) {
+        optionsHtml = `<div class="options-breakdown">`;
+        item.options.forEach((optionText, optionIndex) => {
+          const letter = optionLetters[optionIndex] || String(optionIndex + 1);
+          let classes = "option-item";
+          let tags = "";
+
+          if (optionIndex === item.correctIndex) {
+            classes += " correct-ans";
+            tags += `<span class="option-tag correct-tag">Correct Answer</span>`;
+          }
+          if (optionIndex === item.userSelectedIndex) {
+            if (item.status === "wrong") {
+              classes += " user-wrong";
+              tags += `<span class="option-tag wrong-tag">Your Choice</span>`;
+            } else if (item.status === "correct") {
+              classes += " user-correct";
+              if (optionIndex !== item.correctIndex) {
+                tags += `<span class="option-tag correct-tag">Your Choice</span>`;
+              }
             }
           }
-        }
 
-        optionsHtml += `
-          <div class="${classes}">
-            <span class="option-letter">${letter}.</span>
-            <span class="option-content">${textToHtml(optionText)}</span>
-            ${tags}
+          optionsHtml += `
+            <div class="${classes}">
+              <span class="option-letter">${letter}.</span>
+              <span class="option-content">${textToHtml(optionText)}</span>
+              ${tags}
+            </div>
+          `;
+        });
+        optionsHtml += `</div>`;
+      }
+
+      let userAnswerText = "Not answered";
+      if (item.userSelectedIndex !== null && item.userSelectedIndex !== undefined) {
+        userAnswerText = `${optionLetters[item.userSelectedIndex] || (item.userSelectedIndex + 1)}. ${item.options[item.userSelectedIndex] || ""}`;
+      } else if (item.userRaw !== undefined && item.userRaw !== null && item.userRaw !== "") {
+        userAnswerText = String(item.userRaw);
+      }
+
+      let correctAnswerText = "Not available";
+      if (item.correctIndex !== null && item.correctIndex !== undefined) {
+        correctAnswerText = `${optionLetters[item.correctIndex] || (item.correctIndex + 1)}. ${item.options[item.correctIndex] || ""}`;
+      } else if (item.correctRaw !== undefined && item.correctRaw !== null && item.correctRaw !== "") {
+        correctAnswerText = String(item.correctRaw);
+      }
+
+      const answerSummary = `
+        <div class="answer-summary">
+          <div class="answer-box your-answer">
+            <span class="answer-box-label">Your Answer</span>
+            <div class="answer-box-value">${textToHtml(userAnswerText)}</div>
           </div>
-        `;
-      });
-      optionsHtml += `</div>`;
-    }
-
-    let userAnswerText = "Not answered";
-    if (item.userSelectedIndex !== null && item.userSelectedIndex !== undefined) {
-      userAnswerText = `${optionLetters[item.userSelectedIndex] || (item.userSelectedIndex + 1)}. ${item.options[item.userSelectedIndex] || ""}`;
-    } else if (item.userRaw !== undefined && item.userRaw !== null && item.userRaw !== "") {
-      userAnswerText = String(item.userRaw);
-    }
-
-    let correctAnswerText = "Not available";
-    if (item.correctIndex !== null && item.correctIndex !== undefined) {
-      correctAnswerText = `${optionLetters[item.correctIndex] || (item.correctIndex + 1)}. ${item.options[item.correctIndex] || ""}`;
-    } else if (item.correctRaw !== undefined && item.correctRaw !== null && item.correctRaw !== "") {
-      correctAnswerText = String(item.correctRaw);
-    }
-
-    const answerSummary = `
-      <div class="answer-summary">
-        <div class="answer-box your-answer">
-          <span class="answer-box-label">Your Answer</span>
-          <div class="answer-box-value">${textToHtml(userAnswerText)}</div>
+          <div class="answer-box correct-answer">
+            <span class="answer-box-label">Correct Answer</span>
+            <div class="answer-box-value">${textToHtml(correctAnswerText)}</div>
+          </div>
         </div>
-        <div class="answer-box correct-answer">
-          <span class="answer-box-label">Correct Answer</span>
-          <div class="answer-box-value">${textToHtml(correctAnswerText)}</div>
-        </div>
-      </div>
-    `;
+      `;
+      bodyContentHtml = optionsHtml + answerSummary;
+    }
 
     const explanationHtml = `
       <div class="explanation-box">
@@ -787,8 +824,7 @@
       ${metaBlock}
       ${imageHtml}
       <div class="correction-q-text">${textToHtml(item.question)}</div>
-      ${optionsHtml}
-      ${answerSummary}
+      ${bodyContentHtml}
       ${explanationHtml}
       ${stepsHtml}
     `;
@@ -822,15 +858,12 @@
   });
 </script>
 
-
-
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
         .then((reg) => {
           console.log('Yan-Dli Offline Engine Active:', reg.scope);
-          // Auto update service worker if new version is deployed
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
             installingWorker.onstatechange = () => {
@@ -845,9 +878,6 @@
   }
 </script>
 
-
-
-<!-- YAN-DLI OFFLINE DATABASE ENGINE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -866,7 +896,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
-    // Automatically enable offline caching for Firestore data
     enableIndexedDbPersistence(db).catch((err) => {
       if (err.code === 'failed-precondition') {
         console.log("Persistence active in another open tab.");
@@ -875,7 +904,6 @@
       }
     });
   } catch (e) {
-    // Prevents duplicate initialization errors if Firebase is already initialized above
     console.log("Offline DB engine active.");
   }
 </script>
