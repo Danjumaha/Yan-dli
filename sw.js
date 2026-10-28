@@ -17,6 +17,7 @@ const ASSETS_TO_CACHE = [
   './classroom.html',
   './gpa.html',
   './table.html',
+  './pocket.html',
   './attendance.html',
   './hard.html',
   './analysis.html',
